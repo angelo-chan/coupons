@@ -1,0 +1,116 @@
+package com.chainz.coupon.core.model;
+
+import com.chainz.coupon.shared.objects.CouponStatus;
+import com.chainz.coupon.shared.objects.CouponTarget;
+import com.chainz.coupon.shared.objects.CouponType;
+import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Coupon model defines a coupon template which could be used to generate coupon instance.
+ */
+@Data
+@Entity
+@Table(name = "coupons")
+@DynamicInsert
+@DynamicUpdate
+public class Coupon implements Serializable {
+
+  private static final long serialVersionUID = 5217994721126155917L;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private String id;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type", nullable = false, updatable = false)
+  private CouponType type;
+
+  @Column(name = "title", nullable = false)
+  private String title;
+
+  @Column(name = "subtitle")
+  private String subtitle;
+
+  @Column(name = "brand_name")
+  private String brandName;
+
+  @Column(name = "description", length = 1024)
+  private String description;
+
+  @Column(name = "color")
+  private String color;
+
+  @Embedded
+  private CouponDateInfo dateInfo;
+
+  @Column(name = "notice", columnDefinition = "text")
+  private String notice;
+
+  @Column(name = "service_phone", length = 20)
+  private String servicePhone;
+
+  @Column(name = "can_share", columnDefinition = "boolean DEFAULT true")
+  private Boolean canShare = true;
+
+  @Column(name = "circulation", nullable = false)
+  private Integer circulation;
+
+  @Column(name = "sku", nullable = false)
+  private Integer sku;
+
+  @Column(name = "value")
+  private Float value;
+
+  @Column(name = "get_limit", nullable = false)
+  private Integer getLimit;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "target", nullable = false)
+  private CouponTarget target;
+
+  @ElementCollection
+  @CollectionTable(name = "stores", joinColumns = @JoinColumn(name = "coupon_id"))
+  @Column(name = "store")
+  private Set<String> stores = new HashSet<>();
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  private CouponStatus status;
+
+  @Embedded
+  private CouponExtension extension;
+
+  @Embedded
+  private CouponIssuer issuer;
+
+  @CreatedDate
+  @Column(name = "created_at")
+  private ZonedDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "updated_at")
+  private ZonedDateTime updatedAt;
+
+}

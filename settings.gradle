@@ -1,0 +1,5 @@
+rootProject.name = 'coupons'
+
+include 'coupons-shared'
+include 'coupons-core'
+include 'coupons-admin'

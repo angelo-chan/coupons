@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <Match>
+        <!-- This doesn't really make a lot of sense, since it's perfectly fine
+                to throw static message exceptions in many cases -->
+        <Bug code="WEM"/>
+    </Match>
+</FindBugsFilter>

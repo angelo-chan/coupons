@@ -1,0 +1,46 @@
+##default config
+spring:
+  profiles:
+    active: dev
+  datasource:
+    username: coupon
+    password: coupon
+    url: jdbc:postgresql://localhost:5432/coupon
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    time-zone: Asia/Shanghai
+
+endpoints:
+  health:
+    sensitive: false
+server:
+  port: 8080
+
+---
+spring:
+  profiles: dev
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.chainz.coupon: DEBUG
+
+---
+spring:
+  profiles: ci
+logging:
+  level:
+    com.chainz.coupon: INFO
+
+---
+spring:
+  profiles: prod
+logging:
+  level:
+    com.chainz.coupon: WARN

@@ -1,0 +1,19 @@
+.classpath
+.project
+*.iml
+.settings/
+.idea/
+.DS_Store
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Exclude gradle files #
+.gradle
+build/
+
+# Exclude generated source #
+
+coupon-core/src/main/generated/

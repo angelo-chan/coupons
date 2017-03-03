@@ -1,0 +1,18 @@
+subprojects {
+
+    apply plugin: 'jacoco'
+
+    test {
+        jacoco {
+            includes = [ "com.chainz.coupon.*" ]
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+        }
+    }
+
+}

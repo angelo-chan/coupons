@@ -1,0 +1,132 @@
+description = '''parent project for coupon service'''
+
+defaultTasks 'clean', 'build'
+
+buildscript {
+  ext {
+    springBootVersion = "1.5.1.RELEASE"
+    dependencyManagementVersion = "1.0.0.RELEASE"
+    repos = [
+      release  : "http://10.16.100.79:8081/repository/maven-releases/",
+      snapshots: "http://10.16.100.79:8081/repository/maven-snapshots/"
+    ]
+    repoConfig = {
+      mavenLocal()
+      maven { url "http://10.16.100.79:8081/repository/maven-public/" }
+    }
+  }
+  repositories repoConfig
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}"
+  }
+}
+
+repositories repoConfig
+
+group = 'com.chainz'
+version = '1.0.0-SNAPSHOT'
+
+ext {
+  isSnapshot = version.endsWith("-SNAPSHOT")
+
+  versions = [
+    springfox : "2.5.0",
+    raven     : "7.8.1",
+    querydsl  : "4.1.4",
+    orika     : '1.5.0'
+  ]
+}
+
+apply plugin: 'project-report'
+
+htmlDependencyReport {
+  projects = subprojects
+}
+
+subprojects {
+  buildscript {
+    repositories repoConfig
+  }
+
+  group = rootProject.group
+  version = rootProject.version
+
+  apply plugin: 'java'
+  apply plugin: 'idea'
+  apply plugin: 'maven-publish'
+  apply plugin: 'io.spring.dependency-management'
+
+  idea {
+    module {
+      inheritOutputDirs = false
+      outputDir = file("$buildDir/classes/main/")
+    }
+  }
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
+  repositories repoConfig
+
+  configurations.all {
+    exclude group: "commons-logging"
+    exclude module: "spring-boot-starter-tomcat"
+    exclude module: "slf4j-log4j12"
+    resolutionStrategy {
+      cacheDynamicVersionsFor 24, 'hours'
+      cacheChangingModulesFor 10, 'minutes'
+    }
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    }
+    dependencies {
+      dependency "ma.glasnost.orika:orika-core:${versions.orika}"
+      dependency "com.getsentry.raven:raven-logback:${versions.raven}"
+      dependency "com.mysema.querydsl:querydsl-core:${versions.querydsl}"
+      dependency "com.mysema.querydsl:querydsl-collections:${versions.querydsl}"
+      dependency "com.mysema.querydsl:querydsl-jpa:${versions.querydsl}"
+      dependency "com.mysema.querydsl:querydsl-apt:${versions.querydsl}"
+    }
+  }
+
+  dependencies {
+    compile("org.projectlombok:lombok")
+    testCompile("org.hamcrest:hamcrest-all")
+    testCompile("org.mockito:mockito-all")
+  }
+
+  task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+  }
+
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        from components.java
+        artifact sourceJar
+      }
+    }
+    repositories {
+      maven {
+        url "${isSnapshot ? repos.snapshots : repos.release}"
+        credentials {
+          username "deployment"
+          password "deployment"
+        }
+      }
+    }
+  }
+}
+
+apply from: 'checkstyle.gradle'
+apply from: 'findbugs.gradle'
+apply from: 'jacoco.gradle'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.1'
+}

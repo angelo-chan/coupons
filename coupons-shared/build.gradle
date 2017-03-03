@@ -1,0 +1,5 @@
+description = '''coupon shared objects which contains dto etc'''
+
+dependencies {
+  compile("javax.validation:validation-api")
+}

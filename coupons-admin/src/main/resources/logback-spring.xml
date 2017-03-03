@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <if condition='"${spring.profiles.active}".contains("ci")'>
+        <then>
+            <appender name="Sentry" class="com.getsentry.raven.logback.SentryAppender">
+                <dsn>http://5de0a54f057b4f06a4e9a8c948610946:ff11cc84c82648469ce64367e42cb0bf@10.16.15
+                    .130:9000/2?options</dsn>
+                <tags>tag1:value1,tag2:value2</tags>
+            </appender>
+            <root level="info">
+                <appender-ref ref="Sentry"/>
+            </root>
+        </then>
+    </if>
+    <if condition='"${spring.profiles.active}".contains("prod")'>
+        <then>
+            <appender name="Sentry" class="com.getsentry.raven.logback.SentryAppender">
+                <dsn>http://446e098813d44cba8a3c864e3ca3901f:38451749775c44759904d4383a5a65e3@10.16.15.177:9000/3?options</dsn>
+                <tags>tag1:value1,tag2:value2</tags>
+            </appender>
+            <root level="warn">
+                <appender-ref ref="Sentry"/>
+            </root>
+        </then>
+    </if>
+</configuration>

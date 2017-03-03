@@ -1,0 +1,15 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+  compile project(':coupons-core')
+  compile 'org.postgresql:postgresql'
+  compile("io.springfox:springfox-swagger2:${versions.springfox}")
+  compile("io.springfox:springfox-swagger-ui:${versions.springfox}")
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile("org.springframework.boot:spring-boot-starter-web")
+  compile('org.springframework.boot:spring-boot-starter-jetty')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  compile("com.getsentry.raven:raven-logback:${versions.raven}")
+  compile('org.hibernate:hibernate-validator')
+  compile("org.springframework.boot:spring-boot-devtools")
+}
