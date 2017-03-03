@@ -34,7 +34,8 @@ ext {
     springfox : "2.5.0",
     raven     : "7.8.1",
     querydsl  : "4.1.4",
-    orika     : '1.5.0'
+    orika     : "1.5.0",
+    hibernate : "5.2.8.Final"
   ]
 }
 
@@ -74,6 +75,17 @@ subprojects {
     exclude module: "spring-boot-starter-tomcat"
     exclude module: "slf4j-log4j12"
     resolutionStrategy {
+
+      eachDependency { details ->
+        switch (details.requested.name) {
+          // use hibernate 5.2.x to persistent java8 date & time
+          case 'hibernate-core':
+          case 'hibernate-entitymanager':
+            details.useVersion versions.hibernate
+            break
+        }
+      }
+
       cacheDynamicVersionsFor 24, 'hours'
       cacheChangingModulesFor 10, 'minutes'
     }

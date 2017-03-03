@@ -16,4 +16,4 @@ build/
 
 # Exclude generated source #
 
-coupon-core/src/main/generated/
+coupon-cores/src/main/generated/

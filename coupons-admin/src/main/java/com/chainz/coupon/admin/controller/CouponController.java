@@ -36,6 +36,21 @@ public class CouponController {
     return couponService.createCoupon(couponCreateRequest);
   }
 
+
+  /**
+   * Get coupon.
+   * @param id  coupon id.
+   * @return  coupon information.
+   * @throws CouponNotFoundException  coupon not found.
+   */
+  @RequestMapping(
+    method = RequestMethod.GET,
+    produces = "application/json"
+  )
+  public CouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException{
+    return couponService.getCoupon(id);
+  }
+
   /**
    * Update coupon.
    *
@@ -51,7 +66,7 @@ public class CouponController {
     produces = "application/json"
   )
   public CouponInfo updateCoupon(
-      @PathVariable String id, @RequestBody CouponUpdateRequest couponUpdateRequest)
+      @PathVariable Long id, @RequestBody CouponUpdateRequest couponUpdateRequest)
       throws CouponNotFoundException {
     return couponService.updateCoupon(id, couponUpdateRequest);
   }
@@ -67,7 +82,7 @@ public class CouponController {
     method = RequestMethod.PUT,
     consumes = "application/json"
   )
-  public void verifyCoupon(@PathVariable String id) throws CouponNotFoundException {
+  public void verifyCoupon(@PathVariable Long id) throws CouponNotFoundException {
     couponService.verifyCoupon(id);
   }
 
@@ -82,7 +97,7 @@ public class CouponController {
     method = RequestMethod.PUT,
     consumes = "application/json"
   )
-  public void invalidCoupon(@PathVariable String id) throws CouponNotFoundException {
+  public void invalidCoupon(@PathVariable Long id) throws CouponNotFoundException {
     couponService.invalidCoupon(id);
   }
 }

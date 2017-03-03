@@ -8,10 +8,17 @@ import com.chainz.coupon.shared.objects.CouponUpdateRequest;
 public interface CouponService {
 
   /**
+   * Get a coupon
+   * @param id  coupon id.
+   * @return  coupon information.
+   */
+  CouponInfo getCoupon(Long id);
+
+  /**
    * Create a coupon.
    *
-   * @param couponCreateRequest coupon create request
-   * @return coupon information
+   * @param couponCreateRequest coupon create request.
+   * @return coupon information.
    */
   CouponInfo createCoupon(CouponCreateRequest couponCreateRequest);
 
@@ -19,22 +26,22 @@ public interface CouponService {
    * Update a coupon.
    *
    * @param id coupon id
-   * @param couponUpdateRequest coupon update request
-   * @return coupon information
+   * @param couponUpdateRequest coupon update request.
+   * @return coupon information.
    */
-  CouponInfo updateCoupon(String id, CouponUpdateRequest couponUpdateRequest);
+  CouponInfo updateCoupon(Long id, CouponUpdateRequest couponUpdateRequest);
 
   /**
    * Verify coupon.
    *
    * @param id coupon id.
    */
-  void verifyCoupon(String id);
+  void verifyCoupon(Long id);
 
   /**
    * Invalid coupon.
    *
    * @param id coupon id.
    */
-  void invalidCoupon(String id);
+  void invalidCoupon(Long id);
 }

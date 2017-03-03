@@ -17,7 +17,7 @@ public class CouponDateInfo {
 
   @NotNull
   @EnumerationValidator(enumClazz = CouponDateType.class)
-  private CouponDateType dateType;
+  private String dateType;
 
   @Min(0)
   private Integer fixedBeginTerm;

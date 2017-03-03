@@ -1,5 +1,11 @@
 apply plugin: 'org.springframework.boot'
 
+bootRun {
+  systemProperties = System.properties
+  addResources = true
+   jvmArgs = ['-Xdebug', '-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=y']
+}
+
 dependencies {
   compile project(':coupons-core')
   compile 'org.postgresql:postgresql'

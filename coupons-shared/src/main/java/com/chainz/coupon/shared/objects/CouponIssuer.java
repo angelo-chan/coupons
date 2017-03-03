@@ -14,7 +14,7 @@ public class CouponIssuer {
 
   @NotNull
   @EnumerationValidator(enumClazz = CouponIssuerType.class)
-  private CouponIssuerType issuerType;
+  private String issuerType;
 
   @Size(max = 128)
   private String issuerId;

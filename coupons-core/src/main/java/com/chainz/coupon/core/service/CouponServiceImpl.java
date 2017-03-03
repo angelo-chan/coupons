@@ -14,14 +14,27 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-/** Coupon service implementation. */
+/**
+ * Coupon service implementation.
+ */
 @Slf4j
 @Service
 public class CouponServiceImpl implements CouponService {
 
-  @Autowired private CouponRepository couponRepository;
+  @Autowired
+  private CouponRepository couponRepository;
 
-  @Autowired private MapperFacade mapperFacade;
+  @Autowired
+  private MapperFacade mapperFacade;
+
+  @Override
+  public CouponInfo getCoupon(Long id) {
+    Coupon coupon = couponRepository.findOne(id);
+    if (coupon == null) {
+      throw new CouponNotFoundException(id);
+    }
+    return mapperFacade.map(coupon, CouponInfo.class);
+  }
 
   @Transactional
   @Override
@@ -33,7 +46,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Transactional
   @Override
-  public CouponInfo updateCoupon(String id, CouponUpdateRequest couponUpdateRequest) {
+  public CouponInfo updateCoupon(Long id, CouponUpdateRequest couponUpdateRequest) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
@@ -44,7 +57,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Transactional
   @Override
-  public void verifyCoupon(String id) {
+  public void verifyCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
@@ -58,7 +71,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Transactional
   @Override
-  public void invalidCoupon(String id) {
+  public void invalidCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);

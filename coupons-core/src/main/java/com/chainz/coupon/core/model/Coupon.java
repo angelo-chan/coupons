@@ -39,9 +39,9 @@ public class Coupon implements Serializable {
   private static final long serialVersionUID = 5217994721126155917L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
-  private String id;
+  private Long id;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false, updatable = false)
@@ -97,7 +97,7 @@ public class Coupon implements Serializable {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private CouponStatus status;
+  private CouponStatus status = CouponStatus.UNVERIFIED;
 
   @Embedded
   private CouponExtension extension;
