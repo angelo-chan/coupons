@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 public class CouponInfo {
 
-  private String id;
+  private Long id;
 
   private CouponType type;
 

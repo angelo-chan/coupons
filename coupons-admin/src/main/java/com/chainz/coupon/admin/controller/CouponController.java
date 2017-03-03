@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-/** Coupon controller. */
+/**
+ * Coupon controller.
+ */
 @RestController
 @RequestMapping("/api/coupons")
 public class CouponController {
 
-  @Autowired private CouponService couponService;
+  @Autowired
+  private CouponService couponService;
 
   /**
    * Create coupon.
@@ -39,22 +42,23 @@ public class CouponController {
 
   /**
    * Get coupon.
-   * @param id  coupon id.
-   * @return  coupon information.
-   * @throws CouponNotFoundException  coupon not found.
+   *
+   * @param id coupon id.
+   * @return coupon information.
+   * @throws CouponNotFoundException coupon not found.
    */
   @RequestMapping(
     method = RequestMethod.GET,
     produces = "application/json"
   )
-  public CouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException{
+  public CouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException {
     return couponService.getCoupon(id);
   }
 
   /**
    * Update coupon.
    *
-   * @param id coupon id.
+   * @param id                  coupon id.
    * @param couponUpdateRequest coupon update request.
    * @return coupon info.
    * @throws CouponNotFoundException coupon not found.
@@ -66,8 +70,8 @@ public class CouponController {
     produces = "application/json"
   )
   public CouponInfo updateCoupon(
-      @PathVariable Long id, @RequestBody CouponUpdateRequest couponUpdateRequest)
-      throws CouponNotFoundException {
+    @PathVariable Long id, @RequestBody CouponUpdateRequest couponUpdateRequest)
+    throws CouponNotFoundException {
     return couponService.updateCoupon(id, couponUpdateRequest);
   }
 
