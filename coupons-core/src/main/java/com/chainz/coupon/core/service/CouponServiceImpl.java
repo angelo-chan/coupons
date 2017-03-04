@@ -1,6 +1,7 @@
 package com.chainz.coupon.core.service;
 
 import com.chainz.coupon.core.exception.CouponNotFoundException;
+import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
@@ -11,8 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Coupon service implementation.
@@ -28,6 +28,7 @@ public class CouponServiceImpl implements CouponService {
   private MapperFacade mapperFacade;
 
   @Override
+  @Transactional(readOnly = true)
   public CouponInfo getCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
@@ -36,51 +37,54 @@ public class CouponServiceImpl implements CouponService {
     return mapperFacade.map(coupon, CouponInfo.class);
   }
 
-  @Transactional
   @Override
+  @Transactional
   public CouponInfo createCoupon(CouponCreateRequest couponCreateRequest) {
     Coupon coupon = mapperFacade.map(couponCreateRequest, Coupon.class);
     coupon.setSku(couponCreateRequest.getCirculation());
-    return mapperFacade.map(couponRepository.saveAndFlush(coupon), CouponInfo.class);
+    return mapperFacade.map(couponRepository.save(coupon), CouponInfo.class);
   }
 
-  @Transactional
   @Override
+  @Transactional
   public CouponInfo updateCoupon(Long id, CouponUpdateRequest couponUpdateRequest) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
+    if (CouponStatus.UNVERIFIED != coupon.getStatus()) {
+      throw new CouponStatusConflictException(id, coupon.getStatus());
+    }
     mapperFacade.map(couponUpdateRequest, coupon);
-    return mapperFacade.map(couponRepository.saveAndFlush(coupon), CouponInfo.class);
+    return mapperFacade.map(couponRepository.save(coupon), CouponInfo.class);
   }
 
-  @Transactional
   @Override
+  @Transactional
   public void verifyCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
-    if (coupon.getStatus() == CouponStatus.VERIFIED) {
-      return;
+    if (CouponStatus.UNVERIFIED != coupon.getStatus()) {
+      throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.VERIFIED);
-    couponRepository.saveAndFlush(coupon);
+    couponRepository.save(coupon);
   }
 
-  @Transactional
   @Override
+  @Transactional
   public void invalidCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
     if (coupon.getStatus() == CouponStatus.INVALID) {
-      return;
+      throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.INVALID);
-    couponRepository.saveAndFlush(coupon);
+    couponRepository.save(coupon);
   }
 
 }

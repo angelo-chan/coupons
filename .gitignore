@@ -17,3 +17,5 @@ build/
 # Exclude generated source #
 
 coupons-core/src/main/generated/
+
+classes/

@@ -1,6 +1,7 @@
 package com.chainz.coupon.admin.controller;
 
 import com.chainz.coupon.core.exception.CouponNotFoundException;
+import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.service.CouponService;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
 import com.chainz.coupon.shared.objects.CouponInfo;
@@ -61,7 +62,8 @@ public class CouponController {
    * @param id                  coupon id.
    * @param couponUpdateRequest coupon update request.
    * @return coupon info.
-   * @throws CouponNotFoundException coupon not found.
+   * @throws CouponNotFoundException       coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
    */
   @RequestMapping(
     value = "/{id}",
@@ -71,7 +73,7 @@ public class CouponController {
   )
   public CouponInfo updateCoupon(
     @PathVariable Long id, @RequestBody CouponUpdateRequest couponUpdateRequest)
-    throws CouponNotFoundException {
+    throws CouponNotFoundException, CouponStatusConflictException {
     return couponService.updateCoupon(id, couponUpdateRequest);
   }
 
@@ -79,14 +81,15 @@ public class CouponController {
    * Verify coupon.
    *
    * @param id coupon id.
-   * @throws CouponNotFoundException coupon not found.
+   * @throws CouponNotFoundException       coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
    */
   @RequestMapping(
     value = "/{id}/verified",
     method = RequestMethod.PUT,
     consumes = "application/json"
   )
-  public void verifyCoupon(@PathVariable Long id) throws CouponNotFoundException {
+  public void verifyCoupon(@PathVariable Long id) throws CouponNotFoundException, CouponStatusConflictException {
     couponService.verifyCoupon(id);
   }
 
@@ -94,14 +97,15 @@ public class CouponController {
    * Invalid coupon.
    *
    * @param id coupon id.
-   * @throws CouponNotFoundException coupon not found.
+   * @throws CouponNotFoundException       coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
    */
   @RequestMapping(
     value = "/{id}/invalid",
     method = RequestMethod.PUT,
     consumes = "application/json"
   )
-  public void invalidCoupon(@PathVariable Long id) throws CouponNotFoundException {
+  public void invalidCoupon(@PathVariable Long id) throws CouponNotFoundException, CouponStatusConflictException {
     couponService.invalidCoupon(id);
   }
 }
