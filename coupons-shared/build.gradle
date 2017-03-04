@@ -1,5 +1,6 @@
 description = '''coupon shared objects which contains dto etc'''
 
 dependencies {
+  compile("com.fasterxml.jackson.core:jackson-annotations")
   compile("javax.validation:validation-api")
 }

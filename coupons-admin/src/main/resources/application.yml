@@ -9,8 +9,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   jackson:
-    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
     time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 
 endpoints:
   health:

@@ -49,6 +49,7 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    */
   @RequestMapping(
+    value = "/{id}",
     method = RequestMethod.GET,
     produces = "application/json"
   )

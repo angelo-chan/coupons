@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.retry.annotation.EnableRetry;
 
+import java.util.TimeZone;
+
 /**
  * Coupon admin application.
  */
@@ -21,7 +23,13 @@ import org.springframework.retry.annotation.EnableRetry;
 @EnableJpaAuditing
 @SpringBootApplication
 public class CouponApplication {
+  /**
+   * main entry for coupon admin application.
+   * @param args application args.
+   */
   public static void main(String[] args) {
+    // manually set default timezone
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     SpringApplication.run(CouponApplication.class, args);
   }
 }

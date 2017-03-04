@@ -6,6 +6,7 @@ import com.chainz.coupon.shared.objects.CouponType;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OptimisticLock;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,6 +24,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -95,6 +97,7 @@ public class Coupon implements Serializable {
 
   @ElementCollection
   @CollectionTable(name = "stores", joinColumns = @JoinColumn(name = "coupon_id"))
+  @OptimisticLock(excluded = true)
   @Column(name = "store")
   private Set<String> stores = new HashSet<>();
 
@@ -115,5 +118,8 @@ public class Coupon implements Serializable {
   @LastModifiedDate
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
+
+  @Version
+  private Integer rev;
 
 }
