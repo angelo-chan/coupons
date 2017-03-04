@@ -125,6 +125,9 @@ public class Coupon implements Serializable {
   @Version
   private Integer rev;
 
+  /**
+   * pre save to sanity the date info.
+   */
   @PrePersist
   @PreUpdate
   public void preSave() {

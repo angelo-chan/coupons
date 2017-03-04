@@ -70,7 +70,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.VERIFIED);
-    couponRepository.saveAndFlush(coupon);
+    couponRepository.save(coupon);
   }
 
   @Override
@@ -84,7 +84,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.INVALID);
-    couponRepository.saveAndFlush(coupon);
+    couponRepository.save(coupon);
   }
 
 }
