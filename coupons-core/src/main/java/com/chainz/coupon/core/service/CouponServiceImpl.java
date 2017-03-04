@@ -42,7 +42,7 @@ public class CouponServiceImpl implements CouponService {
   public CouponInfo createCoupon(CouponCreateRequest couponCreateRequest) {
     Coupon coupon = mapperFacade.map(couponCreateRequest, Coupon.class);
     coupon.setSku(couponCreateRequest.getCirculation());
-    return mapperFacade.map(couponRepository.save(coupon), CouponInfo.class);
+    return mapperFacade.map(couponRepository.saveAndFlush(coupon), CouponInfo.class);
   }
 
   @Override
@@ -56,7 +56,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     mapperFacade.map(couponUpdateRequest, coupon);
-    return mapperFacade.map(couponRepository.save(coupon), CouponInfo.class);
+    return mapperFacade.map(couponRepository.saveAndFlush(coupon), CouponInfo.class);
   }
 
   @Override
@@ -70,7 +70,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.VERIFIED);
-    couponRepository.save(coupon);
+    couponRepository.saveAndFlush(coupon);
   }
 
   @Override
@@ -84,7 +84,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setStatus(CouponStatus.INVALID);
-    couponRepository.save(coupon);
+    couponRepository.saveAndFlush(coupon);
   }
 
 }

@@ -60,7 +60,4 @@ public class CouponUpdateRequest {
   @Valid
   private CouponExtension extension;
 
-  @NotNull
-  private Integer rev;
-
 }

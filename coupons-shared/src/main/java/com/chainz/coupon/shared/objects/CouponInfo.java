@@ -59,5 +59,4 @@ public class CouponInfo {
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
   private ZonedDateTime updatedAt;
 
-  private Integer rev;
 }

@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.model;
 
+import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.CouponType;
@@ -23,6 +24,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
@@ -121,5 +124,17 @@ public class Coupon implements Serializable {
 
   @Version
   private Integer rev;
+
+  @PrePersist
+  @PreUpdate
+  public void preSave() {
+    if (CouponDateType.DATE_TYPE_FIXED_TERM == dateInfo.getDateType()) {
+      dateInfo.setTimeRangeStart(null);
+      dateInfo.setTimeRangeEnd(null);
+    } else {
+      dateInfo.setFixedTerm(null);
+      dateInfo.setFixedBeginTerm(null);
+    }
+  }
 
 }

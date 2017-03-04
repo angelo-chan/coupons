@@ -73,7 +73,7 @@ public class CouponController {
     produces = "application/json"
   )
   public CouponInfo updateCoupon(
-    @PathVariable Long id, @RequestBody CouponUpdateRequest couponUpdateRequest)
+    @PathVariable Long id, @RequestBody @Valid CouponUpdateRequest couponUpdateRequest)
     throws CouponNotFoundException, CouponStatusConflictException {
     return couponService.updateCoupon(id, couponUpdateRequest);
   }
