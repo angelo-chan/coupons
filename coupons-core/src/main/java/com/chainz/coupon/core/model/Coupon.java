@@ -23,6 +23,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -35,7 +36,15 @@ import java.util.Set;
 /** Coupon model defines a coupon template which could be used to generate coupon instance. */
 @Data
 @Entity
-@Table(name = "coupons")
+@Table(
+  name = "coupons",
+  indexes = {
+    @Index(columnList = "target"),
+    @Index(columnList = "status"),
+    @Index(columnList = "issuer_type"),
+    @Index(columnList = "issuer_id")
+  }
+)
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
