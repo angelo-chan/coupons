@@ -14,40 +14,37 @@ import java.util.List;
 @Setter
 public class PaginatedApiResult<T> {
 
-  private List<T> data;
-
   private Integer page;
 
-  private Integer size;
+  private Integer count;
 
-  private Integer total;
+  private Long total;
 
-  /** No args constructor. */
-  public PaginatedApiResult() {}
+  private List<T> data;
 
   /**
    * Constructor without total.
    *
-   * @param data content
    * @param page page
-   * @param size size
+   * @param count count
+   * @param data content
    */
-  public PaginatedApiResult(List<T> data, Integer page, Integer size) {
-    this(data, page, size, null);
+  public PaginatedApiResult(Integer page, Integer count, List<T> data) {
+    this(page, count, null, data);
   }
 
   /**
    * Constructor with total.
    *
-   * @param data data.
    * @param page page.
-   * @param size size.
+   * @param count count.
    * @param total total.
+   * @param data data.
    */
-  public PaginatedApiResult(List<T> data, Integer page, Integer size, Integer total) {
-    this.data = data;
+  public PaginatedApiResult(Integer page, Integer count, Long total, List<T> data) {
     this.page = page;
-    this.size = size;
+    this.count = count;
     this.total = total;
+    this.data = data;
   }
 }
