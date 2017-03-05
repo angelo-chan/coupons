@@ -1,8 +1,6 @@
 package com.chainz.coupon.shared.objects;
 
-/**
- * Coupon status.
- */
+/** Coupon status. */
 public enum CouponStatus {
   UNVERIFIED,
   VERIFIED,

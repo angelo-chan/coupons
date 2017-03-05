@@ -6,17 +6,14 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * Coupon issuer.
- */
+/** Coupon issuer. */
 @Data
 public class CouponIssuer {
 
   @NotNull
-  @EnumerationValidator(enumClazz = CouponIssuerType.class)
+  @EnumerationValidator(CouponIssuerType.class)
   private String issuerType;
 
   @Size(max = 128)
   private String issuerId;
-
 }

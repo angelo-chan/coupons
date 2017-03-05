@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Validation error message.
- */
+/** Validation error message. */
 @Getter
 @Setter
 public class ValidationErrorResponseEntity {
@@ -25,15 +23,16 @@ public class ValidationErrorResponseEntity {
    * @param objectErrors collection of validation object error.
    */
   public ValidationErrorResponseEntity fromObjectErrors(Collection<ObjectError> objectErrors) {
-    objectErrors.forEach(objectError -> {
-      ValidationFieldErrorEntity entity = new ValidationFieldErrorEntity();
-      entity.setCode(objectError.getCode());
-      entity.setDefaultMessage(objectError.getDefaultMessage());
-      if (objectError instanceof FieldError) {
-        entity.setField(((FieldError) objectError).getField());
-      }
-      errors.add(entity);
-    });
+    objectErrors.forEach(
+        objectError -> {
+          ValidationFieldErrorEntity entity = new ValidationFieldErrorEntity();
+          entity.setCode(objectError.getCode());
+          entity.setDefaultMessage(objectError.getDefaultMessage());
+          if (objectError instanceof FieldError) {
+            entity.setField(((FieldError) objectError).getField());
+          }
+          errors.add(entity);
+        });
     return this;
   }
 
@@ -45,5 +44,4 @@ public class ValidationErrorResponseEntity {
 
     private String code;
   }
-
 }

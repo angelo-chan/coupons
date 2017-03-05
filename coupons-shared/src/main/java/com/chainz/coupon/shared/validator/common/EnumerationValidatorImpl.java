@@ -5,9 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * EnumerationValidator implementation.
- */
+/** EnumerationValidator implementation. */
 public class EnumerationValidatorImpl implements ConstraintValidator<EnumerationValidator, String> {
 
   List<String> valueList = null;
@@ -15,14 +13,13 @@ public class EnumerationValidatorImpl implements ConstraintValidator<Enumeration
   @Override
   public void initialize(EnumerationValidator enumerationValidator) {
     valueList = new ArrayList<>();
-    Class<? extends Enum<?>> enumClass = enumerationValidator.enumClazz();
+    Class<? extends Enum<?>> enumClass = enumerationValidator.value();
 
     Enum[] enumValArr = enumClass.getEnumConstants();
 
     for (Enum enumVal : enumValArr) {
       valueList.add(enumVal.toString());
     }
-
   }
 
   @Override

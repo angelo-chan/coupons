@@ -3,9 +3,7 @@ package com.chainz.coupon.core.exception.base;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Application exception, the general exception for chainz.
- */
+/** Application exception, the general exception for chainz. */
 @Getter
 @Setter
 public abstract class ApplicationException extends BaseException {
@@ -24,12 +22,11 @@ public abstract class ApplicationException extends BaseException {
     super(e);
   }
 
-  protected ApplicationException(int httpStatusCode, int numericErrorCode, String errorCode,
-                                 String pattern, Object... args) {
+  protected ApplicationException(
+      int httpStatusCode, int numericErrorCode, String errorCode, String pattern, Object... args) {
     super(pattern, args);
     this.httpStatusCode = httpStatusCode;
     this.numericErrorCode = numericErrorCode;
     this.errorCode = errorCode != null ? errorCode : DEFAULT_ERROR_CODE;
   }
-
 }

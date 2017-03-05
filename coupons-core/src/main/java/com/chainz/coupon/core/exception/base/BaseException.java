@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.helpers.MessageFormatter;
 
-/**
- * Base class for chainz exception system.
- */
+/** Base class for chainz exception system. */
 @Getter
 @Setter
 public abstract class BaseException extends RuntimeException {
@@ -14,7 +12,6 @@ public abstract class BaseException extends RuntimeException {
   protected String message;
 
   protected String messageTemplate;
-
 
   protected BaseException(Exception e) {
     super(e);
@@ -26,5 +23,4 @@ public abstract class BaseException extends RuntimeException {
     setMessageTemplate(pattern);
     setMessage(MessageFormatter.arrayFormat(pattern, args).getMessage());
   }
-
 }

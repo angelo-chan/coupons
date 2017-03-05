@@ -9,9 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
 
-/**
- * Coupon issuer.
- */
+/** Coupon issuer. */
 @Data
 @Embeddable
 public class CouponIssuer implements Serializable {
@@ -24,5 +22,4 @@ public class CouponIssuer implements Serializable {
 
   @Column(name = "issuer_id")
   private String issuerId;
-
 }

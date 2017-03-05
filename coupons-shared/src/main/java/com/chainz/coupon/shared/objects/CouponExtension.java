@@ -4,9 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Size;
 
-/**
- * Coupon extension.
- */
+/** Coupon extension. */
 @Data
 public class CouponExtension {
 
@@ -18,5 +16,4 @@ public class CouponExtension {
 
   @Size(max = 1024)
   private String customLinkUrl;
-
 }

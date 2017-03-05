@@ -7,24 +7,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Enumeration validator.
- */
+/** Enumeration validator. */
 @SuppressWarnings({"JavadocMethod"})
 @Documented
 @Constraint(validatedBy = EnumerationValidatorImpl.class)
-@Target({FIELD})
+@Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface EnumerationValidator {
 
-  Class<? extends Enum<?>> enumClazz();
+  Class<? extends Enum<?>> value();
 
   String message() default "Enum value is not valid";
 
   Class<?>[] groups() default {};
 
   Class<? extends Payload>[] payload() default {};
-
 }

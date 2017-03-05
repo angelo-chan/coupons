@@ -8,15 +8,13 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-/**
- * Coupon date info.
- */
+/** Coupon date info. */
 @Data
 @CouponDateInfoValidator
 public class CouponDateInfo {
 
   @NotNull
-  @EnumerationValidator(enumClazz = CouponDateType.class)
+  @EnumerationValidator(CouponDateType.class)
   private String dateType;
 
   @Min(0)

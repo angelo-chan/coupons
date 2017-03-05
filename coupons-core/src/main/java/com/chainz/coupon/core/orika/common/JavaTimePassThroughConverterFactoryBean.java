@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 
-/**
- * Java 8 time orika pass through converter.
- */
+/** Java 8 time orika pass through converter. */
 @Component
-public class JavaTimePassThroughConverterFactoryBean extends AbstractFactoryBean<PassThroughConverter> {
+public class JavaTimePassThroughConverterFactoryBean
+    extends AbstractFactoryBean<PassThroughConverter> {
 
   @Override
   public Class<?> getObjectType() {
@@ -23,7 +22,7 @@ public class JavaTimePassThroughConverterFactoryBean extends AbstractFactoryBean
 
   @Override
   protected PassThroughConverter createInstance() throws Exception {
-    return new PassThroughConverter(ZonedDateTime.class, LocalDateTime.class,
-      LocalDate.class, Instant.class, Period.class);
+    return new PassThroughConverter(
+        ZonedDateTime.class, LocalDateTime.class, LocalDate.class, Instant.class, Period.class);
   }
 }

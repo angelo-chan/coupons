@@ -10,14 +10,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-/**
- * coupon create request.
- */
+/** coupon create request. */
 @Data
 public class CouponCreateRequest {
 
   @NotNull
-  @EnumerationValidator(enumClazz = CouponType.class)
+  @EnumerationValidator(CouponType.class)
   private String type;
 
   @NotNull
@@ -36,8 +34,7 @@ public class CouponCreateRequest {
   @Size(max = 32)
   private String color;
 
-  @Valid
-  private CouponDateInfo dateInfo;
+  @Valid private CouponDateInfo dateInfo;
 
   @Size(max = 2048)
   private String notice;
@@ -60,15 +57,12 @@ public class CouponCreateRequest {
   private Integer getLimit;
 
   @NotNull
-  @EnumerationValidator(enumClazz = CouponTarget.class)
+  @EnumerationValidator(CouponTarget.class)
   private String target;
 
   private Set<String> stores;
 
-  @Valid
-  private CouponExtension extension;
+  @Valid private CouponExtension extension;
 
-  @Valid
-  private CouponIssuer issuer;
-
+  @Valid private CouponIssuer issuer;
 }

@@ -6,9 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-/**
- * Coupon extension.
- */
+/** Coupon extension. */
 @Data
 @Embeddable
 public class CouponExtension implements Serializable {
@@ -23,5 +21,4 @@ public class CouponExtension implements Serializable {
 
   @Column(name = "custom_link_url", length = 1024)
   private String customLinkUrl;
-
 }

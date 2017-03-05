@@ -2,9 +2,7 @@ package com.chainz.coupon.core.exception.common;
 
 import lombok.Data;
 
-/**
- * Error response entity.
- */
+/** Error response entity. */
 @Data
 public class ApplicationErrorResponseEntity {
 

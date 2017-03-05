@@ -12,11 +12,12 @@ import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.TimeZone;
 
-/**
- * Coupon admin application.
- */
+/** Coupon admin application. */
 @ComponentScan(value = "com.chainz")
-@EntityScan(value = "com.chainz.coupon", basePackageClasses = {Jsr310JpaConverters.class, CouponApplication.class})
+@EntityScan(
+  value = "com.chainz.coupon",
+  basePackageClasses = {Jsr310JpaConverters.class, CouponApplication.class}
+)
 @EnableJpaRepositories(value = "com.chainz.coupon")
 @EnableCaching
 @EnableRetry
@@ -25,6 +26,7 @@ import java.util.TimeZone;
 public class CouponApplication {
   /**
    * main entry for coupon admin application.
+   *
    * @param args application args.
    */
   public static void main(String[] args) {

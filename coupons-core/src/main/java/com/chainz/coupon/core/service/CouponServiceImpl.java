@@ -6,29 +6,28 @@ import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
 import com.chainz.coupon.shared.objects.CouponInfo;
+import com.chainz.coupon.shared.objects.CouponIssuerType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
+import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Coupon service implementation.
- */
+/** Coupon service implementation. */
 @Slf4j
 @Service
 public class CouponServiceImpl implements CouponService {
 
-  @Autowired
-  private CouponRepository couponRepository;
+  @Autowired private CouponRepository couponRepository;
 
-  @Autowired
-  private MapperFacade mapperFacade;
+  @Autowired private MapperFacade mapperFacade;
 
   @Override
   @Transactional(readOnly = true)
@@ -109,4 +108,10 @@ public class CouponServiceImpl implements CouponService {
     couponRepository.save(coupon);
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public PaginatedApiResult<CouponInfo> list(
+      CouponIssuerType issuerType, String issuerId, CouponStatus status, Pageable pageable) {
+    return null;
+  }
 }

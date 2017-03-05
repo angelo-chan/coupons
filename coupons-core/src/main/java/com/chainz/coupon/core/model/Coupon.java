@@ -32,9 +32,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-/**
- * Coupon model defines a coupon template which could be used to generate coupon instance.
- */
+/** Coupon model defines a coupon template which could be used to generate coupon instance. */
 @Data
 @Entity
 @Table(name = "coupons")
@@ -69,8 +67,7 @@ public class Coupon implements Serializable {
   @Column(name = "color")
   private String color;
 
-  @Embedded
-  private CouponDateInfo dateInfo;
+  @Embedded private CouponDateInfo dateInfo;
 
   @Column(name = "notice", columnDefinition = "text")
   private String notice;
@@ -107,11 +104,9 @@ public class Coupon implements Serializable {
   @Column(name = "status")
   private CouponStatus status = CouponStatus.UNVERIFIED;
 
-  @Embedded
-  private CouponExtension extension;
+  @Embedded private CouponExtension extension;
 
-  @Embedded
-  private CouponIssuer issuer;
+  @Embedded private CouponIssuer issuer;
 
   @CreatedDate
   @Column(name = "created_at")
@@ -121,12 +116,9 @@ public class Coupon implements Serializable {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
-  @Version
-  private Integer rev;
+  @Version private Integer rev;
 
-  /**
-   * pre save to sanity the date info.
-   */
+  /** pre save to sanity the date info. */
   @PrePersist
   @PreUpdate
   public void preSave() {
@@ -141,5 +133,4 @@ public class Coupon implements Serializable {
       stores = null;
     }
   }
-
 }

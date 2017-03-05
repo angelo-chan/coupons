@@ -10,9 +10,7 @@ import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-/**
- * Coupon date type.
- */
+/** Coupon date type. */
 @Data
 @Embeddable
 public class CouponDateInfo implements Serializable {
@@ -34,5 +32,4 @@ public class CouponDateInfo implements Serializable {
 
   @Column(name = "time_range_end")
   private LocalDate timeRangeEnd;
-
 }
