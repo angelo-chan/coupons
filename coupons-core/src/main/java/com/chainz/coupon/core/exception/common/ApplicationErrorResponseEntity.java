@@ -6,7 +6,7 @@ import lombok.Data;
  * Error response entity.
  */
 @Data
-public class ErrorResponseEntity {
+public class ApplicationErrorResponseEntity {
 
   private int numericErrorCode;
 

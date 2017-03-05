@@ -35,9 +35,9 @@ public class CouponInfo {
 
   private Boolean canShare;
 
-  private Integer circulation;
+  private Long circulation;
 
-  private Integer sku;
+  private Long sku;
 
   private Float value;
 

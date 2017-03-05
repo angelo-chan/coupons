@@ -87,4 +87,18 @@ public class CouponServiceImpl implements CouponService {
     couponRepository.save(coupon);
   }
 
+  @Override
+  @Transactional
+  public void increaseCirculation(Long id, Long increment) {
+    Coupon coupon = couponRepository.findOne(id);
+    if (coupon == null) {
+      throw new CouponNotFoundException(id);
+    }
+    if (CouponStatus.INVALID == coupon.getStatus()) {
+      throw new CouponStatusConflictException(id, coupon.getStatus());
+    }
+    coupon.setCirculation(coupon.getCirculation() + increment);
+    couponRepository.save(coupon);
+  }
+
 }

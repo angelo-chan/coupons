@@ -57,4 +57,15 @@ public interface CouponService {
    * @throws CouponStatusConflictException coupon status conflict.
    */
   void invalidCoupon(Long id) throws CouponNotFoundException, CouponStatusConflictException;
+
+  /**
+   * Increase coupon circulation.
+   *
+   * @param id        coupon id.
+   * @param increment circulation increment.
+   * @throws CouponNotFoundException       coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
+   */
+  void increaseCirculation(Long id, Long increment) throws CouponNotFoundException, CouponStatusConflictException;
+
 }

@@ -83,10 +83,10 @@ public class Coupon implements Serializable {
   private Boolean canShare = true;
 
   @Column(name = "circulation", nullable = false)
-  private Integer circulation;
+  private Long circulation;
 
   @Column(name = "sku", nullable = false)
-  private Integer sku;
+  private Long sku;
 
   @Column(name = "value")
   private Float value;

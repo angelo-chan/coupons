@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 /**
  * Coupon controller.
@@ -113,5 +114,24 @@ public class CouponController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void invalidCoupon(@PathVariable Long id) throws CouponNotFoundException, CouponStatusConflictException {
     couponService.invalidCoupon(id);
+  }
+
+  /**
+   * Increase coupon circulation.
+   *
+   * @param id        coupon id.
+   * @param increment circulation increment.
+   * @throws CouponNotFoundException       coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
+   */
+  @RequestMapping(
+    value = "/{id}/increment/{increment}",
+    method = RequestMethod.PUT,
+    consumes = "application/json"
+  )
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void increaseCirculation(@PathVariable Long id, @PathVariable @Min(1) Long increment)
+    throws CouponNotFoundException, CouponStatusConflictException {
+    couponService.increaseCirculation(id, increment);
   }
 }

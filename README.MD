@@ -18,9 +18,3 @@ Run `gradle` for clean build
 
 1. Run `gradle bootRun` to start application
 2. Attach to **remote** to fire a debug
-
-## Hotreload
-
-1. Ensure enabled **Annotation Processors**, located at Preferences... > Build, Execution, Deployment > Compiler > Annotation Processors
-2. CMD+Shift+F9 to compile current class
-3. Spring Boot Devtools will detect the modification and apply it

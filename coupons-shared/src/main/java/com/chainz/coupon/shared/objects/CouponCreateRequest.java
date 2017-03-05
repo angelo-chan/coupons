@@ -49,7 +49,7 @@ public class CouponCreateRequest {
 
   @NotNull
   @Min(1)
-  private Integer circulation;
+  private Long circulation;
 
   @NotNull
   @Min(0)
