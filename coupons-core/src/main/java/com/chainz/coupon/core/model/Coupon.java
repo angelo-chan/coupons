@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -102,7 +101,7 @@ public class Coupon implements Serializable {
   @CollectionTable(name = "stores", joinColumns = @JoinColumn(name = "coupon_id"))
   @OptimisticLock(excluded = true)
   @Column(name = "store")
-  private Set<String> stores = new HashSet<>();
+  private Set<String> stores;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
@@ -137,6 +136,9 @@ public class Coupon implements Serializable {
     } else {
       dateInfo.setFixedTerm(null);
       dateInfo.setFixedBeginTerm(null);
+    }
+    if (CouponTarget.STORE != target) {
+      stores = null;
     }
   }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -45,7 +44,7 @@ public class CouponInfo {
 
   private CouponTarget target;
 
-  private Set<String> stores = new HashSet<>();
+  private Set<String> stores;
 
   private CouponStatus status;
 

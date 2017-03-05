@@ -13,7 +13,7 @@ buildscript {
     repoConfig = {
       mavenLocal()
       maven { url "http://10.16.100.79:8081/repository/maven-public/" }
-      jcenter()
+//      jcenter()
     }
   }
   repositories repoConfig
