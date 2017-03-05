@@ -42,7 +42,8 @@ import java.util.Set;
     @Index(columnList = "target"),
     @Index(columnList = "status"),
     @Index(columnList = "issuer_type"),
-    @Index(columnList = "issuer_id")
+    @Index(columnList = "issuer_id"),
+    @Index(columnList = "issuer_type, issuer_id")
   }
 )
 @DynamicInsert
