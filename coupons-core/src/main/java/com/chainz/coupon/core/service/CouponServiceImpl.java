@@ -11,6 +11,9 @@ import com.chainz.coupon.shared.objects.CouponUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = "coupons", key = "#id")
   public CouponInfo getCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
@@ -47,6 +51,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
+  @CachePut(value = "coupons", key = "#id")
   public CouponInfo updateCoupon(Long id, CouponUpdateRequest couponUpdateRequest) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
@@ -61,6 +66,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "coupons", key = "#id")
   public void verifyCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
@@ -75,6 +81,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "coupons", key = "#id")
   public void invalidCoupon(Long id) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
@@ -89,6 +96,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "coupons", key = "#id")
   public void increaseCirculation(Long id, Long increment) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
