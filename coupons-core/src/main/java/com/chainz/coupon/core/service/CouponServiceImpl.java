@@ -1,14 +1,19 @@
 package com.chainz.coupon.core.service;
 
+import com.chainz.coupon.core.credentials.Operator;
+import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.model.Coupon;
+import com.chainz.coupon.core.model.CouponIssuer;
 import com.chainz.coupon.core.model.QCoupon;
 import com.chainz.coupon.core.repository.CouponRepository;
+import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
 import com.chainz.coupon.shared.objects.CouponInfo;
 import com.chainz.coupon.shared.objects.CouponIssuerType;
 import com.chainz.coupon.shared.objects.CouponStatus;
+import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -48,6 +53,14 @@ public class CouponServiceImpl implements CouponService {
   public CouponInfo createCoupon(CouponCreateRequest couponCreateRequest) {
     Coupon coupon = mapperFacade.map(couponCreateRequest, Coupon.class);
     coupon.setSku(couponCreateRequest.getCirculation());
+    Operator operator = OperatorManager.getOperator();
+    if (Constants.SYSTEM.equals(operator.getAccountType())) {
+      coupon.setIssuer(new CouponIssuer(CouponIssuerType.SYSTEM));
+      coupon.setTarget(CouponTarget.PLATFORM);
+    } else {
+      coupon.setIssuer(new CouponIssuer(CouponIssuerType.VENDOR, operator.getVendorId()));
+      coupon.setTarget(CouponTarget.STORE);
+    }
     return mapperFacade.map(couponRepository.saveAndFlush(coupon), CouponInfo.class);
   }
 
@@ -59,6 +72,7 @@ public class CouponServiceImpl implements CouponService {
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
+    checkPermission(coupon);
     if (CouponStatus.UNVERIFIED != coupon.getStatus()) {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
@@ -74,6 +88,7 @@ public class CouponServiceImpl implements CouponService {
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
+    checkPermission(coupon);
     if (CouponStatus.UNVERIFIED != coupon.getStatus()) {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
@@ -89,6 +104,7 @@ public class CouponServiceImpl implements CouponService {
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
+    checkPermission(coupon);
     if (coupon.getStatus() == CouponStatus.INVALID) {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
@@ -104,6 +120,7 @@ public class CouponServiceImpl implements CouponService {
     if (coupon == null) {
       throw new CouponNotFoundException(id);
     }
+    checkPermission(coupon);
     if (CouponStatus.INVALID == coupon.getStatus()) {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
@@ -136,5 +153,23 @@ public class CouponServiceImpl implements CouponService {
         coupons.getNumberOfElements(),
         coupons.getTotalElements(),
         mapperFacade.mapAsList(coupons.getContent(), CouponInfo.class));
+  }
+
+  /**
+   * Check permission.
+   *
+   * @param coupon coupon instance.
+   */
+  private void checkPermission(Coupon coupon) {
+    Operator operator = OperatorManager.getOperator();
+    if (Constants.SYSTEM.equals(operator.getAccountType())) {
+      return;
+    }
+    if (Constants.VENDOR.equals(operator.getAccountType())
+        && coupon.getIssuer().getIssuerType() == CouponIssuerType.VENDOR
+        && operator.getVendorId().equals(coupon.getIssuer().getIssuerId())) {
+      return;
+    }
+    throw new CouponNotFoundException(coupon.getId());
   }
 }

@@ -17,6 +17,4 @@ public class Operator implements Serializable {
   private String vendorId;
 
   private String openId;
-
-  private String accountId;
 }

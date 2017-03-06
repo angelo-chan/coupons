@@ -49,9 +49,6 @@ public class CouponUpdateRequest {
   @Min(1)
   private Integer getLimit;
 
-  @EnumerationValidator(CouponTarget.class)
-  private String target;
-
   private Set<String> stores;
 
   @Valid private CouponExtension extension;

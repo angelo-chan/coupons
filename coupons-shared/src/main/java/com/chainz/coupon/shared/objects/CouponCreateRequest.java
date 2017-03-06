@@ -56,13 +56,7 @@ public class CouponCreateRequest {
   @Min(1)
   private Integer getLimit;
 
-  @NotNull
-  @EnumerationValidator(CouponTarget.class)
-  private String target;
-
   private Set<String> stores;
 
   @Valid private CouponExtension extension;
-
-  @Valid private CouponIssuer issuer;
 }

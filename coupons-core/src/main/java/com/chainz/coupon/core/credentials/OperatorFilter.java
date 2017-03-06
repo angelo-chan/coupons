@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.credentials;
 
+import com.chainz.coupon.core.utils.Constants;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,8 +19,6 @@ public class OperatorFilter extends OncePerRequestFilter {
 
   private static final String OPEN_ID = "Open_Id";
 
-  private static final String ACCOUNT_ID = "Account_Id";
-
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -29,10 +28,19 @@ public class OperatorFilter extends OncePerRequestFilter {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
+    accountType = accountType.toUpperCase();
     String vendorId = request.getHeader(VENDOR_ID);
+    if ((Constants.VENDOR.equals(accountType) || Constants.STORE.equals(accountType))
+        && StringUtils.isEmpty(vendorId)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
     String openId = request.getHeader(OPEN_ID);
-    String accountId = request.getHeader(ACCOUNT_ID);
-    Operator operator = new Operator(accountType.toUpperCase(), vendorId, openId, accountId);
+    if (Constants.CLIENT.equals(accountType) && StringUtils.isEmpty(openId)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    Operator operator = new Operator(accountType, vendorId, openId);
     OperatorManager.setOperator(operator);
     filterChain.doFilter(request, response);
   }
