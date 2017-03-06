@@ -8,6 +8,7 @@ import com.chainz.coupon.shared.objects.CouponInfo;
 import com.chainz.coupon.shared.objects.CouponIssuerType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
+import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.chainz.coupon.shared.validator.common.EnumerationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,5 +162,20 @@ public class CouponController {
   public void increaseCirculation(@PathVariable Long id, @PathVariable @Min(1) Long increment)
       throws CouponNotFoundException, CouponStatusConflictException {
     couponService.increaseCirculation(id, increment);
+  }
+
+  /**
+   * generate grant code.
+   * @param id  coupon id.
+   * @param count coupon grant count.
+   * @return  grant code.
+   */
+  @RequestMapping(
+    value = "/{id}/grant/{count}",
+    method = RequestMethod.GET,
+    produces = "application/json"
+  )
+  public GrantCode generateGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+    return couponService.generateGrantCode(id, count);
   }
 }

@@ -2,11 +2,13 @@ package com.chainz.coupon.core.service;
 
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
+import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.CouponIssuer;
 import com.chainz.coupon.core.model.QCoupon;
+import com.chainz.coupon.core.objects.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
@@ -15,6 +17,7 @@ import com.chainz.coupon.shared.objects.CouponIssuerType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
+import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +28,12 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /** Coupon service implementation. */
 @Slf4j
@@ -36,6 +43,8 @@ public class CouponServiceImpl implements CouponService {
   @Autowired private CouponRepository couponRepository;
 
   @Autowired private MapperFacade mapperFacade;
+
+  @Autowired private RedisTemplate redisTemplate;
 
   @Override
   @Transactional(readOnly = true)
@@ -153,6 +162,33 @@ public class CouponServiceImpl implements CouponService {
         coupons.getNumberOfElements(),
         coupons.getTotalElements(),
         mapperFacade.mapAsList(coupons.getContent(), CouponInfo.class));
+  }
+
+  @Override
+  @Transactional
+  public GrantCode generateGrantCode(Long id, Integer count)
+      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException {
+    Coupon coupon = couponRepository.findOne(id);
+    checkPermission(coupon);
+    if (CouponStatus.VERIFIED != coupon.getStatus()) {
+      throw new CouponStatusConflictException(id, coupon.getStatus());
+    }
+    if (coupon.getSku() < count) {
+      throw new CouponInsufficientException(id);
+    } else {
+      CouponGrant couponGrant = new CouponGrant(id, count);
+      String key = UUID.randomUUID().toString();
+      redisTemplate
+          .opsForValue()
+          .set(
+              Constants.COUPON_GRANT_PREFIX + key,
+              couponGrant,
+              Constants.COUPON_GRANT_TIMEOUT,
+              TimeUnit.SECONDS);
+      GrantCode grantCode = new GrantCode();
+      grantCode.setGrantCode(key);
+      return grantCode;
+    }
   }
 
   /**

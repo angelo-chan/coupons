@@ -13,12 +13,33 @@ spring:
     default-property-inclusion: non_null
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+  redis:
+    database: 0
+    host: localhost
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: 5000
+      min-idle: 0
+    timeout: 1000
+
 
 endpoints:
   health:
     sensitive: false
 server:
   port: 8080
+management:
+  health:
+    db:
+      enabled: true
+    redis:
+      enabled: true
 
 ---
 spring:
