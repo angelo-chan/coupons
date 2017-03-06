@@ -79,11 +79,12 @@ public interface CouponService {
    * @param issuerType issuer type.
    * @param issuerId issuer id.
    * @param status coupon status.
+   * @param q keyword match.
    * @param pageable pagination information.
    * @return paginated coupon info.
    */
   PaginatedApiResult<CouponInfo> list(
-      CouponIssuerType issuerType, String issuerId, CouponStatus status, Pageable pageable);
+      CouponIssuerType issuerType, String issuerId, CouponStatus status, String q, Pageable pageable);
 
   /**
    * generate coupon grant code.

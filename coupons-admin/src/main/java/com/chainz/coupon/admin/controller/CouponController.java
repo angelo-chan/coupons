@@ -51,13 +51,14 @@ public class CouponController {
       @RequestParam(value = "issuerId", required = false) String issuerId,
       @RequestParam(value = "status", required = false) @EnumerationValidator(CouponStatus.class)
           CouponStatus status,
+      @RequestParam(value = "q", required = false) String q,
       @PageableDefault(
             value = 20,
             sort = {"id"},
             direction = Sort.Direction.DESC
           )
           Pageable pageable) {
-    return couponService.list(issuerType, issuerId, status, pageable);
+    return couponService.list(issuerType, issuerId, status, q, pageable);
   }
 
   /**

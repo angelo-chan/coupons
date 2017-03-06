@@ -141,7 +141,11 @@ public class CouponServiceImpl implements CouponService {
   @Override
   @Transactional(readOnly = true)
   public PaginatedApiResult<CouponInfo> list(
-      CouponIssuerType issuerType, String issuerId, CouponStatus status, Pageable pageable) {
+      CouponIssuerType issuerType,
+      String issuerId,
+      CouponStatus status,
+      String q,
+      Pageable pageable) {
     QCoupon coupon = QCoupon.coupon;
     BooleanExpression predicate = null;
     if (issuerType != null) {
@@ -155,6 +159,13 @@ public class CouponServiceImpl implements CouponService {
         predicate = coupon.status.eq(status);
       } else {
         predicate = predicate.and(coupon.status.eq(status));
+      }
+    }
+    if (q != null) {
+      if (predicate == null) {
+        predicate = coupon.title.containsIgnoreCase(q);
+      } else {
+        predicate = predicate.and(coupon.title.containsIgnoreCase(q));
       }
     }
     Page<Coupon> coupons = couponRepository.findAll(predicate, pageable);
