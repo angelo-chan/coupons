@@ -1,4 +1,4 @@
-package com.chainz.coupon.core.objects;
+package com.chainz.coupon.core.redis;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

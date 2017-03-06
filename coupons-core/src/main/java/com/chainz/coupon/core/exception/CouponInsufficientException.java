@@ -5,7 +5,7 @@ import com.chainz.coupon.core.exception.base.ConflictException;
 /** Coupon insufficient exception. */
 public class CouponInsufficientException extends ConflictException {
   /** String error code for the exception. */
-  public static final String ERROR_CODE = ExceptionCodeBase.CONFLICT_ERROR_BASE + "coupon";
+  public static final String ERROR_CODE = ExceptionCodeBase.CONFLICT_ERROR_BASE + "sku";
 
   /** Numeric error code for the exception. */
   public static final int NUMERIC_ERROR_CODE = ExceptionCodeBase.NUMERIC_CONFLICT_ERROR_BASE + 2;

@@ -5,10 +5,11 @@ import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
+import com.chainz.coupon.core.exception.UnAuthorizedOperatorException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.CouponIssuer;
 import com.chainz.coupon.core.model.QCoupon;
-import com.chainz.coupon.core.objects.CouponGrant;
+import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
@@ -44,7 +45,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Autowired private MapperFacade mapperFacade;
 
-  @Autowired private RedisTemplate redisTemplate;
+  @Autowired private RedisTemplate<String, CouponGrant> couponGrantRedisTemplate;
 
   @Override
   @Transactional(readOnly = true)
@@ -178,7 +179,7 @@ public class CouponServiceImpl implements CouponService {
     } else {
       CouponGrant couponGrant = new CouponGrant(id, count);
       String key = UUID.randomUUID().toString();
-      redisTemplate
+      couponGrantRedisTemplate
           .opsForValue()
           .set(
               Constants.COUPON_GRANT_PREFIX + key,
@@ -206,6 +207,6 @@ public class CouponServiceImpl implements CouponService {
         && operator.getVendorId().equals(coupon.getIssuer().getIssuerId())) {
       return;
     }
-    throw new CouponNotFoundException(coupon.getId());
+    throw new UnAuthorizedOperatorException();
   }
 }

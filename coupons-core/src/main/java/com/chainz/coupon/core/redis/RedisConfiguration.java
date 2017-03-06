@@ -8,18 +8,22 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /** Redis configuration. */
+@SuppressWarnings({"unchecked"})
 @Configuration
 public class RedisConfiguration {
 
+  /**
+   * Initialize coupon grant redis template.
+   * @param factory redis connection factory.
+   * @return  redis template.
+   */
   @Bean
-  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-    RedisTemplate<String, Object> redisTemplate = new RedisTemplate();
+  public RedisTemplate<String, CouponGrant> couponGrantRedisTemplate(
+      RedisConnectionFactory factory) {
+    RedisTemplate<String, CouponGrant> redisTemplate = new RedisTemplate();
     redisTemplate.setConnectionFactory(factory);
-    redisTemplate.setDefaultSerializer(new StringRedisSerializer());
     redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-    redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(CouponGrant.class));
     return redisTemplate;
   }
 }
