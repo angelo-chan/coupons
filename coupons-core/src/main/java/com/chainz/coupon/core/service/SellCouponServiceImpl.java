@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /** Sell coupon service implementation. */
+@SuppressWarnings({"unchecked"})
 @Service
 public class SellCouponServiceImpl implements SellCouponService {
 
