@@ -32,9 +32,9 @@ public class SellCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void grant(@PathVariable String grantCode)
+  public void granted(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
-    sellCouponService.grant(grantCode);
+    sellCouponService.granted(grantCode);
   }
 
   /**

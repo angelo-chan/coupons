@@ -47,7 +47,7 @@ public class SellCouponServiceImpl implements SellCouponService {
 
   @Override
   @Transactional
-  public void grant(String grantCode)
+  public void granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
     checkAccountType();
     String key = Constants.COUPON_GRANT_PREFIX + grantCode;

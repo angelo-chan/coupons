@@ -21,7 +21,7 @@ public interface SellCouponService {
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon insufficient.
    */
-  void grant(String grantCode)
+  void granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException;
 
   /**
