@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +45,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Autowired private RedisTemplate<String, CouponGrant> couponGrantRedisTemplate;
   @Autowired private MapperFacade mapperFacade;
   @Autowired private SellCouponGrantRepository sellCouponGrantRepository;
-  @Autowired private RedisTemplate redisTemplate;
+  @Autowired private StringRedisTemplate stringRedisTemplate;
 
   @Override
   @Transactional
@@ -128,7 +129,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + uuid;
     sellCouponRepository.save(sellCoupon);
     sellCouponGrantRepository.save(sellCouponGrant);
-    redisTemplate
+    stringRedisTemplate
         .opsForValue()
         .set(key, count.toString(), Constants.SELL_COUPON_GRANT_TIMEOUT, TimeUnit.SECONDS);
     return new GrantCode(uuid);

@@ -30,7 +30,7 @@ import java.time.ZonedDateTime;
 
 /** User coupon represent a coupon instance. */
 @Data
-@Entity
+//@Entity
 @Table(
   name = "user_coupons",
   indexes = {

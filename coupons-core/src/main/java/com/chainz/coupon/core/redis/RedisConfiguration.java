@@ -19,19 +19,6 @@ public class RedisConfiguration {
    * @return redis template.
    */
   @Bean
-  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-    RedisTemplate<String, Object> redisTemplate = getRedisTemplate(factory);
-    redisTemplate.setValueSerializer(new StringRedisSerializer());
-    return redisTemplate;
-  }
-
-  /**
-   * Initialize coupon grant redis template.
-   *
-   * @param factory redis connection factory.
-   * @return redis template.
-   */
-  @Bean
   public RedisTemplate<String, CouponGrant> couponGrantRedisTemplate(
       RedisConnectionFactory factory) {
     RedisTemplate<String, CouponGrant> redisTemplate = getRedisTemplate(factory);
