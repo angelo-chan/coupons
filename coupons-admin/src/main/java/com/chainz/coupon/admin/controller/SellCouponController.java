@@ -4,6 +4,7 @@ import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.service.SellCouponService;
+import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,22 @@ public class SellCouponController {
 
   /** Grant sell coupons. */
   @RequestMapping(
-    value = "/grant/{grantCode}",
+    value = "/granted/{grantCode}",
     method = RequestMethod.POST,
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void createGrant(@PathVariable String grantCode)
+  public void grant(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
     sellCouponService.grant(grantCode);
   }
 
-
+  /**
+   * list sell coupons.
+   *
+   * @param pageable pagination information.
+   * @return paginate sell coupon information.
+   */
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<SellCouponInfo> list(
       @PageableDefault(
@@ -46,5 +52,21 @@ public class SellCouponController {
           )
           Pageable pageable) {
     return sellCouponService.list(pageable);
+  }
+
+  /**
+   * generate grant code.
+   *
+   * @param id coupon id.
+   * @param count sell-coupon grant count.
+   * @return sell coupon grant code.
+   */
+  @RequestMapping(
+    value = "/{id}/grant/{count}",
+    method = RequestMethod.POST,
+    produces = "application/json"
+  )
+  public GrantCode generateGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+    return sellCouponService.generateGrantCode(id, count);
   }
 }

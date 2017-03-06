@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.model;
 
+import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -11,53 +12,53 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /** Coupon model defines a coupon template which could be used to generate coupon instance. */
 @Data
 @Entity
 @Table(
-  name = "sell_coupons",
+  name = "sell_coupon_grants",
   indexes = {
     @Index(columnList = "open_id"),
-    @Index(columnList = "user_id"),
-    @Index(columnList = "open_id, coupon_id")
+    @Index(columnList = "status"),
+    @Index(columnList = "created_at"),
+    @Index(columnList = "status, created_at")
   }
 )
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class SellCoupon implements Serializable {
-
-  private static final long serialVersionUID = -4661408922013589795L;
+public class SellCouponGrant {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  private Long id;
+  private String id;
 
   @ManyToOne(cascade = CascadeType.REFRESH)
-  @JoinColumn(name = "coupon_id")
-  private Coupon coupon;
+  @JoinColumn(name = "sell_coupon_id")
+  private SellCoupon sellCoupon;
 
-  @Column(name = "open_id")
+  @Column(name = "open_id", nullable = false)
   private String openId;
 
-  /** will be used in future. */
-  @Column(name = "user_id")
-  private String userId;
+  @Column(name = "count", nullable = false)
+  private Integer count;
 
-  @Column(name = "sku")
-  private Integer sku;
+  @Column(name = "remain", nullable = false)
+  private Integer remain;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private SellCouponGrantStatus status;
 
   @CreatedDate
   @Column(name = "created_at")

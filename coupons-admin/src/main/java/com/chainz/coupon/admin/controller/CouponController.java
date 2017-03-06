@@ -172,7 +172,7 @@ public class CouponController {
    */
   @RequestMapping(
     value = "/{id}/grant/{count}",
-    method = RequestMethod.GET,
+    method = RequestMethod.POST,
     produces = "application/json"
   )
   public GrantCode generateGrantCode(@PathVariable Long id, @PathVariable Integer count) {

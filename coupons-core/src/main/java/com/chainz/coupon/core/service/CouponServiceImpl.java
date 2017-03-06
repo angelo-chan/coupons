@@ -186,9 +186,7 @@ public class CouponServiceImpl implements CouponService {
               couponGrant,
               Constants.COUPON_GRANT_TIMEOUT,
               TimeUnit.SECONDS);
-      GrantCode grantCode = new GrantCode();
-      grantCode.setGrantCode(key);
-      return grantCode;
+      return new GrantCode(key);
     }
   }
 

@@ -14,16 +14,41 @@ public class RedisConfiguration {
 
   /**
    * Initialize coupon grant redis template.
+   *
    * @param factory redis connection factory.
-   * @return  redis template.
+   * @return redis template.
+   */
+  @Bean
+  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+    RedisTemplate<String, Object> redisTemplate = getRedisTemplate(factory);
+    redisTemplate.setValueSerializer(new StringRedisSerializer());
+    return redisTemplate;
+  }
+
+  /**
+   * Initialize coupon grant redis template.
+   *
+   * @param factory redis connection factory.
+   * @return redis template.
    */
   @Bean
   public RedisTemplate<String, CouponGrant> couponGrantRedisTemplate(
       RedisConnectionFactory factory) {
-    RedisTemplate<String, CouponGrant> redisTemplate = new RedisTemplate();
+    RedisTemplate<String, CouponGrant> redisTemplate = getRedisTemplate(factory);
+    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(CouponGrant.class));
+    return redisTemplate;
+  }
+
+  /**
+   * Get redis template.
+   *
+   * @param factory redis connection factory.
+   * @return redis template.
+   */
+  private RedisTemplate getRedisTemplate(RedisConnectionFactory factory) {
+    RedisTemplate redisTemplate = new RedisTemplate();
     redisTemplate.setConnectionFactory(factory);
     redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(CouponGrant.class));
     return redisTemplate;
   }
 }
