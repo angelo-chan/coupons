@@ -7,17 +7,23 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.UnAuthorizedOperatorException;
 import com.chainz.coupon.core.model.Coupon;
+import com.chainz.coupon.core.model.QSellCoupon;
 import com.chainz.coupon.core.model.SellCoupon;
 import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.repository.SellCouponRepository;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponStatus;
+import com.chainz.coupon.shared.objects.SellCouponInfo;
+import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Sell coupon service implementation. */
 @Service
@@ -26,6 +32,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Autowired private CouponRepository couponRepository;
   @Autowired private SellCouponRepository sellCouponRepository;
   @Autowired private RedisTemplate<String, CouponGrant> couponGrantRedisTemplate;
+  @Autowired private MapperFacade mapperFacade;
 
   @Override
   @Transactional
@@ -59,6 +66,27 @@ public class SellCouponServiceImpl implements SellCouponService {
     coupon.setSku(coupon.getSku() - count);
     couponRepository.save(coupon);
     sellCouponRepository.save(sellCoupon);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PaginatedApiResult<SellCouponInfo> list(Pageable pageable) {
+    checkAccountType();
+    Operator operator = OperatorManager.getOperator();
+    String openId = operator.getOpenId();
+    QSellCoupon sellCoupon = QSellCoupon.sellCoupon;
+    BooleanExpression predicate =
+        sellCoupon
+            .openId
+            .eq(openId)
+            .and(sellCoupon.sku.gt(0))
+            .and(sellCoupon.coupon.status.ne(CouponStatus.INVALID));
+    Page<SellCoupon> coupons = sellCouponRepository.findAll(predicate, pageable);
+    return new PaginatedApiResult<>(
+        pageable.getPageNumber(),
+        coupons.getNumberOfElements(),
+        coupons.getTotalElements(),
+        mapperFacade.mapAsList(coupons.getContent(), SellCouponInfo.class));
   }
 
   /** check account type. */

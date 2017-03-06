@@ -4,7 +4,12 @@ import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.service.SellCouponService;
+import com.chainz.coupon.shared.objects.SellCouponInfo;
+import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,5 +34,17 @@ public class SellCouponController {
   public void createGrant(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
     sellCouponService.grant(grantCode);
+  }
+
+
+  @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+  public PaginatedApiResult<SellCouponInfo> list(
+      @PageableDefault(
+            value = 20,
+            sort = {"id"},
+            direction = Sort.Direction.DESC
+          )
+          Pageable pageable) {
+    return sellCouponService.list(pageable);
   }
 }
