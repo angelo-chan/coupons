@@ -119,7 +119,7 @@ public class CouponServiceImpl implements CouponService {
     BooleanExpression predicate = null;
     if (issuerType != null) {
       predicate = coupon.issuer.issuerType.eq(issuerType);
-      if (CouponIssuerType.PLATFORM != issuerType && issuerId != null) {
+      if (CouponIssuerType.SYSTEM != issuerType && issuerId != null) {
         predicate = predicate.and(coupon.issuer.issuerId.eq(issuerId));
       }
     }

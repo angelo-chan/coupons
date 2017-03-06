@@ -11,9 +11,9 @@ buildscript {
       snapshots: "http://10.16.100.79:8081/repository/maven-snapshots/"
     ]
     repoConfig = {
-//      mavenLocal()
-//      maven { url "http://10.16.100.79:8081/repository/maven-public/" }
-      jcenter()
+      mavenLocal()
+      maven { url "http://10.16.100.79:8081/repository/maven-public/" }
+//      jcenter()
     }
   }
   repositories repoConfig
