@@ -3,6 +3,8 @@ package com.chainz.coupon.admin.controller;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
+import com.chainz.coupon.core.exception.SellCouponInsufficientException;
+import com.chainz.coupon.core.exception.SellCouponNotFoundException;
 import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
@@ -25,7 +27,14 @@ public class SellCouponController {
 
   @Autowired private SellCouponService sellCouponService;
 
-  /** Grant sell coupons. */
+  /**
+   * Enable seller to get sell coupon via grant code.
+   *
+   * @param grantCode grant code.
+   * @throws InvalidGrantCodeException invalid grant code.
+   * @throws CouponStatusConflictException coupon status conflict.
+   * @throws CouponInsufficientException coupon sku insufficient.
+   */
   @RequestMapping(
     value = "/granted/{grantCode}",
     method = RequestMethod.POST,
@@ -38,7 +47,7 @@ public class SellCouponController {
   }
 
   /**
-   * list sell coupons.
+   * list seller's sell coupons.
    *
    * @param pageable pagination information.
    * @return paginate sell coupon information.
@@ -55,18 +64,23 @@ public class SellCouponController {
   }
 
   /**
-   * generate grant code.
+   * Generate sell coupon grant code that user can use this code to get user coupon.
    *
    * @param id coupon id.
    * @param count sell-coupon grant count.
    * @return sell coupon grant code.
+   * @throws SellCouponNotFoundException sell coupon not found.
+   * @throws SellCouponInsufficientException sell coupon insufficient.
+   * @throws CouponStatusConflictException coupon status conflict.
    */
   @RequestMapping(
     value = "/{id}/grant/{count}",
     method = RequestMethod.POST,
     produces = "application/json"
   )
-  public GrantCode generateSellCouponGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+  public GrantCode generateSellCouponGrantCode(@PathVariable Long id, @PathVariable Integer count)
+      throws SellCouponNotFoundException, SellCouponInsufficientException,
+          CouponStatusConflictException {
     return sellCouponService.generateSellCouponGrantCode(id, count);
   }
 }

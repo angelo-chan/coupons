@@ -1,4 +1,4 @@
-package com.chainz.coupon.core.service;
+package com.chainz.coupon.core.service.impl;
 
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
@@ -11,6 +11,7 @@ import com.chainz.coupon.core.model.CouponIssuer;
 import com.chainz.coupon.core.model.QCoupon;
 import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
+import com.chainz.coupon.core.service.CouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
 import com.chainz.coupon.shared.objects.CouponInfo;

@@ -1,4 +1,4 @@
-package com.chainz.coupon.core.service;
+package com.chainz.coupon.core.service.impl;
 
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
@@ -16,6 +16,7 @@ import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.SellCouponRepository;
+import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.GrantCode;
@@ -116,6 +117,10 @@ public class SellCouponServiceImpl implements SellCouponService {
     }
     if (sellCoupon.getSku() < count) {
       throw new SellCouponInsufficientException(id);
+    }
+    Coupon coupon = sellCoupon.getCoupon();
+    if (coupon.getStatus() == CouponStatus.INVALID) {
+      throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
     }
     sellCoupon.setSku(sellCoupon.getSku() - count);
     SellCouponGrant sellCouponGrant = new SellCouponGrant();

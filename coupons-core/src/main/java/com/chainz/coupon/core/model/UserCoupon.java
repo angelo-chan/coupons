@@ -30,7 +30,7 @@ import java.time.ZonedDateTime;
 
 /** User coupon represent a coupon instance. */
 @Data
-//@Entity
+@Entity
 @Table(
   name = "user_coupons",
   indexes = {
@@ -40,7 +40,7 @@ import java.time.ZonedDateTime;
     @Index(columnList = "open_id, status"),
     @Index(columnList = "user_id, status"),
     @Index(columnList = "coupon_code"),
-    @Index(columnList = "begin, end"),
+    @Index(columnList = "begin_date, end_date"),
     @Index(columnList = "out_id"),
     @Index(columnList = "original_open_id")
   }
@@ -70,11 +70,11 @@ public class UserCoupon implements Serializable {
   @Column(name = "coupon_code", nullable = false)
   private String couponCode;
 
-  @Column(name = "begin")
-  private LocalDate begin;
+  @Column(name = "begin_date")
+  private LocalDate beginDate;
 
-  @Column(name = "end")
-  private LocalDate end;
+  @Column(name = "end_date")
+  private LocalDate endDate;
 
   @Column(name = "out_id")
   private String outId;

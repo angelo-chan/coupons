@@ -166,7 +166,7 @@ public class CouponController {
   }
 
   /**
-   * generate grant code.
+   * generate grant code for seller to scan to get sell coupon.
    *
    * @param id coupon id.
    * @param count coupon grant count.

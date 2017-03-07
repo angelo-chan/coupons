@@ -10,7 +10,7 @@ import com.chainz.coupon.shared.objects.SellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
-/** Sell coupon interface. */
+/** Sell coupon interface provide functionality to work with sell coupon. */
 public interface SellCouponService {
 
   /**
@@ -42,5 +42,5 @@ public interface SellCouponService {
    * @throws SellCouponInsufficientException sell coupon insufficient.
    */
   GrantCode generateSellCouponGrantCode(Long id, Integer count)
-      throws SellCouponNotFoundException, SellCouponInsufficientException;
+      throws SellCouponNotFoundException, SellCouponInsufficientException, CouponStatusConflictException;
 }
