@@ -44,14 +44,14 @@ public class SellCouponController {
    * @return paginate sell coupon information.
    */
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-  public PaginatedApiResult<SellCouponInfo> list(
+  public PaginatedApiResult<SellCouponInfo> listSellCoupon(
       @PageableDefault(
             value = 20,
             sort = {"id"},
             direction = Sort.Direction.DESC
           )
           Pageable pageable) {
-    return sellCouponService.list(pageable);
+    return sellCouponService.listSellCoupon(pageable);
   }
 
   /**
@@ -66,7 +66,7 @@ public class SellCouponController {
     method = RequestMethod.POST,
     produces = "application/json"
   )
-  public GrantCode generateGrantCode(@PathVariable Long id, @PathVariable Integer count) {
-    return sellCouponService.generateGrantCode(id, count);
+  public GrantCode generateSellCouponGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+    return sellCouponService.generateSellCouponGrantCode(id, count);
   }
 }

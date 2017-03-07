@@ -44,7 +44,7 @@ public class CouponController {
    * @return paginated coupon info.
    */
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-  public PaginatedApiResult<CouponInfo> list(
+  public PaginatedApiResult<CouponInfo> listCoupon(
       @RequestParam(value = "issuerType", required = false)
           @EnumerationValidator(CouponIssuerType.class)
           CouponIssuerType issuerType,
@@ -58,7 +58,7 @@ public class CouponController {
             direction = Sort.Direction.DESC
           )
           Pageable pageable) {
-    return couponService.list(issuerType, issuerId, status, q, pageable);
+    return couponService.listCoupon(issuerType, issuerId, status, q, pageable);
   }
 
   /**
@@ -160,23 +160,24 @@ public class CouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void increaseCirculation(@PathVariable Long id, @PathVariable @Min(1) Long increment)
+  public void increaseCouponCirculation(@PathVariable Long id, @PathVariable @Min(1) Long increment)
       throws CouponNotFoundException, CouponStatusConflictException {
-    couponService.increaseCirculation(id, increment);
+    couponService.increaseCouponCirculation(id, increment);
   }
 
   /**
    * generate grant code.
-   * @param id  coupon id.
+   *
+   * @param id coupon id.
    * @param count coupon grant count.
-   * @return  grant code.
+   * @return grant code.
    */
   @RequestMapping(
     value = "/{id}/grant/{count}",
     method = RequestMethod.POST,
     produces = "application/json"
   )
-  public GrantCode generateGrantCode(@PathVariable Long id, @PathVariable Integer count) {
-    return couponService.generateGrantCode(id, count);
+  public GrantCode generateCouponGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+    return couponService.generateCouponGrantCode(id, count);
   }
 }

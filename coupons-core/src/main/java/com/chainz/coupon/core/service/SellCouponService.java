@@ -30,7 +30,7 @@ public interface SellCouponService {
    * @param pageable pagination information.
    * @return paginated sell coupon.
    */
-  PaginatedApiResult<SellCouponInfo> list(Pageable pageable);
+  PaginatedApiResult<SellCouponInfo> listSellCoupon(Pageable pageable);
 
   /**
    * Generate sell coupon grant code.
@@ -41,6 +41,6 @@ public interface SellCouponService {
    * @throws SellCouponNotFoundException sell coupon not found.
    * @throws SellCouponInsufficientException sell coupon insufficient.
    */
-  GrantCode generateGrantCode(Long id, Integer count)
+  GrantCode generateSellCouponGrantCode(Long id, Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException;
 }

@@ -85,7 +85,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Override
   @ClientPermission
   @Transactional(readOnly = true)
-  public PaginatedApiResult<SellCouponInfo> list(Pageable pageable) {
+  public PaginatedApiResult<SellCouponInfo> listSellCoupon(Pageable pageable) {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCoupon sellCoupon = QSellCoupon.sellCoupon;
@@ -106,7 +106,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public GrantCode generateGrantCode(Long id, Integer count)
+  public GrantCode generateSellCouponGrantCode(Long id, Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();

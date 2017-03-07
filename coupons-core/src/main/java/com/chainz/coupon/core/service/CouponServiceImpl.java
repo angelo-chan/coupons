@@ -125,7 +125,7 @@ public class CouponServiceImpl implements CouponService {
   @Override
   @Transactional
   @CacheEvict(value = "coupons", key = "#id")
-  public void increaseCirculation(Long id, Long increment) {
+  public void increaseCouponCirculation(Long id, Long increment) {
     Coupon coupon = couponRepository.findOne(id);
     if (coupon == null) {
       throw new CouponNotFoundException(id);
@@ -140,7 +140,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional(readOnly = true)
-  public PaginatedApiResult<CouponInfo> list(
+  public PaginatedApiResult<CouponInfo> listCoupon(
       CouponIssuerType issuerType,
       String issuerId,
       CouponStatus status,
@@ -178,7 +178,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
-  public GrantCode generateGrantCode(Long id, Integer count)
+  public GrantCode generateCouponGrantCode(Long id, Integer count)
       throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException {
     Coupon coupon = couponRepository.findOne(id);
     checkPermission(coupon);

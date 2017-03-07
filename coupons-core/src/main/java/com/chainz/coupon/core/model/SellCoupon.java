@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
   indexes = {
     @Index(columnList = "open_id"),
     @Index(columnList = "user_id"),
+    @Index(columnList = "coupon_id"),
     @Index(columnList = "open_id, coupon_id")
   }
 )

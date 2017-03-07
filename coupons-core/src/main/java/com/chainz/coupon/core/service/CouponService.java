@@ -70,7 +70,7 @@ public interface CouponService {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    */
-  void increaseCirculation(Long id, Long increment)
+  void increaseCouponCirculation(Long id, Long increment)
       throws CouponNotFoundException, CouponStatusConflictException;
 
   /**
@@ -83,7 +83,7 @@ public interface CouponService {
    * @param pageable pagination information.
    * @return paginated coupon info.
    */
-  PaginatedApiResult<CouponInfo> list(
+  PaginatedApiResult<CouponInfo> listCoupon(
       CouponIssuerType issuerType, String issuerId, CouponStatus status, String q, Pageable pageable);
 
   /**
@@ -96,6 +96,6 @@ public interface CouponService {
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon insufficient.
    */
-  GrantCode generateGrantCode(Long id, Integer count)
+  GrantCode generateCouponGrantCode(Long id, Integer count)
       throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException;
 }

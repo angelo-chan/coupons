@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PermissionAspect {
 
+  /**
+   * Check client permission.
+   */
   @Before("@annotation(ClientPermission)")
   public void checkClientPermission() {
     Operator operator = OperatorManager.getOperator();
