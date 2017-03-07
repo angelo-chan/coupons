@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service;
 
+import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
@@ -7,7 +8,6 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
-import com.chainz.coupon.core.exception.UnAuthorizedOperatorException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.QSellCoupon;
 import com.chainz.coupon.core.model.SellCoupon;
@@ -48,10 +48,10 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Autowired private StringRedisTemplate stringRedisTemplate;
 
   @Override
+  @ClientPermission
   @Transactional
   public void granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
-    checkAccountType();
     String key = Constants.COUPON_GRANT_PREFIX + grantCode;
     CouponGrant couponGrant = couponGrantRedisTemplate.opsForValue().get(key);
     if (couponGrant == null) {
@@ -83,9 +83,9 @@ public class SellCouponServiceImpl implements SellCouponService {
   }
 
   @Override
+  @ClientPermission
   @Transactional(readOnly = true)
   public PaginatedApiResult<SellCouponInfo> list(Pageable pageable) {
-    checkAccountType();
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCoupon sellCoupon = QSellCoupon.sellCoupon;
@@ -104,10 +104,10 @@ public class SellCouponServiceImpl implements SellCouponService {
   }
 
   @Override
+  @ClientPermission
   @Transactional
   public GrantCode generateGrantCode(Long id, Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException {
-    checkAccountType();
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     SellCoupon sellCoupon = sellCouponRepository.findOne(id);
@@ -133,14 +133,5 @@ public class SellCouponServiceImpl implements SellCouponService {
         .opsForValue()
         .set(key, count.toString(), Constants.SELL_COUPON_GRANT_TIMEOUT, TimeUnit.SECONDS);
     return new GrantCode(uuid);
-  }
-
-  /** check account type. */
-  private void checkAccountType() {
-    Operator operator = OperatorManager.getOperator();
-    if (!Constants.CLIENT.equals(operator.getAccountType())) {
-      throw new UnAuthorizedOperatorException();
-    }
-    return;
   }
 }

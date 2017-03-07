@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -27,6 +28,7 @@ import java.util.TimeZone;
 @EnableCaching
 @EnableRetry
 @EnableJpaAuditing
+@EnableAspectJAutoProxy
 @SpringBootApplication
 public class CouponApplication {
   /**
