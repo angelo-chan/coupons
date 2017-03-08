@@ -16,6 +16,7 @@ import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.SellCouponRepository;
+import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponStatus;
@@ -96,7 +97,9 @@ public class SellCouponServiceImpl implements SellCouponService {
             .eq(openId)
             .and(sellCoupon.sku.gt(0))
             .and(sellCoupon.coupon.status.ne(CouponStatus.INVALID));
-    Page<SellCoupon> coupons = sellCouponRepository.findAll(predicate, pageable);
+    Page<SellCoupon> coupons =
+        sellCouponRepository.findAll(
+            predicate, pageable, JoinDescriptor.innerJoin(sellCoupon.coupon));
     return new PaginatedApiResult<>(
         pageable.getPageNumber(),
         pageable.getPageSize(),

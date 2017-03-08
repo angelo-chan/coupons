@@ -1,9 +1,8 @@
 package com.chainz.coupon.core.repository;
 
 import com.chainz.coupon.core.model.SellCouponGrant;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+import com.chainz.coupon.core.repository.common.JoinFetchCapableQueryDslJpaRepository;
 
 /** Sell coupon grant repository. */
 public interface SellCouponGrantRepository
-    extends JpaRepository<SellCouponGrant, String>, QueryDslPredicateExecutor<SellCouponGrant> {}
+    extends JoinFetchCapableQueryDslJpaRepository<SellCouponGrant, String> {}

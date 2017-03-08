@@ -1,6 +1,7 @@
 package com.chainz.coupon.admin;
 
 import com.chainz.coupon.core.credentials.OperatorFilter;
+import com.chainz.coupon.core.repository.common.JoinFetchCapableQueryDslJpaRepositoryFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -24,7 +25,10 @@ import java.util.TimeZone;
   value = "com.chainz.coupon",
   basePackageClasses = {Jsr310JpaConverters.class, CouponApplication.class}
 )
-@EnableJpaRepositories(value = "com.chainz.coupon")
+@EnableJpaRepositories(
+  value = "com.chainz.coupon",
+  repositoryFactoryBeanClass = JoinFetchCapableQueryDslJpaRepositoryFactoryBean.class
+)
 @EnableCaching
 @EnableRetry
 @EnableJpaAuditing
