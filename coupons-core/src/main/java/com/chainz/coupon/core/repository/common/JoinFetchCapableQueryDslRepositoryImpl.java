@@ -24,6 +24,7 @@ import java.util.List;
  * @param <T> entity type.
  * @param <ID> ID.
  */
+@SuppressWarnings({"unchecked", "ClassTypeParameterName"})
 public class JoinFetchCapableQueryDslRepositoryImpl<T, ID extends Serializable>
     extends QueryDslJpaRepository<T, ID> implements JoinFetchCapableQueryDslJpaRepository<T, ID> {
 
@@ -99,11 +100,13 @@ public class JoinFetchCapableQueryDslRepositoryImpl<T, ID extends Serializable>
    *
    * @param predicate predicate.
    * @param joinDescriptors join descriptor.
-   * @return
+   * @return JPQLQuery.
    */
   protected JPQLQuery<?> createFetchQuery(Predicate predicate, JoinDescriptor... joinDescriptors) {
     JPQLQuery query = createQuery(predicate);
-    for (JoinDescriptor joinDescriptor : joinDescriptors) join(joinDescriptor, query);
+    for (JoinDescriptor joinDescriptor : joinDescriptors) {
+      join(joinDescriptor, query);
+    }
     return query;
   }
 
@@ -128,6 +131,9 @@ public class JoinFetchCapableQueryDslRepositoryImpl<T, ID extends Serializable>
         query.rightJoin(joinDescriptor.getPath()).fetchJoin();
         break;
       case DEFAULT:
+      case FULLJOIN:
+        throw new IllegalArgumentException("cross join not supported");
+      default:
         throw new IllegalArgumentException("cross join not supported");
     }
   }
@@ -137,7 +143,7 @@ public class JoinFetchCapableQueryDslRepositoryImpl<T, ID extends Serializable>
    *
    * @param query must not be {@literal null}.
    * @param sort must not be {@literal null}.
-   * @return
+   * @return  entity list.
    */
   private List<T> executeSorted(JPQLQuery<T> query, Sort sort) {
     return querydsl.applySorting(sort, query).fetch();

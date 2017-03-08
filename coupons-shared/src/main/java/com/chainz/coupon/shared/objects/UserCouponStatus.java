@@ -4,5 +4,6 @@ package com.chainz.coupon.shared.objects;
 public enum UserCouponStatus {
   UNUSED,
   USED,
+  FROZEN,
   INVALID
 }

@@ -1,8 +1,9 @@
 package com.chainz.coupon.core.service;
 
-import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
+import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
+import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
@@ -12,9 +13,10 @@ public interface UserCouponService {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
-   * @throws CouponInsufficientException coupon insufficient.
+   * @throws SellCouponGrantInsufficientException sell coupon insufficient.
+   * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
   void granted(String grantCode)
-    throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException;
-
+      throws InvalidGrantCodeException, CouponStatusConflictException,
+          SellCouponGrantInsufficientException, SellCouponGrantStatusConflictException;
 }

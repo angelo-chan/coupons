@@ -17,6 +17,7 @@ import java.util.List;
  * @param <T> Entity class.
  * @param <ID> ID.
  */
+@SuppressWarnings({"InterfaceTypeParameterName"})
 @NoRepositoryBean
 public interface JoinFetchCapableQueryDslJpaRepository<T, ID extends Serializable>
     extends JpaRepository<T, ID>, QueryDslPredicateExecutor<T> {

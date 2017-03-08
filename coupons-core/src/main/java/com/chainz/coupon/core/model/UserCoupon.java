@@ -1,7 +1,9 @@
 package com.chainz.coupon.core.model;
 
+import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.CouponType;
+import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
@@ -67,7 +69,7 @@ public class UserCoupon implements Serializable {
   @Column(name = "user_id")
   private String userId;
 
-  @Column(name = "coupon_code", nullable = false)
+  @Column(name = "coupon_code", nullable = false, unique = true)
   private String couponCode;
 
   @Column(name = "begin_date")
@@ -76,8 +78,9 @@ public class UserCoupon implements Serializable {
   @Column(name = "end_date")
   private LocalDate endDate;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "out_id")
-  private String outId;
+  private OutId outId;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
@@ -115,4 +118,37 @@ public class UserCoupon implements Serializable {
   private ZonedDateTime updatedAt;
 
   @Version private Integer rev;
+
+  /**
+   * New a user coupon from coupon.
+   *
+   * @param coupon coupon
+   * @return user coupon.
+   */
+  public static UserCoupon newFromCoupon(Coupon coupon) {
+    UserCoupon userCoupon = new UserCoupon();
+    userCoupon.setCoupon(coupon);
+    userCoupon.setBrandName(coupon.getBrandName());
+    userCoupon.setCanShare(coupon.getCanShare());
+    userCoupon.setColor(coupon.getColor());
+    userCoupon.setTitle(coupon.getTitle());
+    userCoupon.setSubtitle(coupon.getSubtitle());
+    userCoupon.setTarget(coupon.getTarget());
+    userCoupon.setType(coupon.getType());
+    userCoupon.setValue(coupon.getValue());
+    CouponDateInfo dateInfo = coupon.getDateInfo();
+    LocalDate start;
+    LocalDate end;
+    if (CouponDateType.DATE_TYPE_FIXED_TIME_RANGE == dateInfo.getDateType()) {
+      start = dateInfo.getTimeRangeStart();
+      end = dateInfo.getTimeRangeEnd();
+    } else {
+      LocalDate now = LocalDate.now();
+      start = now.plusDays(dateInfo.getFixedBeginTerm());
+      end = start.plusDays(dateInfo.getFixedTerm() - 1);
+    }
+    userCoupon.setBeginDate(start);
+    userCoupon.setEndDate(end);
+    return userCoupon;
+  }
 }

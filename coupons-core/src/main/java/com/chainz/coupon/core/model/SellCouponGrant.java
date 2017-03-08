@@ -69,4 +69,9 @@ public class SellCouponGrant {
   private ZonedDateTime updatedAt;
 
   @Version private Integer rev;
+
+  /** decrease remain. */
+  public void decreaseRemain() {
+    this.remain--;
+  }
 }

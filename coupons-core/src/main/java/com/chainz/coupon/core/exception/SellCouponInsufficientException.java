@@ -10,6 +10,11 @@ public class SellCouponInsufficientException extends ConflictException {
   /** Numeric error code for the exception. */
   public static final int NUMERIC_ERROR_CODE = ExceptionCodeBase.NUMERIC_CONFLICT_ERROR_BASE + 3;
 
+  /**
+   * Constructor.
+   *
+   * @param sellCouponId sell coupon id.
+   */
   public SellCouponInsufficientException(Long sellCouponId) {
     super(NUMERIC_ERROR_CODE, ERROR_CODE, "Sell coupon sku insufficient", sellCouponId);
   }
