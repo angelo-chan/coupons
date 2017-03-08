@@ -10,18 +10,23 @@ import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 /** Sell coupon controller. */
 @RestController
+@Validated
 @RequestMapping("/api/sell-coupons")
 public class SellCouponController {
 
@@ -49,18 +54,24 @@ public class SellCouponController {
   /**
    * list seller's sell coupons.
    *
-   * @param pageable pagination information.
+   * @param page coupon pagination page.
+   * @param size coupon pagination size.
+   * @param sort coupon pagination sort.
+   * @param order coupon pagination order.
    * @return paginate sell coupon information.
    */
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<SellCouponInfo> listSellCoupon(
-      @PageableDefault(
-            value = 20,
-            sort = {"id"},
-            direction = Sort.Direction.DESC
-          )
-          Pageable pageable) {
-    return sellCouponService.listSellCoupon(pageable);
+      @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @Min(1) @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+      @Pattern(regexp = "id|createdAt")
+          @RequestParam(value = "sort", required = false, defaultValue = "id")
+          String sort,
+      @Pattern(regexp = "asc|desc")
+          @RequestParam(value = "order", required = false, defaultValue = "desc")
+          String order) {
+    return sellCouponService.listSellCoupon(
+        new PageRequest(page, size, Sort.Direction.fromString(order), sort));
   }
 
   /**
@@ -78,7 +89,8 @@ public class SellCouponController {
     method = RequestMethod.POST,
     produces = "application/json"
   )
-  public GrantCode generateSellCouponGrantCode(@PathVariable Long id, @PathVariable Integer count)
+  public GrantCode generateSellCouponGrantCode(
+      @PathVariable Long id, @Min(1) @PathVariable Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException,
           CouponStatusConflictException {
     return sellCouponService.generateSellCouponGrantCode(id, count);

@@ -16,6 +16,8 @@ public class PaginatedApiResult<T> {
 
   private Integer page;
 
+  private Integer size;
+
   private Integer count;
 
   private Long total;
@@ -25,24 +27,27 @@ public class PaginatedApiResult<T> {
   /**
    * Constructor without total.
    *
-   * @param page page
+   * @param page page index
+   * @param size page size
    * @param count count
    * @param data content
    */
-  public PaginatedApiResult(Integer page, Integer count, List<T> data) {
-    this(page, count, null, data);
+  public PaginatedApiResult(Integer page, Integer size, Integer count, List<T> data) {
+    this(page, size, count, null, data);
   }
 
   /**
    * Constructor with total.
    *
-   * @param page page.
-   * @param count count.
-   * @param total total.
+   * @param page page index.
+   * @param size page size.
+   * @param count count in this page.
+   * @param total total count.
    * @param data data.
    */
-  public PaginatedApiResult(Integer page, Integer count, Long total, List<T> data) {
+  public PaginatedApiResult(Integer page, Integer size, Integer count, Long total, List<T> data) {
     this.page = page;
+    this.size = size;
     this.count = count;
     this.total = total;
     this.data = data;

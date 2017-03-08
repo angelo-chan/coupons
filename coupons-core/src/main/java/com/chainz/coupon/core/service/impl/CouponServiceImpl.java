@@ -172,6 +172,7 @@ public class CouponServiceImpl implements CouponService {
     Page<Coupon> coupons = couponRepository.findAll(predicate, pageable);
     return new PaginatedApiResult<>(
         pageable.getPageNumber(),
+        pageable.getPageSize(),
         coupons.getNumberOfElements(),
         coupons.getTotalElements(),
         mapperFacade.mapAsList(coupons.getContent(), CouponInfo.class));

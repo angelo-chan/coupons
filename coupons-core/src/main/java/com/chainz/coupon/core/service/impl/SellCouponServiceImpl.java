@@ -99,6 +99,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     Page<SellCoupon> coupons = sellCouponRepository.findAll(predicate, pageable);
     return new PaginatedApiResult<>(
         pageable.getPageNumber(),
+        pageable.getPageSize(),
         coupons.getNumberOfElements(),
         coupons.getTotalElements(),
         mapperFacade.mapAsList(coupons.getContent(), SellCouponInfo.class));

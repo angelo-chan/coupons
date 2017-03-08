@@ -10,12 +10,11 @@ import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
-import com.chainz.coupon.shared.validator.common.EnumerationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 /** Coupon controller. */
 @RestController
+@Validated
 @RequestMapping("/api/coupons")
 public class CouponController {
 
@@ -40,25 +41,35 @@ public class CouponController {
    * @param issuerType coupon issuer type.
    * @param issuerId coupon issuer id.
    * @param status coupon status.
-   * @param pageable coupon pagination.
+   * @param page coupon pagination page.
+   * @param size coupon pagination size.
+   * @param sort coupon pagination sort.
+   * @param order coupon pagination order.
    * @return paginated coupon info.
    */
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<CouponInfo> listCoupon(
-      @RequestParam(value = "issuerType", required = false)
-          @EnumerationValidator(CouponIssuerType.class)
-          CouponIssuerType issuerType,
+      @Pattern(regexp = "SYSTEM|VENDOR") @RequestParam(value = "issuerType", required = false)
+          String issuerType,
       @RequestParam(value = "issuerId", required = false) String issuerId,
-      @RequestParam(value = "status", required = false) @EnumerationValidator(CouponStatus.class)
-          CouponStatus status,
+      @Pattern(regexp = "UNVERIFIED|VERIFIED|INVALID")
+          @RequestParam(value = "status", required = false)
+          String status,
       @RequestParam(value = "q", required = false) String q,
-      @PageableDefault(
-            value = 20,
-            sort = {"id"},
-            direction = Sort.Direction.DESC
-          )
-          Pageable pageable) {
-    return couponService.listCoupon(issuerType, issuerId, status, q, pageable);
+      @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @Min(1) @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+      @Pattern(regexp = "id|openId|user|brandName|target|createdAt")
+          @RequestParam(value = "sort", required = false, defaultValue = "id")
+          String sort,
+      @Pattern(regexp = "asc|desc")
+          @RequestParam(value = "order", required = false, defaultValue = "desc")
+          String order) {
+    return couponService.listCoupon(
+        issuerType != null ? CouponIssuerType.valueOf(issuerType) : null,
+        issuerId,
+        status != null ? CouponStatus.valueOf(status) : null,
+        q,
+        new PageRequest(page, size, Sort.Direction.fromString(order), sort));
   }
 
   /**
@@ -177,7 +188,8 @@ public class CouponController {
     method = RequestMethod.POST,
     produces = "application/json"
   )
-  public GrantCode generateCouponGrantCode(@PathVariable Long id, @PathVariable Integer count) {
+  public GrantCode generateCouponGrantCode(
+      @PathVariable @Min(1) Long id, @PathVariable Integer count) {
     return couponService.generateCouponGrantCode(id, count);
   }
 }
