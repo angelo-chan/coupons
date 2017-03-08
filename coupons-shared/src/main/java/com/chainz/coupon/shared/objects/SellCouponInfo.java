@@ -1,9 +1,11 @@
 package com.chainz.coupon.shared.objects;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /** Sell coupon info. */
-@Data
+@Getter
+@Setter
 public class SellCouponInfo {
 
   private Long id;
@@ -12,7 +14,8 @@ public class SellCouponInfo {
 
   private SimpleCouponInfo coupon;
 
-  @Data
+  @Getter
+  @Setter
   public static class SimpleCouponInfo {
     private Long id;
 

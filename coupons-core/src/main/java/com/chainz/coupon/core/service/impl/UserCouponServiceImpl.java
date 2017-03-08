@@ -7,6 +7,7 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
+import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.model.UserCoupon;
@@ -18,6 +19,7 @@ import com.chainz.coupon.core.utils.CouponCodes;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
+import com.chainz.coupon.shared.objects.UserCouponInfo;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -75,5 +77,17 @@ public class UserCouponServiceImpl implements UserCouponService {
     sellCouponGrantRepository.save(sellCouponGrant);
     userCouponRepository.save(userCoupon);
     stringRedisTemplate.opsForValue().increment(key, -1);
+  }
+
+  @Override
+  @ClientPermission
+  @Transactional(readOnly = true)
+  public UserCouponInfo getUserCoupon(Long userCouponId) throws UserCouponNotFoundException {
+    UserCoupon userCoupon = userCouponRepository.findOne(userCouponId);
+    Operator operator = OperatorManager.getOperator();
+    if (userCoupon == null || !operator.getOpenId().equals(userCoupon.getOpenId())) {
+      throw new UserCouponNotFoundException(userCouponId);
+    }
+    return mapperFacade.map(userCoupon, UserCouponInfo.class);
   }
 }

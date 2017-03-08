@@ -1,11 +1,13 @@
 package com.chainz.coupon.shared.objects;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Size;
 
 /** Coupon extension. */
-@Data
+@Getter
+@Setter
 public class CouponExtension {
 
   @Size(max = 1024)

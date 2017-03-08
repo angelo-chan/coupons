@@ -1,10 +1,13 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
+import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.service.UserCouponService;
+import com.chainz.coupon.shared.objects.UserCouponInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -41,5 +44,17 @@ public class UserCouponController {
       throws InvalidGrantCodeException, CouponStatusConflictException,
           SellCouponGrantInsufficientException, SellCouponGrantStatusConflictException {
     userCouponService.granted(grantCode);
+  }
+
+  /**
+   * Get user coupon.
+   *
+   * @param id user coupon id.
+   * @return user coupon information.
+   * @throws UserCouponNotFoundException user coupon not found.
+   */
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+  public UserCouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException {
+    return userCouponService.getUserCoupon(id);
   }
 }

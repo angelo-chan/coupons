@@ -1,15 +1,15 @@
 package com.chainz.coupon.shared.objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-/**
- * Coupon info.
- */
-@Data
+/** Coupon info. */
+@Getter
+@Setter
 public class CouponInfo {
 
   private Long id;
@@ -57,5 +57,4 @@ public class CouponInfo {
 
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
   private ZonedDateTime updatedAt;
-
 }
