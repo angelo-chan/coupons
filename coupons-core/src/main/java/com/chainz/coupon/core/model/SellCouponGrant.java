@@ -53,6 +53,7 @@ public class SellCouponGrant {
   @Column(name = "count", nullable = false)
   private Integer count;
 
+  // the remain will not change after the grant expire
   @Column(name = "remain", nullable = false)
   private Integer remain;
 
@@ -70,8 +71,10 @@ public class SellCouponGrant {
 
   @Version private Integer rev;
 
-  /** decrease remain. */
+  /** Decrease remain and return the current remain. */
   public void decreaseRemain() {
-    this.remain--;
+    if (--remain == 0) {
+      status = SellCouponGrantStatus.COMPLETED;
+    }
   }
 }
