@@ -105,9 +105,16 @@ public class UserCoupon implements Serializable {
 
   // redundant information end
 
-  /** to track share from seller. */
+  //to track share from seller.
   @Column(name = "original_open_id")
   private String originalOpenId;
+
+  // to track share from user.
+  @Column(name = "from_open_id")
+  private String fromOpenId;
+
+  @Column(name = "from_user_id")
+  private String fromUserId;
 
   @CreatedDate
   @Column(name = "created_at")
