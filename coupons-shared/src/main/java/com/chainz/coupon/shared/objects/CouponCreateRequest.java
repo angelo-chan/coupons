@@ -36,7 +36,7 @@ public class CouponCreateRequest {
   @Size(max = 32)
   private String color;
 
-  @Valid private CouponDateInfo dateInfo;
+  @NotNull @Valid private CouponDateInfo dateInfo;
 
   @Size(max = 2048)
   private String notice;
