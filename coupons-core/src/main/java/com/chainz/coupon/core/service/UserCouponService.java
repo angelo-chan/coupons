@@ -27,7 +27,7 @@ public interface UserCouponService {
    *
    * @param userCouponId user coupon id.
    * @return user coupon info.
-   * @throws UserCouponNotFoundException user not found.
+   * @throws UserCouponNotFoundException user coupon not found.
    */
   UserCouponInfo getUserCoupon(Long userCouponId) throws UserCouponNotFoundException;
 }

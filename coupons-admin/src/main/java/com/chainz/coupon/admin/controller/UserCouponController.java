@@ -54,7 +54,7 @@ public class UserCouponController {
    * @throws UserCouponNotFoundException user coupon not found.
    */
   @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-  public UserCouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException {
+  public UserCouponInfo getCoupon(@PathVariable Long id) throws UserCouponNotFoundException {
     return userCouponService.getUserCoupon(id);
   }
 }

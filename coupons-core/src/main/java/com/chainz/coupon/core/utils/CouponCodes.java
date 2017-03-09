@@ -27,7 +27,7 @@ public class CouponCodes {
    *
    * @param charset charset
    * @param length pattern length
-   * @return
+   * @return  random coupon code.
    */
   public static String generate(String charset, int length) {
     Random random = new Random(System.currentTimeMillis());
