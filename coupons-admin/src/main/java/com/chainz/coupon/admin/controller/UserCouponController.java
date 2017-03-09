@@ -112,6 +112,7 @@ public class UserCouponController {
     produces = "application/json",
     consumes = "application/json"
   )
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void consumeUserCoupons(
       @RequestBody @Valid UserCouponsConsumeRequest userCouponsConsumeRequest)
       throws UserCouponNotFoundException {
