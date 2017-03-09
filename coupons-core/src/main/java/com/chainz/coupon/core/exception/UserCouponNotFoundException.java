@@ -2,6 +2,8 @@ package com.chainz.coupon.core.exception;
 
 import com.chainz.coupon.core.exception.base.NotFoundException;
 
+import java.util.List;
+
 /** User coupon not found exception. */
 public class UserCouponNotFoundException extends NotFoundException {
 
@@ -18,5 +20,14 @@ public class UserCouponNotFoundException extends NotFoundException {
    */
   public UserCouponNotFoundException(Long userCouponId) {
     super(NUMERIC_ERROR_CODE, ERROR_CODE, "There is no user coupon [{}]", userCouponId);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param userCouponIds user coupon id.
+   */
+  public UserCouponNotFoundException(List<Long> userCouponIds) {
+    super(NUMERIC_ERROR_CODE, ERROR_CODE, "There is no user coupons [{}]", userCouponIds);
   }
 }

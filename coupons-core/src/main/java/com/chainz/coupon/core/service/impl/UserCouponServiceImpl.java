@@ -26,6 +26,8 @@ import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,8 +36,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 /** User coupon service implementation. */
 @Service
@@ -45,6 +49,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Autowired private MapperFacade mapperFacade;
   @Autowired private SellCouponGrantRepository sellCouponGrantRepository;
   @Autowired private UserCouponRepository userCouponRepository;
+  @Autowired private EntityManager entityManager;
 
   @Override
   @ClientPermission
@@ -147,5 +152,33 @@ public class UserCouponServiceImpl implements UserCouponService {
         userCoupons.getNumberOfElements(),
         userCoupons.getTotalElements(),
         mapperFacade.mapAsList(userCoupons.getContent(), SimpleUserCouponInfo.class));
+  }
+
+  @ClientPermission
+  @Override
+  @Transactional
+  public void consumeUserCoupon(List<Long> userCouponIdList) throws UserCouponNotFoundException {
+    Operator operator = OperatorManager.getOperator();
+    String openId = operator.getOpenId();
+    QUserCoupon userCoupon = QUserCoupon.userCoupon;
+    LocalDate now = LocalDate.now();
+    BooleanExpression predicate =
+        userCoupon
+            .openId
+            .eq(openId)
+            .and(userCoupon.beginDate.loe(now))
+            .and(userCoupon.endDate.goe(now))
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
+            .and(userCoupon.id.in(userCouponIdList));
+    JPAQuery<Void> query = new JPAQuery<>(entityManager);
+    long count = query.from(userCoupon).where(predicate).fetchCount();
+    if (count != userCouponIdList.size()) {
+      throw new UserCouponNotFoundException(userCouponIdList);
+    }
+    predicate = userCoupon.id.in(userCouponIdList);
+    new JPAUpdateClause(entityManager, userCoupon)
+        .where(predicate)
+        .set(userCoupon.status, UserCouponStatus.USED)
+        .execute();
   }
 }

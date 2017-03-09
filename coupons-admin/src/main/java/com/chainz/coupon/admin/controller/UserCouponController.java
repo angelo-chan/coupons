@@ -8,6 +8,7 @@ import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponsConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,12 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
@@ -95,6 +98,24 @@ public class UserCouponController {
           String order) {
     return userCouponService.listExpiredUserCoupon(
         new PageRequest(page, size, Sort.Direction.fromString(order), sort));
+  }
+
+  /**
+   * Consume user coupons by id list.
+   *
+   * @param userCouponsConsumeRequest user coupons consume request.
+   * @throws UserCouponNotFoundException user coupon not found.
+   */
+  @RequestMapping(
+    value = "/consume",
+    method = RequestMethod.POST,
+    produces = "application/json",
+    consumes = "application/json"
+  )
+  public void consumeUserCoupons(
+      @RequestBody @Valid UserCouponsConsumeRequest userCouponsConsumeRequest)
+      throws UserCouponNotFoundException {
+    userCouponService.consumeUserCoupon(userCouponsConsumeRequest.getIds());
   }
 
   /**

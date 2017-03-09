@@ -10,6 +10,8 @@ import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
   /**
@@ -49,4 +51,11 @@ public interface UserCouponService {
    * @return simple user coupon info list.
    */
   PaginatedApiResult<SimpleUserCouponInfo> listExpiredUserCoupon(Pageable pageable);
+
+  /**
+   * Consume user coupons.
+   * @param userCouponIdList user coupon id list.
+   * @throws UserCouponNotFoundException  user coupon not found.
+   */
+  void consumeUserCoupon(List<Long> userCouponIdList) throws UserCouponNotFoundException;
 }
