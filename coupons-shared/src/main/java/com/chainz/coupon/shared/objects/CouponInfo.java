@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
-import java.util.Set;
 
 /** Coupon info. */
 @Getter
@@ -23,8 +22,6 @@ public class CouponInfo extends SimpleCouponInfo {
   private Long circulation;
 
   private Long sku;
-
-  private Set<String> stores;
 
   private CouponStatus status;
 
