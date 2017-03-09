@@ -13,30 +13,4 @@ public class SellCouponInfo {
   private Integer sku;
 
   private SimpleCouponInfo coupon;
-
-  @Getter
-  @Setter
-  public static class SimpleCouponInfo {
-    private Long id;
-
-    private CouponType type;
-
-    private String title;
-
-    private String subtitle;
-
-    private String brandName;
-
-    private String description;
-
-    private String color;
-
-    private Float value;
-
-    private Integer getLimit;
-
-    private CouponTarget target;
-
-    private CouponDateInfo dateInfo;
-  }
 }

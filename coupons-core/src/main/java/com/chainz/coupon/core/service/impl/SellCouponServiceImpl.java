@@ -34,6 +34,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -134,6 +135,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     sellCouponGrant.setCount(count);
     sellCouponGrant.setRemain(count);
     sellCouponGrant.setStatus(SellCouponGrantStatus.INPROGRESS);
+    sellCouponGrant.setExpiredAt(ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
     sellCouponGrant.setSellCoupon(sellCoupon);
     String key = Constants.SELL_COUPON_GRANT_PREFIX + uuid;
     sellCouponRepository.save(sellCoupon);

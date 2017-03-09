@@ -42,5 +42,6 @@ public interface SellCouponService {
    * @throws SellCouponInsufficientException sell coupon insufficient.
    */
   GrantCode generateSellCouponGrantCode(Long id, Integer count)
-      throws SellCouponNotFoundException, SellCouponInsufficientException, CouponStatusConflictException;
+      throws SellCouponNotFoundException, SellCouponInsufficientException,
+          CouponStatusConflictException;
 }

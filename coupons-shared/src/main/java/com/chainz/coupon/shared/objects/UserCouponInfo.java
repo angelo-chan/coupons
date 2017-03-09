@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 /** User coupon info. */
 @Getter
@@ -13,7 +12,7 @@ import java.util.Set;
 public class UserCouponInfo {
   private Long id;
 
-  private SimpleCouponInfo coupon;
+  private SupplementalCouponInfo coupon;
 
   private String openId;
 
@@ -46,22 +45,4 @@ public class UserCouponInfo {
   private CouponTarget target;
 
   private Boolean canShare = true;
-
-  @Getter
-  @Setter
-  public static class SimpleCouponInfo {
-    private Long id;
-
-    private String description;
-
-    private String notice;
-
-    private String servicePhone;
-
-    private Integer getLimit;
-
-    private Set<String> stores;
-
-    private CouponExtension extension;
-  }
 }

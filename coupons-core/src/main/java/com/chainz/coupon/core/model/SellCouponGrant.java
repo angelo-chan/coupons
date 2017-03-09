@@ -69,6 +69,9 @@ public class SellCouponGrant {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
+  @Column(name = "expired_at")
+  private ZonedDateTime expiredAt;
+
   @Version private Integer rev;
 
   /** Decrease remain and return the current remain. */

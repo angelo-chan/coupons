@@ -10,23 +10,9 @@ import java.util.Set;
 /** Coupon info. */
 @Getter
 @Setter
-public class CouponInfo {
-
-  private Long id;
-
-  private CouponType type;
-
-  private String title;
-
-  private String subtitle;
-
-  private String brandName;
+public class CouponInfo extends SimpleCouponInfo {
 
   private String description;
-
-  private String color;
-
-  private CouponDateInfo dateInfo;
 
   private String notice;
 
@@ -37,12 +23,6 @@ public class CouponInfo {
   private Long circulation;
 
   private Long sku;
-
-  private Float value;
-
-  private Integer getLimit;
-
-  private CouponTarget target;
 
   private Set<String> stores;
 
