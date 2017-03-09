@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 /** User coupon info. */
 @Getter
@@ -25,6 +26,9 @@ public class UserCouponInfo {
 
   @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate endDate;
+
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  private ZonedDateTime gotAt;
 
   private OutId outId;
 

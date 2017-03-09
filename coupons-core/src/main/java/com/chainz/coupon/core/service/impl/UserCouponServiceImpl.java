@@ -26,6 +26,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+
 /** User coupon service implementation. */
 @Service
 public class UserCouponServiceImpl implements UserCouponService {
@@ -69,6 +71,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     userCoupon.setOpenId(operator.getOpenId());
     userCoupon.setOriginalOpenId(sellCouponGrant.getOpenId());
     userCoupon.setOutId(OutId.SELL);
+    userCoupon.setGotAt(ZonedDateTime.now());
     String couponCode;
     do {
       couponCode = CouponCodes.generateDefault();

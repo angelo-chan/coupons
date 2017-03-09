@@ -97,6 +97,10 @@ public class UserCoupon implements Serializable {
   @Column(name = "from_user_id")
   private String fromUserId;
 
+  // the last user get the coupon at
+  @Column(name = "got_at")
+  private ZonedDateTime gotAt;
+
   @CreatedDate
   @Column(name = "created_at")
   private ZonedDateTime createdAt;
