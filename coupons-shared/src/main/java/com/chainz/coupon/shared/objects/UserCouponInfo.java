@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class UserCouponInfo {
   private Long id;
 
-  private SupplementalCouponInfo coupon;
+  private CouponInfo coupon;
 
   private String openId;
 
@@ -29,20 +29,4 @@ public class UserCouponInfo {
   private OutId outId;
 
   private UserCouponStatus status = UserCouponStatus.UNUSED;
-
-  private CouponType type;
-
-  private String title;
-
-  private String subtitle;
-
-  private String brandName;
-
-  private String color;
-
-  private Float value;
-
-  private CouponTarget target;
-
-  private Boolean canShare = true;
 }

@@ -86,25 +86,6 @@ public class UserCoupon implements Serializable {
   @Column(name = "status")
   private UserCouponStatus status = UserCouponStatus.UNUSED;
 
-  // and below are the redundant information from coupon begin
-  private CouponType type;
-
-  private String title;
-
-  private String subtitle;
-
-  private String brandName;
-
-  private String color;
-
-  private Float value;
-
-  private CouponTarget target;
-
-  private Boolean canShare = true;
-
-  // redundant information end
-
   //to track share from seller.
   @Column(name = "original_open_id")
   private String originalOpenId;
@@ -135,14 +116,6 @@ public class UserCoupon implements Serializable {
   public static UserCoupon newFromCoupon(Coupon coupon) {
     UserCoupon userCoupon = new UserCoupon();
     userCoupon.setCoupon(coupon);
-    userCoupon.setBrandName(coupon.getBrandName());
-    userCoupon.setCanShare(coupon.getCanShare());
-    userCoupon.setColor(coupon.getColor());
-    userCoupon.setTitle(coupon.getTitle());
-    userCoupon.setSubtitle(coupon.getSubtitle());
-    userCoupon.setTarget(coupon.getTarget());
-    userCoupon.setType(coupon.getType());
-    userCoupon.setValue(coupon.getValue());
     CouponDateInfo dateInfo = coupon.getDateInfo();
     LocalDate start;
     LocalDate end;
