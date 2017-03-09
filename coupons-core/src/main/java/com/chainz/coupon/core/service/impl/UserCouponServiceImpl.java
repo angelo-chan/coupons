@@ -106,7 +106,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Transactional(readOnly = true)
   @Override
-  public PaginatedApiResult<SimpleUserCouponInfo> getActiveUserCoupon(Pageable pageable) {
+  public PaginatedApiResult<SimpleUserCouponInfo> listActiveUserCoupon(Pageable pageable) {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QUserCoupon userCoupon = QUserCoupon.userCoupon;
@@ -116,6 +116,29 @@ public class UserCouponServiceImpl implements UserCouponService {
             .eq(openId)
             .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
             .and(userCoupon.endDate.goe(LocalDate.now()));
+    Page<UserCoupon> userCoupons =
+        userCouponRepository.findAll(predicate, pageable, JoinDescriptor.join(userCoupon.coupon));
+    return new PaginatedApiResult<>(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        userCoupons.getNumberOfElements(),
+        userCoupons.getTotalElements(),
+        mapperFacade.mapAsList(userCoupons.getContent(), SimpleUserCouponInfo.class));
+  }
+
+  @ClientPermission
+  @Override
+  @Transactional(readOnly = true)
+  public PaginatedApiResult<SimpleUserCouponInfo> listExpiredUserCoupon(Pageable pageable) {
+    Operator operator = OperatorManager.getOperator();
+    String openId = operator.getOpenId();
+    QUserCoupon userCoupon = QUserCoupon.userCoupon;
+    BooleanExpression predicate =
+        userCoupon
+            .openId
+            .eq(openId)
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
+            .and(userCoupon.endDate.lt(LocalDate.now()));
     Page<UserCoupon> userCoupons =
         userCouponRepository.findAll(predicate, pageable, JoinDescriptor.join(userCoupon.coupon));
     return new PaginatedApiResult<>(

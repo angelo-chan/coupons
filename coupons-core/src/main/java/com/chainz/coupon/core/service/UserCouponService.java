@@ -40,5 +40,13 @@ public interface UserCouponService {
    * @param pageable pagination information.
    * @return simple user coupon info list.
    */
-  PaginatedApiResult<SimpleUserCouponInfo> getActiveUserCoupon(Pageable pageable);
+  PaginatedApiResult<SimpleUserCouponInfo> listActiveUserCoupon(Pageable pageable);
+
+  /**
+   * List expired user coupon.
+   *
+   * @param pageable pagination information.
+   * @return simple user coupon info list.
+   */
+  PaginatedApiResult<SimpleUserCouponInfo> listExpiredUserCoupon(Pageable pageable);
 }

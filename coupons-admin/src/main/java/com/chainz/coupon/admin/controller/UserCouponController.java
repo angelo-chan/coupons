@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
-import java.util.List;
 
 /** user coupon controller. */
 @RestController
@@ -73,7 +72,28 @@ public class UserCouponController {
       @Pattern(regexp = "asc|desc")
           @RequestParam(value = "order", required = false, defaultValue = "desc")
           String order) {
-    return userCouponService.getActiveUserCoupon(
+    return userCouponService.listActiveUserCoupon(
+        new PageRequest(page, size, Sort.Direction.fromString(order), sort));
+  }
+
+  /**
+   * List expired user coupon.
+   *
+   * @param page coupon pagination page.
+   * @param size coupon pagination size.
+   * @return expired user coupon list.
+   */
+  @RequestMapping(value = "/expired", method = RequestMethod.GET, produces = "application/json")
+  public PaginatedApiResult<SimpleUserCouponInfo> listExpiredUserCoupon(
+      @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @Min(1) @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+      @Pattern(regexp = "gotAt|endDate")
+          @RequestParam(value = "sort", required = false, defaultValue = "endDate")
+          String sort,
+      @Pattern(regexp = "asc|desc")
+          @RequestParam(value = "order", required = false, defaultValue = "desc")
+          String order) {
+    return userCouponService.listExpiredUserCoupon(
         new PageRequest(page, size, Sort.Direction.fromString(order), sort));
   }
 
