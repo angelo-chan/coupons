@@ -9,23 +9,32 @@ import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.model.Coupon;
+import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.model.UserCoupon;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.UserCouponRepository;
+import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.core.utils.CouponCodes;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
+import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponStatus;
+import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 /** User coupon service implementation. */
@@ -92,5 +101,28 @@ public class UserCouponServiceImpl implements UserCouponService {
       throw new UserCouponNotFoundException(userCouponId);
     }
     return mapperFacade.map(userCoupon, UserCouponInfo.class);
+  }
+
+  @ClientPermission
+  @Transactional(readOnly = true)
+  @Override
+  public PaginatedApiResult<SimpleUserCouponInfo> getActiveUserCoupon(Pageable pageable) {
+    Operator operator = OperatorManager.getOperator();
+    String openId = operator.getOpenId();
+    QUserCoupon userCoupon = QUserCoupon.userCoupon;
+    BooleanExpression predicate =
+        userCoupon
+            .openId
+            .eq(openId)
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
+            .and(userCoupon.endDate.goe(LocalDate.now()));
+    Page<UserCoupon> userCoupons =
+        userCouponRepository.findAll(predicate, pageable, JoinDescriptor.join(userCoupon.coupon));
+    return new PaginatedApiResult<>(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        userCoupons.getNumberOfElements(),
+        userCoupons.getTotalElements(),
+        mapperFacade.mapAsList(userCoupons.getContent(), SimpleUserCouponInfo.class));
   }
 }

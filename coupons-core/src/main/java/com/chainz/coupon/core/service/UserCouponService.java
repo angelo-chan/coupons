@@ -5,7 +5,10 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import org.springframework.data.domain.Pageable;
 
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
@@ -30,4 +33,12 @@ public interface UserCouponService {
    * @throws UserCouponNotFoundException user coupon not found.
    */
   UserCouponInfo getUserCoupon(Long userCouponId) throws UserCouponNotFoundException;
+
+  /**
+   * List active user coupon.
+   *
+   * @param pageable pagination information.
+   * @return simple user coupon info list.
+   */
+  PaginatedApiResult<SimpleUserCouponInfo> getActiveUserCoupon(Pageable pageable);
 }
