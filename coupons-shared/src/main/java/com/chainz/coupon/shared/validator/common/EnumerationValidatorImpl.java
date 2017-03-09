@@ -8,10 +8,12 @@ import java.util.List;
 /** EnumerationValidator implementation. */
 public class EnumerationValidatorImpl implements ConstraintValidator<EnumerationValidator, String> {
 
+  boolean nullable = false;
   List<String> valueList = null;
 
   @Override
   public void initialize(EnumerationValidator enumerationValidator) {
+    nullable = enumerationValidator.nullable();
     valueList = new ArrayList<>();
     Class<? extends Enum<?>> enumClass = enumerationValidator.value();
 
@@ -24,6 +26,13 @@ public class EnumerationValidatorImpl implements ConstraintValidator<Enumeration
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+    if (value == null) {
+      if (nullable) {
+        return true;
+      } else {
+        return false;
+      }
+    }
     if (!valueList.contains(value)) {
       return false;
     }

@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -16,10 +15,9 @@ import java.util.Set;
 @Setter
 public class CouponUpdateRequest {
 
-  @EnumerationValidator(CouponType.class)
+  @EnumerationValidator(value = CouponType.class, nullable = true)
   private String type;
 
-  @NotNull
   @Size(min = 1, max = 64)
   private String title;
 

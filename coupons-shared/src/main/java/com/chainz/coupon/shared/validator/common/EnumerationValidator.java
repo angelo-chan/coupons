@@ -20,6 +20,8 @@ public @interface EnumerationValidator {
 
   Class<? extends Enum<?>> value();
 
+  boolean nullable() default false;
+
   String message() default "Enum value is not valid";
 
   Class<?>[] groups() default {};
