@@ -20,13 +20,15 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /** user coupon shares. */
@@ -71,10 +73,11 @@ public class UserCouponShare implements Serializable {
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_coupon_share_id")
+  @MapKey(name = "userCouponId")
   @OptimisticLock(
     excluded = true
   ) // excluding user coupon share entry from triggering version increment
-  private List<UserCouponShareEntry> userCouponShareEntries = new ArrayList<>();
+  private Map<Long, UserCouponShareEntry> userCouponShareEntries = new HashMap<>();
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
@@ -99,7 +102,7 @@ public class UserCouponShare implements Serializable {
    * @param userCouponShareEntry user coupon share entry.
    */
   public void addUserCouponShareEntry(UserCouponShareEntry userCouponShareEntry) {
-    userCouponShareEntries.add(userCouponShareEntry);
+    userCouponShareEntries.put(userCouponShareEntry.getUserCouponId(), userCouponShareEntry);
   }
 
   /**

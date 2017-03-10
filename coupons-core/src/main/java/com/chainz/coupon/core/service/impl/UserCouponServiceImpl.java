@@ -5,15 +5,17 @@ import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
+import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.model.SellCouponGrantEntry;
 import com.chainz.coupon.core.model.UserCoupon;
 import com.chainz.coupon.core.model.UserCouponShare;
+import com.chainz.coupon.core.model.UserCouponShareEntry;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.UserCouponRepository;
@@ -29,6 +31,7 @@ import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
+import com.chainz.coupon.shared.objects.UserCouponShareStatus;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -44,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -65,7 +69,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Transactional
   public void granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantInsufficientException, SellCouponGrantStatusConflictException {
+          SellCouponGrantStatusConflictException {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
     String valueString = stringRedisTemplate.opsForValue().get(key);
     if (valueString == null) {
@@ -74,7 +78,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     Long value = stringRedisTemplate.opsForValue().increment(key, -1);
     if (value < 0) {
       stringRedisTemplate.delete(key);
-      throw new SellCouponGrantInsufficientException(grantCode);
+      throw new InvalidGrantCodeException(grantCode);
     }
 
     try {
@@ -111,6 +115,59 @@ public class UserCouponServiceImpl implements UserCouponService {
       userCouponRepository.save(userCoupon);
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForValue().increment(key, 1);
+      throw e;
+    }
+  }
+
+  @Override
+  @ClientPermission
+  @Transactional
+  public void shared(String shareCode)
+      throws InvalidShareCodeException, UserCouponShareStatusConflictException {
+    String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
+    long count = stringRedisTemplate.opsForList().size(key);
+    if (count == 0) {
+      throw new InvalidShareCodeException(shareCode);
+    }
+    String value = stringRedisTemplate.opsForList().leftPop(key);
+    if (value == null) {
+      throw new InvalidShareCodeException(shareCode);
+    }
+    Long userCouponId = Long.parseLong(value);
+
+    try {
+      UserCouponShare userCouponShare = userCouponShareRepository.findOne(shareCode);
+      if (userCouponShare.getStatus() != UserCouponShareStatus.INPROGRESS) {
+        throw new UserCouponShareStatusConflictException(
+            userCouponShare.getId(), userCouponShare.getStatus());
+      }
+
+      Operator operator = OperatorManager.getOperator();
+      ZonedDateTime now = ZonedDateTime.now();
+      // set user coupon
+      UserCoupon userCoupon = userCouponRepository.findOne(userCouponId);
+      userCoupon.setFromOpenId(userCoupon.getOpenId());
+      userCoupon.setFromUserId(userCoupon.getUserId());
+      userCoupon.setOpenId(operator.getOpenId());
+      userCoupon.setUserId(null);
+      userCoupon.setStatus(UserCouponStatus.UNUSED);
+      userCoupon.setGotAt(now);
+
+      // set user coupon share entry
+      UserCouponShareEntry userCouponShareEntry =
+          userCouponShare.getUserCouponShareEntries().get(userCouponId);
+      userCouponShareEntry.setGotAt(now);
+      userCouponShareEntry.setGot(true);
+      userCouponShareEntry.setOpenId(operator.getOpenId());
+
+      if (count == 1) {
+        // should be 0 after this acton
+        userCouponShare.setStatus(UserCouponShareStatus.COMPLETED);
+      }
+      userCouponRepository.save(userCoupon);
+      userCouponShareRepository.save(userCouponShare);
+    } catch (RuntimeException e) {
+      stringRedisTemplate.opsForList().rightPush(key, value);
       throw e;
     }
   }

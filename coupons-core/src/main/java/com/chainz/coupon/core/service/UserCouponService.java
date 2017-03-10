@@ -2,9 +2,10 @@ package com.chainz.coupon.core.service;
 
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
+import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
@@ -17,17 +18,26 @@ import java.util.List;
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
   /**
-   * Grant sell coupon to specific user.
+   * get user coupon from sell coupon grant by grant code.
    *
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
-   * @throws SellCouponGrantInsufficientException sell coupon insufficient.
    * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
   void granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantInsufficientException, SellCouponGrantStatusConflictException;
+          SellCouponGrantStatusConflictException;
+
+  /**
+   * get user coupon from other user by share code.
+   *
+   * @param shareCode share code.
+   * @throws InvalidShareCodeException invalid share code.
+   * @throws UserCouponShareStatusConflictException user coupon share status conflict.
+   */
+  void shared(String shareCode)
+      throws InvalidShareCodeException, UserCouponShareStatusConflictException;
 
   /**
    * Get user coupon by id.

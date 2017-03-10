@@ -2,10 +2,10 @@ package com.chainz.coupon.admin.controller;
 
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
+import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
-import com.chainz.coupon.core.model.UserCouponShare;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
@@ -44,7 +44,6 @@ public class UserCouponController {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
-   * @throws SellCouponGrantInsufficientException sell coupon grant insufficient.
    * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
   @RequestMapping(
@@ -55,8 +54,26 @@ public class UserCouponController {
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantInsufficientException, SellCouponGrantStatusConflictException {
+          SellCouponGrantStatusConflictException {
     userCouponService.granted(grantCode);
+  }
+
+  /**
+   * Enable user to get coupon via share code from other user.
+   *
+   * @param shareCode grant code.
+   * @throws InvalidShareCodeException invalid share code.
+   * @throws UserCouponShareStatusConflictException user coupon share status conflict.
+   */
+  @RequestMapping(
+    value = "/shared/{shareCode}",
+    method = RequestMethod.POST,
+    consumes = "application/json"
+  )
+  @ResponseStatus(HttpStatus.CREATED)
+  public void shared(@PathVariable String shareCode)
+      throws InvalidShareCodeException, UserCouponShareStatusConflictException {
+    userCouponService.shared(shareCode);
   }
 
   /**
@@ -125,7 +142,7 @@ public class UserCouponController {
   /**
    * Share user coupons.
    *
-   * @param userCouponShareRequest  user coupon share request.
+   * @param userCouponShareRequest user coupon share request.
    * @return share code
    * @throws UserCouponNotFoundException user coupon not found exception.
    */
