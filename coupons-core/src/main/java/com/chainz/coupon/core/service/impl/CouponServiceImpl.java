@@ -211,10 +211,10 @@ public class CouponServiceImpl implements CouponService {
    */
   private void checkPermission(Coupon coupon) {
     Operator operator = OperatorManager.getOperator();
-    if (Constants.SYSTEM.equals(operator.getAccountType())) {
+    if (operator.isSystem()) {
       return;
     }
-    if (Constants.VENDOR.equals(operator.getAccountType())
+    if (operator.isVendor()
         && coupon.getIssuer().getIssuerType() == CouponIssuerType.VENDOR
         && operator.getVendorId().equals(coupon.getIssuer().getIssuerId())) {
       return;

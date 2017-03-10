@@ -17,6 +17,8 @@ public class OperatorFilter extends OncePerRequestFilter {
 
   private static final String VENDOR_ID = "Vendor_Id";
 
+  private static final String STORE_ID = "Store_Id";
+
   private static final String OPEN_ID = "Open_Id";
 
   @Override
@@ -35,12 +37,18 @@ public class OperatorFilter extends OncePerRequestFilter {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
+    String storeId = request.getHeader(STORE_ID);
+    if (Constants.STORE.equals(accountType) && StringUtils.isEmpty(storeId)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+
     String openId = request.getHeader(OPEN_ID);
     if (Constants.CLIENT.equals(accountType) && StringUtils.isEmpty(openId)) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    Operator operator = new Operator(accountType, vendorId, openId);
+    Operator operator = new Operator(accountType, vendorId, storeId, openId);
     OperatorManager.setOperator(operator);
     filterChain.doFilter(request, response);
   }

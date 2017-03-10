@@ -31,6 +31,7 @@ import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareStatus;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
@@ -260,6 +261,39 @@ public class UserCouponServiceImpl implements UserCouponService {
         .where(predicate)
         .set(userCoupon.status, UserCouponStatus.USED)
         .set(userCoupon.storeId, storeId)
+        .execute();
+  }
+
+  @Override
+  @Transactional
+  public void returnUserCoupon(UserCouponReturnRequest userCouponReturnRequest)
+      throws UserCouponNotFoundException {
+    List<Long> userCouponIdList = userCouponReturnRequest.getIds();
+    Operator operator = OperatorManager.getOperator();
+    if (!(operator.isClient() || operator.isStore())) {
+      throw new UserCouponNotFoundException(userCouponIdList);
+    }
+    JPAQuery<Void> query = new JPAQuery<>(entityManager);
+    QUserCoupon userCoupon = QUserCoupon.userCoupon;
+    BooleanExpression predicate =
+        userCoupon.status.eq(UserCouponStatus.USED).and(userCoupon.id.in(userCouponIdList));
+    if (operator.isClient()) {
+      String openId = operator.getOpenId();
+      predicate = predicate.and(userCoupon.openId.eq(openId));
+    } else {
+      // should be store
+      String storeId = operator.getStoreId();
+      predicate = predicate.and(userCoupon.storeId.eq(storeId));
+    }
+    long count = query.from(userCoupon).where(predicate).fetchCount();
+    if (count != userCouponIdList.size()) {
+      throw new UserCouponNotFoundException(userCouponIdList);
+    }
+    predicate = userCoupon.id.in(userCouponIdList);
+    new JPAUpdateClause(entityManager, userCoupon)
+        .where(predicate)
+        .set(userCoupon.status, UserCouponStatus.UNUSED)
+        .set(userCoupon.storeId, (String) null)
         .execute();
   }
 

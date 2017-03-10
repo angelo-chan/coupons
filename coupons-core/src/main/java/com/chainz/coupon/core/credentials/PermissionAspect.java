@@ -11,13 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class PermissionAspect {
 
-  /**
-   * Check client permission.
-   */
+  /** Check client permission. */
   @Before("@annotation(ClientPermission)")
   public void checkClientPermission() {
     Operator operator = OperatorManager.getOperator();
-    if (operator == null || !Constants.CLIENT.equals(operator.getAccountType())) {
+    if (operator == null || !operator.isClient()) {
       throw new UnAuthorizedOperatorException();
     }
   }

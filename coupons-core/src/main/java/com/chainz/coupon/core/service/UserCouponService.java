@@ -9,6 +9,7 @@ import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
@@ -70,6 +71,13 @@ public interface UserCouponService {
    * @throws UserCouponNotFoundException user coupon not found.
    */
   void consumeUserCoupon(UserCouponConsumeRequest userCouponConsumeRequest) throws UserCouponNotFoundException;
+
+  /**
+   * Return user coupons.
+   * @param userCouponReturnRequest user coupon return request.
+   * @throws UserCouponNotFoundException  user coupon not found.
+   */
+  void returnUserCoupon(UserCouponReturnRequest userCouponReturnRequest) throws UserCouponNotFoundException;
 
   /**
    * Share user coupons.

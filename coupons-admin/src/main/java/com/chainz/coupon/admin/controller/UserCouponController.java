@@ -9,9 +9,10 @@ import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
+import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
+import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -137,6 +138,24 @@ public class UserCouponController {
       @RequestBody @Valid UserCouponConsumeRequest userCouponConsumeRequest)
       throws UserCouponNotFoundException {
     userCouponService.consumeUserCoupon(userCouponConsumeRequest);
+  }
+
+  /**
+   * Return user coupon.
+   *
+   * @param userCouponReturnRequest user coupons return request.
+   * @throws UserCouponNotFoundException user coupon not found.
+   */
+  @RequestMapping(
+    value = "/return",
+    method = RequestMethod.POST,
+    produces = "application/json",
+    consumes = "application/json"
+  )
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void returnUserCoupons(@RequestBody @Valid UserCouponReturnRequest userCouponReturnRequest)
+      throws UserCouponNotFoundException {
+    userCouponService.returnUserCoupon(userCouponReturnRequest);
   }
 
   /**

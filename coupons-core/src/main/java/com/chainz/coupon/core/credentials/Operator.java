@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.credentials;
 
+import com.chainz.coupon.core.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,5 +13,23 @@ public class Operator {
 
   private String vendorId;
 
+  private String storeId;
+
   private String openId;
+
+  public boolean isClient() {
+    return Constants.CLIENT.equals(accountType);
+  }
+
+  public boolean isSystem() {
+    return Constants.SYSTEM.equals(accountType);
+  }
+
+  public boolean isVendor() {
+    return Constants.VENDOR.equals(accountType);
+  }
+
+  public boolean isStore() {
+    return Constants.STORE.equals(accountType);
+  }
 }
