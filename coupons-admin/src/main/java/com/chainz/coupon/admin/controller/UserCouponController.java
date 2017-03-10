@@ -11,7 +11,7 @@ import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
-import com.chainz.coupon.shared.objects.UserCouponsConsumeRequest;
+import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -121,9 +121,9 @@ public class UserCouponController {
   }
 
   /**
-   * Consume user coupons by id list.
+   * Consume user coupon.
    *
-   * @param userCouponsConsumeRequest user coupons consume request.
+   * @param userCouponConsumeRequest user coupons consume request.
    * @throws UserCouponNotFoundException user coupon not found.
    */
   @RequestMapping(
@@ -134,9 +134,9 @@ public class UserCouponController {
   )
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void consumeUserCoupons(
-      @RequestBody @Valid UserCouponsConsumeRequest userCouponsConsumeRequest)
+      @RequestBody @Valid UserCouponConsumeRequest userCouponConsumeRequest)
       throws UserCouponNotFoundException {
-    userCouponService.consumeUserCoupon(userCouponsConsumeRequest.getIds());
+    userCouponService.consumeUserCoupon(userCouponConsumeRequest);
   }
 
   /**

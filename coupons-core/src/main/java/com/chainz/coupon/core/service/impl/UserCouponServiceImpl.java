@@ -29,6 +29,7 @@ import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareStatus;
@@ -233,7 +234,10 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Override
   @Transactional
-  public void consumeUserCoupon(List<Long> userCouponIdList) throws UserCouponNotFoundException {
+  public void consumeUserCoupon(UserCouponConsumeRequest userCouponConsumeRequest)
+      throws UserCouponNotFoundException {
+    List<Long> userCouponIdList = userCouponConsumeRequest.getIds();
+    String storeId = userCouponConsumeRequest.getStoreId();
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QUserCoupon userCoupon = QUserCoupon.userCoupon;
@@ -255,6 +259,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     new JPAUpdateClause(entityManager, userCoupon)
         .where(predicate)
         .set(userCoupon.status, UserCouponStatus.USED)
+        .set(userCoupon.storeId, storeId)
         .execute();
   }
 

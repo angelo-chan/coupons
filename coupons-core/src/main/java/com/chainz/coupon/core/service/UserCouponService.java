@@ -10,10 +10,9 @@ import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
+import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
@@ -67,10 +66,10 @@ public interface UserCouponService {
   /**
    * Consume user coupons.
    *
-   * @param userCouponIdList user coupon id list.
+   * @param userCouponConsumeRequest user coupon .
    * @throws UserCouponNotFoundException user coupon not found.
    */
-  void consumeUserCoupon(List<Long> userCouponIdList) throws UserCouponNotFoundException;
+  void consumeUserCoupon(UserCouponConsumeRequest userCouponConsumeRequest) throws UserCouponNotFoundException;
 
   /**
    * Share user coupons.

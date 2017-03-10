@@ -88,6 +88,10 @@ public class UserCoupon implements Serializable {
   @Column(name = "status")
   private UserCouponStatus status = UserCouponStatus.UNUSED;
 
+  /** Indicate which store consumes the coupon. */
+  @Column(name = "store_id")
+  private String storeId;
+
   // to track share from user.
   @Column(name = "from_open_id")
   private String fromOpenId;
