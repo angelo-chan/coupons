@@ -5,9 +5,12 @@ import com.chainz.coupon.core.exception.SellCouponGrantNotFoundException;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.service.SellCouponGrantService;
+import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
+import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
 
   @Autowired private SellCouponGrantRepository sellCouponGrantRepository;
   @Autowired private MapperFacade mapperFacade;
+  @Autowired private StringRedisTemplate stringRedisTemplate;
 
   @Override
   @ClientPermission
@@ -27,6 +31,16 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
     if (sellCouponGrant == null) {
       throw new SellCouponGrantNotFoundException(grantCode);
     }
-    return mapperFacade.map(sellCouponGrant, SellCouponGrantInfo.class);
+    SellCouponGrantInfo sellCouponGrantInfo =
+        mapperFacade.map(sellCouponGrant, SellCouponGrantInfo.class);
+    if (sellCouponGrantInfo.getStatus() == SellCouponGrantStatus.INPROGRESS) {
+      String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
+      String remain = stringRedisTemplate.opsForValue().get(key);
+      if (remain != null) {
+        Integer remainInt = Integer.valueOf(remain);
+        sellCouponGrantInfo.setRemain(Integer.max(remainInt, 0));
+      }
+    }
+    return sellCouponGrantInfo;
   }
 }

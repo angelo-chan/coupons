@@ -10,7 +10,12 @@ public class InvalidGrantCodeException extends NotFoundException {
   /** Numeric error code for the exception. */
   public static final int NUMERIC_ERROR_CODE = ExceptionCodeBase.NUMERIC_NOT_FOUND_ERROR_BASE + 2;
 
-  public InvalidGrantCodeException() {
-    super(NUMERIC_ERROR_CODE, ERROR_CODE, "Invalid coupon grant code");
+  /**
+   * Constructor.
+   *
+   * @param grantCode grant code.
+   */
+  public InvalidGrantCodeException(String grantCode) {
+    super(NUMERIC_ERROR_CODE, ERROR_CODE, "Invalid coupon grant code [{}]", grantCode);
   }
 }

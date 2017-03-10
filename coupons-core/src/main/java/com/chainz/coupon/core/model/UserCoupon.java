@@ -1,8 +1,6 @@
 package com.chainz.coupon.core.model;
 
 import com.chainz.coupon.shared.objects.CouponDateType;
-import com.chainz.coupon.shared.objects.CouponTarget;
-import com.chainz.coupon.shared.objects.CouponType;
 import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
 import lombok.Data;
@@ -47,19 +45,19 @@ import java.time.ZonedDateTime;
     @Index(columnList = "user_id, status, begin_date, end_date"),
     @Index(columnList = "coupon_code"),
     @Index(columnList = "begin_date, end_date"),
-    @Index(columnList = "out_id"),
-    @Index(columnList = "original_open_id")
+    @Index(columnList = "out_id")
   }
 )
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 public class UserCoupon implements Serializable {
+
   private static final long serialVersionUID = -4661408922013589795L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
+  @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
   @ManyToOne(cascade = CascadeType.REFRESH)
@@ -90,10 +88,6 @@ public class UserCoupon implements Serializable {
   @Column(name = "status")
   private UserCouponStatus status = UserCouponStatus.UNUSED;
 
-  //to track share from seller.
-  @Column(name = "original_open_id")
-  private String originalOpenId;
-
   // to track share from user.
   @Column(name = "from_open_id")
   private String fromOpenId;
@@ -103,7 +97,7 @@ public class UserCoupon implements Serializable {
 
   // the last user get the coupon at
   @Column(name = "got_at")
-  private ZonedDateTime gotAt;
+  private ZonedDateTime gotAt = ZonedDateTime.now();
 
   @CreatedDate
   @Column(name = "created_at")

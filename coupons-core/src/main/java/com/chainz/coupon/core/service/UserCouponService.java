@@ -5,8 +5,10 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
@@ -54,8 +56,19 @@ public interface UserCouponService {
 
   /**
    * Consume user coupons.
+   *
    * @param userCouponIdList user coupon id list.
-   * @throws UserCouponNotFoundException  user coupon not found.
+   * @throws UserCouponNotFoundException user coupon not found.
    */
   void consumeUserCoupon(List<Long> userCouponIdList) throws UserCouponNotFoundException;
+
+  /**
+   * Share user coupons.
+   *
+   * @param userCouponShareRequest user coupon share request.
+   * @return share code.
+   * @throws UserCouponNotFoundException user coupon not found.
+   */
+  ShareCode shareUserCoupon(UserCouponShareRequest userCouponShareRequest)
+      throws UserCouponNotFoundException;
 }

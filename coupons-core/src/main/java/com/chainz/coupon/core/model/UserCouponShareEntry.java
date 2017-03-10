@@ -7,58 +7,50 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-/** Coupon model defines a coupon template which could be used to generate coupon instance. */
+/** User coupon share entry. */
 @Data
 @Entity
-@Table(
-  name = "sell_coupons",
-  indexes = {
-    @Index(columnList = "open_id"),
-    @Index(columnList = "user_id"),
-    @Index(columnList = "coupon_id"),
-    @Index(columnList = "open_id, coupon_id")
-  }
-)
+@Table(name = "user_coupon_share_entries")
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class SellCoupon implements Serializable {
+public class UserCouponShareEntry implements Serializable {
 
-  private static final long serialVersionUID = -4661408922013589795L;
+  private static final long serialVersionUID = -3412098430684168692L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.REFRESH)
-  @JoinColumn(name = "coupon_id")
-  private Coupon coupon;
+  @Column(name = "user_coupon_id", nullable = false)
+  private Long userCouponId;
 
+  @Column(name = "got")
+  private boolean got = false;
+
+  // indicate who get the user coupon
   @Column(name = "open_id")
   private String openId;
 
-  /** will be used in future. */
+  // or this is not a wechat user.
   @Column(name = "user_id")
   private String userId;
 
-  @Column(name = "sku")
-  private Integer sku;
+  // indicate when get the user coupon
+  @Column(name = "got_at")
+  private ZonedDateTime gotAt;
 
   @CreatedDate
   @Column(name = "created_at")
@@ -67,6 +59,18 @@ public class SellCoupon implements Serializable {
   @LastModifiedDate
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
+
+  /** Default constructor. */
+  public UserCouponShareEntry() {}
+
+  /**
+   * Constructor.
+   *
+   * @param userCouponId user coupon id.
+   */
+  public UserCouponShareEntry(Long userCouponId) {
+    this.userCouponId = userCouponId;
+  }
 
   @Version private Integer rev;
 }

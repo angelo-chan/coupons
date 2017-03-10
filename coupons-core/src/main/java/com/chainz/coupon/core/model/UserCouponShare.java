@@ -1,7 +1,7 @@
 package com.chainz.coupon.core.model;
 
 import com.chainz.coupon.core.utils.Constants;
-import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
+import com.chainz.coupon.shared.objects.UserCouponShareStatus;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -29,13 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Coupon model defines a coupon template which could be used to generate coupon instance. */
+/** user coupon shares. */
 @Data
 @Entity
 @Table(
-  name = "sell_coupon_grants",
+  name = "user_coupon_shares",
   indexes = {
     @Index(columnList = "open_id"),
+    @Index(columnList = "user_id"),
     @Index(columnList = "status"),
     @Index(columnList = "created_at"),
     @Index(columnList = "status, created_at")
@@ -44,34 +45,40 @@ import java.util.UUID;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class SellCouponGrant implements Serializable {
+public class UserCouponShare implements Serializable {
 
-  private static final long serialVersionUID = -3038221512328818034L;
+  private static final long serialVersionUID = 8239762727029852641L;
 
   @Id
   @Column(name = "id", nullable = false)
   private String id;
 
   @ManyToOne(cascade = CascadeType.REFRESH)
-  @JoinColumn(name = "sell_coupon_id")
-  private SellCoupon sellCoupon;
+  @JoinColumn(name = "coupon_id")
+  private Coupon coupon;
 
-  @Column(name = "open_id", nullable = false)
+  // indicate who did the share
+  @Column(name = "open_id")
   private String openId;
 
+  // or this is not a wechat user
+  @Column(name = "user_id")
+  private String userId;
+
+  // this is a redundant key since userCouponShareEntries
   @Column(name = "count", nullable = false)
   private Integer count;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false)
-  private SellCouponGrantStatus status = SellCouponGrantStatus.INPROGRESS;
-
   @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "sell_coupon_grant_id")
+  @JoinColumn(name = "user_coupon_share_id")
   @OptimisticLock(
     excluded = true
   ) // excluding user coupon share entry from triggering version increment
-  private List<SellCouponGrantEntry> sellCouponGrantEntries = new ArrayList<>();
+  private List<UserCouponShareEntry> userCouponShareEntries = new ArrayList<>();
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private UserCouponShareStatus status = UserCouponShareStatus.INPROGRESS;
 
   @CreatedDate
   @Column(name = "created_at")
@@ -87,31 +94,34 @@ public class SellCouponGrant implements Serializable {
   @Version private Integer rev;
 
   /**
-   * Add sell coupon grant entry.
+   * Add user coupon share entry.
    *
-   * @param sellCouponGrantEntry user coupon share entry.
+   * @param userCouponShareEntry user coupon share entry.
    */
-  public void addSellCouponGrantEntry(SellCouponGrantEntry sellCouponGrantEntry) {
-    sellCouponGrantEntries.add(sellCouponGrantEntry);
+  public void addUserCouponShareEntry(UserCouponShareEntry userCouponShareEntry) {
+    userCouponShareEntries.add(userCouponShareEntry);
   }
 
   /**
-   * new a sell coupon grant instance.
+   * new user coupon share instance.
    *
-   * @param openId open id.
-   * @param count count.
-   * @param sellCoupon sell coupon.
-   * @return sell coupon grant.
+   * @param coupon coupon.
+   * @param userCouponIdList user coupon id list.
+   * @return a new user coupon share instance.
    */
-  public static SellCouponGrant newInstance(String openId, Integer count, SellCoupon sellCoupon) {
-    SellCouponGrant sellCouponGrant = new SellCouponGrant();
+  public static UserCouponShare newInstance(Coupon coupon, List<Long> userCouponIdList) {
+    final UserCouponShare userCouponShare = new UserCouponShare();
     String uuid = UUID.randomUUID().toString();
-    sellCouponGrant.setId(uuid);
-    sellCouponGrant.setOpenId(openId);
-    sellCouponGrant.setCount(count);
-    sellCouponGrant.setExpiredAt(
-        ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
-    sellCouponGrant.setSellCoupon(sellCoupon);
-    return sellCouponGrant;
+    userCouponShare.setId(uuid);
+    Integer size = userCouponIdList.size();
+    userCouponShare.setCount(size);
+    userCouponShare.setExpiredAt(
+        ZonedDateTime.now().plusSeconds(Constants.USER_COUPON_SHARE_TIMEOUT));
+    userCouponShare.setCoupon(coupon);
+    userCouponIdList
+        .stream()
+        .map(UserCouponShareEntry::new)
+        .forEach(userCouponShare::addUserCouponShareEntry);
+    return userCouponShare;
   }
 }

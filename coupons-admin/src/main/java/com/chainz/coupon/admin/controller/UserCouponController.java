@@ -5,9 +5,12 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponGrantInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.core.model.UserCouponShare;
 import com.chainz.coupon.core.service.UserCouponService;
+import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.UserCouponsConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +120,25 @@ public class UserCouponController {
       @RequestBody @Valid UserCouponsConsumeRequest userCouponsConsumeRequest)
       throws UserCouponNotFoundException {
     userCouponService.consumeUserCoupon(userCouponsConsumeRequest.getIds());
+  }
+
+  /**
+   * Share user coupons.
+   *
+   * @param userCouponShareRequest  user coupon share request.
+   * @return share code
+   * @throws UserCouponNotFoundException user coupon not found exception.
+   */
+  @RequestMapping(
+    value = "/share",
+    method = RequestMethod.POST,
+    consumes = "application/json",
+    produces = "application/json"
+  )
+  public ShareCode shareUserCoupon(
+      @RequestBody @Valid UserCouponShareRequest userCouponShareRequest)
+      throws UserCouponNotFoundException {
+    return userCouponService.shareUserCoupon(userCouponShareRequest);
   }
 
   /**

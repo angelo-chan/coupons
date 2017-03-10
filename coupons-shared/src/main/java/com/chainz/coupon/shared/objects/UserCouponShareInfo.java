@@ -1,27 +1,27 @@
 package com.chainz.coupon.shared.objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.ZonedDateTime;
 
-/** Sell coupon grant info. */
-@Getter
-@Setter
-public class SellCouponGrantInfo {
+/**
+ * User coupon share grant.
+ */
+public class UserCouponShareInfo {
 
   private String id;
 
-  private SimpleSellCouponInfo sellCoupon;
+  private SimpleCouponInfo coupon;
 
   private String openId;
 
+  private String userId;
+
   private Integer count;
 
-  private Integer remain = 0;
+  private Integer remain;
 
-  private SellCouponGrantStatus status;
+  private UserCouponShareStatus status;
 
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
   private ZonedDateTime createdAt;

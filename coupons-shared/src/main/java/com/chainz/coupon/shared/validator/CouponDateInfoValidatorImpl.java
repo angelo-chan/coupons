@@ -5,6 +5,7 @@ import com.chainz.coupon.shared.objects.CouponDateType;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.time.LocalDate;
 
 /** CouponDateInfoValidator implementation. */
 public class CouponDateInfoValidatorImpl
@@ -19,7 +20,9 @@ public class CouponDateInfoValidatorImpl
     if (CouponDateType.DATE_TYPE_FIXED_TERM.toString().equals(couponDateInfo.getDateType())) {
       return couponDateInfo.getFixedBeginTerm() != null && couponDateInfo.getFixedTerm() != null;
     } else {
-      return couponDateInfo.getTimeRangeStart() != null && couponDateInfo.getTimeRangeEnd() != null;
+      LocalDate start = couponDateInfo.getTimeRangeStart();
+      LocalDate end = couponDateInfo.getTimeRangeEnd();
+      return start != null && end != null && !end.isBefore(start);
     }
   }
 }

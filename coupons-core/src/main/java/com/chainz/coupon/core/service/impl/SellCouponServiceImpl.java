@@ -21,7 +21,6 @@ import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.GrantCode;
-import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -34,8 +33,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /** Sell coupon service implementation. */
@@ -58,7 +55,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     String key = Constants.COUPON_GRANT_PREFIX + grantCode;
     CouponGrant couponGrant = couponGrantRedisTemplate.opsForValue().get(key);
     if (couponGrant == null) {
-      throw new InvalidGrantCodeException();
+      throw new InvalidGrantCodeException(grantCode);
     }
     Coupon coupon = couponRepository.findOne(couponGrant.getCouponId());
     if (coupon.getStatus() != CouponStatus.VERIFIED) {
@@ -128,21 +125,13 @@ public class SellCouponServiceImpl implements SellCouponService {
       throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
     }
     sellCoupon.setSku(sellCoupon.getSku() - count);
-    SellCouponGrant sellCouponGrant = new SellCouponGrant();
-    String uuid = UUID.randomUUID().toString();
-    sellCouponGrant.setId(uuid);
-    sellCouponGrant.setOpenId(openId);
-    sellCouponGrant.setCount(count);
-    sellCouponGrant.setRemain(count);
-    sellCouponGrant.setStatus(SellCouponGrantStatus.INPROGRESS);
-    sellCouponGrant.setExpiredAt(ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
-    sellCouponGrant.setSellCoupon(sellCoupon);
-    String key = Constants.SELL_COUPON_GRANT_PREFIX + uuid;
+    SellCouponGrant sellCouponGrant = SellCouponGrant.newInstance(openId, count, sellCoupon);
+    String key = Constants.SELL_COUPON_GRANT_PREFIX + sellCouponGrant.getId();
     sellCouponRepository.save(sellCoupon);
     sellCouponGrantRepository.save(sellCouponGrant);
     stringRedisTemplate
         .opsForValue()
         .set(key, count.toString(), Constants.SELL_COUPON_GRANT_TIMEOUT, TimeUnit.SECONDS);
-    return new GrantCode(uuid);
+    return new GrantCode(sellCouponGrant.getId());
   }
 }
