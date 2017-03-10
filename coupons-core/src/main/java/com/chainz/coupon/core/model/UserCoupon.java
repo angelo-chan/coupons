@@ -45,7 +45,9 @@ import java.time.ZonedDateTime;
     @Index(columnList = "user_id, status, begin_date, end_date"),
     @Index(columnList = "coupon_code"),
     @Index(columnList = "begin_date, end_date"),
-    @Index(columnList = "out_id")
+    @Index(columnList = "out_id"),
+    @Index(columnList = "status, store_id, id"),
+    @Index(columnList = "status, open_id, id")
   }
 )
 @DynamicInsert
