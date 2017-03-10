@@ -136,6 +136,7 @@ public class CouponServiceImpl implements CouponService {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
     coupon.setCirculation(coupon.getCirculation() + increment);
+    coupon.setSku(coupon.getSku() + increment);
     couponRepository.save(coupon);
   }
 

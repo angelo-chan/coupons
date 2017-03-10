@@ -1,12 +1,14 @@
 package com.chainz.coupon.shared.objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 
-/**
- * User coupon share grant.
- */
+/** User coupon share grant. */
+@Getter
+@Setter
 public class UserCouponShareInfo {
 
   private String id;

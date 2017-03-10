@@ -5,4 +5,4 @@ import com.chainz.coupon.core.repository.common.JoinFetchCapableQueryDslJpaRepos
 
 /** User coupon share repository. */
 public interface UserCouponShareRepository
-    extends JoinFetchCapableQueryDslJpaRepository<UserCouponShare, Long> {}
+    extends JoinFetchCapableQueryDslJpaRepository<UserCouponShare, String> {}

@@ -7,7 +7,7 @@ public class SellCouponGrantNotFoundException extends NotFoundException {
 
   /** String error code for the exception. */
   public static final String ERROR_CODE =
-      ExceptionCodeBase.NOT_FOUND_ERROR_BASE + "user_sell_coupon";
+      ExceptionCodeBase.NOT_FOUND_ERROR_BASE + "sell_coupon_grant";
 
   /** Numeric error code for the exception. */
   public static final int NUMERIC_ERROR_CODE = ExceptionCodeBase.NUMERIC_NOT_FOUND_ERROR_BASE + 5;
