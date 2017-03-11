@@ -41,7 +41,7 @@ import java.util.UUID;
     @Index(columnList = "user_id"),
     @Index(columnList = "status"),
     @Index(columnList = "created_at"),
-    @Index(columnList = "status, created_at")
+    @Index(columnList = "status,created_at")
   }
 )
 @DynamicInsert

@@ -36,9 +36,7 @@ import java.util.UUID;
   name = "sell_coupon_grants",
   indexes = {
     @Index(columnList = "open_id"),
-    @Index(columnList = "status"),
-    @Index(columnList = "created_at"),
-    @Index(columnList = "status, created_at")
+    @Index(columnList = "status,created_at")
   }
 )
 @DynamicInsert

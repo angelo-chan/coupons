@@ -258,6 +258,7 @@ public class UserCouponServiceImpl implements UserCouponService {
         .where(predicate)
         .set(userCoupon.status, UserCouponStatus.USED)
         .set(userCoupon.storeId, storeId)
+        .set(userCoupon.consumedAt, ZonedDateTime.now())
         .execute();
   }
 
@@ -291,6 +292,7 @@ public class UserCouponServiceImpl implements UserCouponService {
         .where(predicate)
         .set(userCoupon.status, UserCouponStatus.UNUSED)
         .set(userCoupon.storeId, (String) null)
+        .set(userCoupon.consumedAt, (ZonedDateTime) null)
         .execute();
   }
 

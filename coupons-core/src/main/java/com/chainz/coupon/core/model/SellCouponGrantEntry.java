@@ -13,6 +13,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
@@ -21,7 +22,16 @@ import java.time.ZonedDateTime;
 /** Sell coupon grant entry. */
 @Data
 @Entity
-@Table(name = "sell_coupon_grant_entries")
+@Table(
+  name = "sell_coupon_grant_entries",
+  indexes = {
+    @Index(columnList = "sell_open_id"),
+    @Index(columnList = "created_at"),
+    @Index(columnList = "sell_open_id,created_at"),
+    @Index(columnList = "created_at,coupon_code"),
+    @Index(columnList = "sell_open_id,created_at,coupon_code")
+  }
+)
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
@@ -48,10 +58,7 @@ public class SellCouponGrantEntry implements Serializable {
   @Column(name = "user_id")
   private String userId;
 
-  // indicate when get the user coupon
-  @Column(name = "got_at")
-  private ZonedDateTime gotAt = ZonedDateTime.now();
-
+  // indicate when get the user coupon from seller.
   @CreatedDate
   @Column(name = "created_at")
   private ZonedDateTime createdAt;

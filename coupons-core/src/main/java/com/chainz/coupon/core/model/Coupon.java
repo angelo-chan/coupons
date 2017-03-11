@@ -39,11 +39,11 @@ import java.util.Set;
 @Table(
   name = "coupons",
   indexes = {
-    @Index(columnList = "target"),
     @Index(columnList = "status"),
     @Index(columnList = "issuer_type"),
-    @Index(columnList = "issuer_id"),
-    @Index(columnList = "issuer_type, issuer_id")
+    @Index(columnList = "issuer_type,issuer_id"),
+    @Index(columnList = "issuer_type,status"),
+    @Index(columnList = "issuer_type,issuer_id,status")
   }
 )
 @DynamicInsert

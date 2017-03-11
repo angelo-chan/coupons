@@ -35,19 +35,15 @@ import java.time.ZonedDateTime;
   name = "user_coupons",
   indexes = {
     @Index(columnList = "open_id"),
-    @Index(columnList = "user_id"),
     @Index(columnList = "status"),
-    @Index(columnList = "open_id, status"),
-    @Index(columnList = "user_id, status"),
-    @Index(columnList = "open_id, status, end_date"),
-    @Index(columnList = "user_id, status, end_date"),
-    @Index(columnList = "open_id, status, begin_date, end_date"),
-    @Index(columnList = "user_id, status, begin_date, end_date"),
+    @Index(columnList = "open_id,status"),
+    @Index(columnList = "open_id,status,end_date"),
+    @Index(columnList = "id,open_id,status,begin_date,end_date"),
+    @Index(columnList = "id,open_id,coupon_id,status,end_date"),
     @Index(columnList = "coupon_code"),
-    @Index(columnList = "begin_date, end_date"),
-    @Index(columnList = "out_id"),
-    @Index(columnList = "status, store_id, id"),
-    @Index(columnList = "status, open_id, id")
+    @Index(columnList = "coupon_code,consumed_at"),
+    @Index(columnList = "id,status,store_id"),
+    @Index(columnList = "id,status,open_id")
   }
 )
 @DynamicInsert
@@ -104,6 +100,9 @@ public class UserCoupon implements Serializable {
   // the last user get the coupon at
   @Column(name = "got_at")
   private ZonedDateTime gotAt = ZonedDateTime.now();
+
+  @Column(name = "consumed_at")
+  private ZonedDateTime consumedAt;
 
   @CreatedDate
   @Column(name = "created_at")
