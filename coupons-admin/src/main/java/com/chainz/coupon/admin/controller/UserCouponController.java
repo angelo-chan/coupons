@@ -3,9 +3,7 @@ package com.chainz.coupon.admin.controller;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
-import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
@@ -45,7 +43,6 @@ public class UserCouponController {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
-   * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
   @RequestMapping(
     value = "/granted/{grantCode}",
@@ -54,8 +51,7 @@ public class UserCouponController {
   )
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantStatusConflictException {
+      throws InvalidGrantCodeException, CouponStatusConflictException {
     userCouponService.granted(grantCode);
   }
 
@@ -64,7 +60,6 @@ public class UserCouponController {
    *
    * @param shareCode grant code.
    * @throws InvalidShareCodeException invalid share code.
-   * @throws UserCouponShareStatusConflictException user coupon share status conflict.
    */
   @RequestMapping(
     value = "/shared/{shareCode}",
@@ -72,8 +67,7 @@ public class UserCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void shared(@PathVariable String shareCode)
-      throws InvalidShareCodeException, UserCouponShareStatusConflictException {
+  public void shared(@PathVariable String shareCode) throws InvalidShareCodeException {
     userCouponService.shared(shareCode);
   }
 

@@ -6,9 +6,7 @@ import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
-import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
@@ -70,8 +68,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Transactional
   public void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantStatusConflictException {
+      throws InvalidGrantCodeException, CouponStatusConflictException {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
     String valueString = stringRedisTemplate.opsForValue().get(key);
     if (valueString == null) {
@@ -85,10 +82,6 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     try {
       SellCouponGrant sellCouponGrant = sellCouponGrantRepository.findOne(grantCode);
-      if (sellCouponGrant.getStatus() != SellCouponGrantStatus.INPROGRESS) {
-        throw new SellCouponGrantStatusConflictException(
-            sellCouponGrant.getId(), sellCouponGrant.getStatus());
-      }
       Coupon coupon = sellCouponGrant.getSellCoupon().getCoupon();
       if (coupon.getStatus() == CouponStatus.INVALID) {
         throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
@@ -124,8 +117,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void shared(String shareCode)
-      throws InvalidShareCodeException, UserCouponShareStatusConflictException {
+  public void shared(String shareCode) throws InvalidShareCodeException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
     if (count == 0) {
@@ -139,10 +131,6 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     try {
       UserCouponShare userCouponShare = userCouponShareRepository.findOne(shareCode);
-      if (userCouponShare.getStatus() != UserCouponShareStatus.INPROGRESS) {
-        throw new UserCouponShareStatusConflictException(
-            userCouponShare.getId(), userCouponShare.getStatus());
-      }
 
       Operator operator = OperatorManager.getOperator();
       ZonedDateTime now = ZonedDateTime.now();

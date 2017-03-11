@@ -3,15 +3,13 @@ package com.chainz.coupon.core.service;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
-import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
-import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
-import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
@@ -23,21 +21,16 @@ public interface UserCouponService {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
-   * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
-  void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException,
-          SellCouponGrantStatusConflictException;
+  void granted(String grantCode) throws InvalidGrantCodeException, CouponStatusConflictException;
 
   /**
    * get user coupon from other user by share code.
    *
    * @param shareCode share code.
    * @throws InvalidShareCodeException invalid share code.
-   * @throws UserCouponShareStatusConflictException user coupon share status conflict.
    */
-  void shared(String shareCode)
-      throws InvalidShareCodeException, UserCouponShareStatusConflictException;
+  void shared(String shareCode) throws InvalidShareCodeException;
 
   /**
    * Get user coupon by id.
@@ -70,14 +63,17 @@ public interface UserCouponService {
    * @param userCouponConsumeRequest user coupon .
    * @throws UserCouponNotFoundException user coupon not found.
    */
-  void consumeUserCoupon(UserCouponConsumeRequest userCouponConsumeRequest) throws UserCouponNotFoundException;
+  void consumeUserCoupon(UserCouponConsumeRequest userCouponConsumeRequest)
+      throws UserCouponNotFoundException;
 
   /**
    * Return user coupons.
+   *
    * @param userCouponReturnRequest user coupon return request.
-   * @throws UserCouponNotFoundException  user coupon not found.
+   * @throws UserCouponNotFoundException user coupon not found.
    */
-  void returnUserCoupon(UserCouponReturnRequest userCouponReturnRequest) throws UserCouponNotFoundException;
+  void returnUserCoupon(UserCouponReturnRequest userCouponReturnRequest)
+      throws UserCouponNotFoundException;
 
   /**
    * Share user coupons.
