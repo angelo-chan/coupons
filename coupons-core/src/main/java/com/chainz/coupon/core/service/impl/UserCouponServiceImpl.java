@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -128,12 +129,13 @@ public class UserCouponServiceImpl implements UserCouponService {
       throw new InvalidShareCodeException(shareCode);
     }
     Long userCouponId = Long.parseLong(value);
+    ZonedDateTime now = ZonedDateTime.now();
+    UserCouponShare userCouponShare = null;
 
     try {
-      UserCouponShare userCouponShare = userCouponShareRepository.findOne(shareCode);
+      userCouponShare = userCouponShareRepository.findOne(shareCode);
 
       Operator operator = OperatorManager.getOperator();
-      ZonedDateTime now = ZonedDateTime.now();
       // set user coupon
       UserCoupon userCoupon = userCouponRepository.findOne(userCouponId);
       userCoupon.setFromOpenId(userCoupon.getOpenId());
@@ -158,6 +160,13 @@ public class UserCouponServiceImpl implements UserCouponService {
       userCouponShareRepository.save(userCouponShare);
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForList().rightPush(key, value);
+      if (count == 1 && userCouponShare != null) {
+        // the list has been deleted after the pop, so will reset the expire for the new push
+        stringRedisTemplate.expire(
+            key,
+            Duration.between(now, userCouponShare.getExpiredAt()).getSeconds(),
+            TimeUnit.SECONDS);
+      }
       throw e;
     }
   }
