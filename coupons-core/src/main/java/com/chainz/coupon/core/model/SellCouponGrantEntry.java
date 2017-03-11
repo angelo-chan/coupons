@@ -27,9 +27,8 @@ import java.time.ZonedDateTime;
   indexes = {
     @Index(columnList = "sell_open_id"),
     @Index(columnList = "created_at"),
-    @Index(columnList = "sell_open_id,created_at"),
-    @Index(columnList = "created_at,coupon_code"),
-    @Index(columnList = "sell_open_id,created_at,coupon_code")
+    @Index(columnList = "coupon_code"),
+    @Index(columnList = "sell_open_id, created_at")
   }
 )
 @DynamicInsert

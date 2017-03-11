@@ -58,7 +58,7 @@ public class CouponController {
       @RequestParam(value = "q", required = false) String q,
       @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
       @Min(1) @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
-      @Pattern(regexp = "id|openId|user|brandName|target|createdAt")
+      @Pattern(regexp = "id|createdAt")
           @RequestParam(value = "sort", required = false, defaultValue = "id")
           String sort,
       @Pattern(regexp = "asc|desc")

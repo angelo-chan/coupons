@@ -38,10 +38,8 @@ import java.util.UUID;
   name = "user_coupon_shares",
   indexes = {
     @Index(columnList = "open_id"),
-    @Index(columnList = "user_id"),
-    @Index(columnList = "status"),
     @Index(columnList = "created_at"),
-    @Index(columnList = "status,created_at")
+    @Index(columnList = "created_at, status")
   }
 )
 @DynamicInsert
