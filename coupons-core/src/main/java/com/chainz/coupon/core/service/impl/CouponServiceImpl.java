@@ -154,7 +154,7 @@ public class CouponServiceImpl implements CouponService {
       if (CouponIssuerType.SYSTEM == issuerType) {
         predicate = coupon.issuer.issuerType.eq(issuerType);
       } else if (issuerId != null) {
-        predicate = predicate.and(coupon.issuer.issuerId.eq(issuerId));
+        predicate = coupon.issuer.issuerId.eq(issuerId);
       }
     }
     if (status != null) {
