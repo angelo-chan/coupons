@@ -14,7 +14,7 @@ import java.util.List;
 public class UserCouponConsumeRequest {
 
   @NotNull
-  @Min(1)
+  @Size(min = 1)
   private String storeId;
 
   @NotNull
