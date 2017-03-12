@@ -36,11 +36,7 @@ import java.util.UUID;
 @Entity
 @Table(
   name = "user_coupon_shares",
-  indexes = {
-    @Index(columnList = "open_id"),
-    @Index(columnList = "created_at"),
-    @Index(columnList = "created_at, status")
-  }
+  indexes = {@Index(columnList = "open_id"), @Index(columnList = "created_at")}
 )
 @DynamicInsert
 @DynamicUpdate

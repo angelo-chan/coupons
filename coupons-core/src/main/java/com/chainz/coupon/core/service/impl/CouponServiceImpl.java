@@ -151,8 +151,9 @@ public class CouponServiceImpl implements CouponService {
     QCoupon coupon = QCoupon.coupon;
     BooleanExpression predicate = null;
     if (issuerType != null) {
-      predicate = coupon.issuer.issuerType.eq(issuerType);
-      if (CouponIssuerType.SYSTEM != issuerType && issuerId != null) {
+      if (CouponIssuerType.SYSTEM == issuerType) {
+        predicate = coupon.issuer.issuerType.eq(issuerType);
+      } else if (issuerId != null) {
         predicate = predicate.and(coupon.issuer.issuerId.eq(issuerId));
       }
     }

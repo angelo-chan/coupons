@@ -194,8 +194,8 @@ public class UserCouponServiceImpl implements UserCouponService {
         userCoupon
             .openId
             .eq(openId)
-            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-            .and(userCoupon.endDate.goe(LocalDate.now()));
+            .and(userCoupon.endDate.goe(LocalDate.now()))
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     Page<UserCoupon> userCoupons =
         userCouponRepository.findAll(predicate, pageable, JoinDescriptor.join(userCoupon.coupon));
     return new PaginatedApiResult<>(
@@ -217,8 +217,8 @@ public class UserCouponServiceImpl implements UserCouponService {
         userCoupon
             .openId
             .eq(openId)
-            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-            .and(userCoupon.endDate.lt(LocalDate.now()));
+            .and(userCoupon.endDate.lt(LocalDate.now()))
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     Page<UserCoupon> userCoupons =
         userCouponRepository.findAll(predicate, pageable, JoinDescriptor.join(userCoupon.coupon));
     return new PaginatedApiResult<>(
@@ -242,12 +242,12 @@ public class UserCouponServiceImpl implements UserCouponService {
     LocalDate now = LocalDate.now();
     BooleanExpression predicate =
         userCoupon
-            .openId
-            .eq(openId)
+            .id
+            .in(userCouponIdList)
+            .and(userCoupon.openId.eq(openId))
             .and(userCoupon.beginDate.loe(now))
             .and(userCoupon.endDate.goe(now))
-            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-            .and(userCoupon.id.in(userCouponIdList));
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
     long count = query.from(userCoupon).where(predicate).fetchCount();
     if (count != userCouponIdList.size()) {
@@ -274,7 +274,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
     QUserCoupon userCoupon = QUserCoupon.userCoupon;
     BooleanExpression predicate =
-        userCoupon.status.eq(UserCouponStatus.USED).and(userCoupon.id.in(userCouponIdList));
+        userCoupon.id.in(userCouponIdList).and(userCoupon.status.eq(UserCouponStatus.USED));
     if (operator.isClient()) {
       String openId = operator.getOpenId();
       predicate = predicate.and(userCoupon.openId.eq(openId));
@@ -309,12 +309,12 @@ public class UserCouponServiceImpl implements UserCouponService {
     LocalDate now = LocalDate.now();
     BooleanExpression predicate =
         userCoupon
-            .openId
-            .eq(openId)
+            .id
+            .in(userCouponIdList)
+            .and(userCoupon.openId.eq(openId))
             .and(userCoupon.coupon.id.eq(couponId))
             .and(userCoupon.endDate.goe(now))
-            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-            .and(userCoupon.id.in(userCouponIdList));
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
     long count = query.from(userCoupon).where(predicate).fetchCount();
     if (count != userCouponIdList.size()) {
