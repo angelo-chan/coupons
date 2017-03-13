@@ -93,6 +93,8 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
     sellCoupon.setSku(sellCoupon.getSku() + returnCount);
     sellCouponGrantRepository.save(sellCouponGrant);
     sellCouponRepository.save(sellCoupon);
+    String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
+    stringRedisTemplate.delete(key);
     log.debug(
         "success to abort sell coupon grant: {}, and return {} sell coupon",
         grantCode,
