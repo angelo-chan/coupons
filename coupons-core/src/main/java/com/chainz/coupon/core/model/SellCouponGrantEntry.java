@@ -7,13 +7,17 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
@@ -57,6 +61,10 @@ public class SellCouponGrantEntry implements Serializable {
   @Column(name = "user_id")
   private String userId;
 
+  @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "sell_coupon_grant_id")
+  private SellCouponGrant sellCouponGrant;
+
   // indicate when get the user coupon from seller.
   @CreatedDate
   @Column(name = "created_at")
@@ -74,11 +82,14 @@ public class SellCouponGrantEntry implements Serializable {
   /**
    * Constructor.
    *
+   * @param sellCouponGrant sell coupon grant.
    * @param sellOpenId sell open id.
    * @param openId open id.
    * @param couponCode coupon code.
    */
-  public SellCouponGrantEntry(String sellOpenId, String openId, String couponCode) {
+  public SellCouponGrantEntry(
+      SellCouponGrant sellCouponGrant, String sellOpenId, String openId, String couponCode) {
+    this.sellCouponGrant = sellCouponGrant;
     this.sellOpenId = sellOpenId;
     this.openId = openId;
     this.couponCode = couponCode;

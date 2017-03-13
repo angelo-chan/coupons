@@ -61,13 +61,6 @@ public class SellCouponGrant implements Serializable {
   @Column(name = "status", nullable = false)
   private SellCouponGrantStatus status = SellCouponGrantStatus.INPROGRESS;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "sell_coupon_grant_id")
-  @OptimisticLock(
-    excluded = true
-  ) // excluding user coupon share entry from triggering version increment
-  private List<SellCouponGrantEntry> sellCouponGrantEntries = new ArrayList<>();
-
   @CreatedDate
   @Column(name = "created_at")
   private ZonedDateTime createdAt;
@@ -80,15 +73,6 @@ public class SellCouponGrant implements Serializable {
   private ZonedDateTime expiredAt;
 
   @Version private Integer rev;
-
-  /**
-   * Add sell coupon grant entry.
-   *
-   * @param sellCouponGrantEntry user coupon share entry.
-   */
-  public void addSellCouponGrantEntry(SellCouponGrantEntry sellCouponGrantEntry) {
-    sellCouponGrantEntries.add(sellCouponGrantEntry);
-  }
 
   /**
    * new a sell coupon grant instance.

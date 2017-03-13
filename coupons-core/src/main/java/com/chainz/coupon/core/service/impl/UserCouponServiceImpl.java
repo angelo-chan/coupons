@@ -15,6 +15,7 @@ import com.chainz.coupon.core.model.UserCoupon;
 import com.chainz.coupon.core.model.UserCouponShare;
 import com.chainz.coupon.core.model.UserCouponShareEntry;
 import com.chainz.coupon.core.repository.CouponRepository;
+import com.chainz.coupon.core.repository.SellCouponGrantEntryRepository;
 import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.UserCouponRepository;
 import com.chainz.coupon.core.repository.UserCouponShareRepository;
@@ -60,6 +61,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Autowired private StringRedisTemplate stringRedisTemplate;
   @Autowired private MapperFacade mapperFacade;
   @Autowired private SellCouponGrantRepository sellCouponGrantRepository;
+  @Autowired private SellCouponGrantEntryRepository sellCouponGrantEntryRepository;
   @Autowired private UserCouponRepository userCouponRepository;
   @Autowired private CouponRepository couponRepository;
   @Autowired private EntityManager entityManager;
@@ -101,13 +103,13 @@ public class UserCouponServiceImpl implements UserCouponService {
 
       // new sell coupon grant entry
       SellCouponGrantEntry sellCouponGrantEntry =
-          new SellCouponGrantEntry(sellCouponGrant.getOpenId(), operator.getOpenId(), couponCode);
+          new SellCouponGrantEntry(
+              sellCouponGrant, sellCouponGrant.getOpenId(), operator.getOpenId(), couponCode);
       if (value == 0) {
         sellCouponGrant.setStatus(SellCouponGrantStatus.COMPLETED);
+        sellCouponGrantRepository.save(sellCouponGrant);
       }
-      sellCouponGrant.addSellCouponGrantEntry(sellCouponGrantEntry);
-
-      sellCouponGrantRepository.save(sellCouponGrant);
+      sellCouponGrantEntryRepository.save(sellCouponGrantEntry);
       userCouponRepository.save(userCoupon);
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForValue().increment(key, 1);
