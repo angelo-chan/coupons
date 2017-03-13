@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service.impl;
 
+import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
@@ -67,6 +68,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Autowired private CouponRepository couponRepository;
   @Autowired private EntityManager entityManager;
   @Autowired private UserCouponShareRepository userCouponShareRepository;
+  @Autowired private TimeoutConfig timeoutConfig;
 
   @Override
   @ClientPermission
@@ -332,7 +334,8 @@ public class UserCouponServiceImpl implements UserCouponService {
       throw new UserCouponNotFoundException(userCouponIdList);
     }
     Coupon coupon = couponRepository.findOne(couponId);
-    UserCouponShare userCouponShare = UserCouponShare.newInstance(coupon, userCouponIdList);
+    UserCouponShare userCouponShare =
+        UserCouponShare.newInstance(coupon, userCouponIdList, timeoutConfig.getUserCouponShare());
     userCouponShare.setOpenId(openId);
     userCouponShareRepository.save(userCouponShare);
     predicate = userCoupon.id.in(userCouponIdList);
@@ -344,7 +347,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     List<String> userCouponIdStringList =
         userCouponIdList.stream().map(String::valueOf).collect(Collectors.toList());
     stringRedisTemplate.opsForList().leftPushAll(key, userCouponIdStringList);
-    stringRedisTemplate.expire(key, Constants.USER_COUPON_SHARE_TIMEOUT, TimeUnit.SECONDS);
+    stringRedisTemplate.expire(key, timeoutConfig.getUserCouponShare(), TimeUnit.SECONDS);
     return new ShareCode(userCouponShare.getId());
   }
 }

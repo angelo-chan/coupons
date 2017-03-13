@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service.impl;
 
+import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
@@ -47,6 +48,8 @@ public class CouponServiceImpl implements CouponService {
   @Autowired private MapperFacade mapperFacade;
 
   @Autowired private RedisTemplate<String, CouponGrant> couponGrantRedisTemplate;
+
+  @Autowired private TimeoutConfig timeoutConfig;
 
   @Override
   @Transactional(readOnly = true)
@@ -199,7 +202,7 @@ public class CouponServiceImpl implements CouponService {
           .set(
               Constants.COUPON_GRANT_PREFIX + key,
               couponGrant,
-              Constants.COUPON_GRANT_TIMEOUT,
+              timeoutConfig.getCouponGrant(),
               TimeUnit.SECONDS);
       return new GrantCode(key);
     }

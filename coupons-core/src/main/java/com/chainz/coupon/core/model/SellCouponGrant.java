@@ -1,6 +1,5 @@
 package com.chainz.coupon.core.model;
 
-import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,9 +28,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-/**
- * Coupon model defines a coupon template which could be used to generate coupon instance.
- */
+/** Coupon model defines a coupon template which could be used to generate coupon instance. */
 @Getter
 @Setter
 @ToString
@@ -77,25 +74,25 @@ public class SellCouponGrant implements Serializable {
   @Column(name = "expired_at")
   private ZonedDateTime expiredAt;
 
-  @Version
-  private Integer rev;
+  @Version private Integer rev;
 
   /**
    * new a sell coupon grant instance.
    *
-   * @param openId     open id.
-   * @param count      count.
+   * @param openId open id.
+   * @param count count.
    * @param sellCoupon sell coupon.
+   * @param sellCouponGrantTimeout sell coupon grant timeout.
    * @return sell coupon grant.
    */
-  public static SellCouponGrant newInstance(String openId, Integer count, SellCoupon sellCoupon) {
+  public static SellCouponGrant newInstance(
+      String openId, Integer count, SellCoupon sellCoupon, int sellCouponGrantTimeout) {
     SellCouponGrant sellCouponGrant = new SellCouponGrant();
     String uuid = UUID.randomUUID().toString();
     sellCouponGrant.setId(uuid);
     sellCouponGrant.setOpenId(openId);
     sellCouponGrant.setCount(count);
-    sellCouponGrant.setExpiredAt(
-      ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
+    sellCouponGrant.setExpiredAt(ZonedDateTime.now().plusSeconds(sellCouponGrantTimeout));
     sellCouponGrant.setSellCoupon(sellCoupon);
     return sellCouponGrant;
   }

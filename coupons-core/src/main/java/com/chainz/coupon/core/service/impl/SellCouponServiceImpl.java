@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service.impl;
 
+import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
@@ -46,6 +47,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Autowired private MapperFacade mapperFacade;
   @Autowired private SellCouponGrantRepository sellCouponGrantRepository;
   @Autowired private StringRedisTemplate stringRedisTemplate;
+  @Autowired private TimeoutConfig timeoutConfig;
 
   @Override
   @ClientPermission
@@ -129,13 +131,14 @@ public class SellCouponServiceImpl implements SellCouponService {
       throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
     }
     sellCoupon.setSku(sellCoupon.getSku() - count);
-    SellCouponGrant sellCouponGrant = SellCouponGrant.newInstance(openId, count, sellCoupon);
+    SellCouponGrant sellCouponGrant =
+        SellCouponGrant.newInstance(openId, count, sellCoupon, timeoutConfig.getSellCouponGrant());
     String key = Constants.SELL_COUPON_GRANT_PREFIX + sellCouponGrant.getId();
     sellCouponRepository.save(sellCoupon);
     sellCouponGrantRepository.save(sellCouponGrant);
     stringRedisTemplate
         .opsForValue()
-        .set(key, count.toString(), Constants.SELL_COUPON_GRANT_TIMEOUT, TimeUnit.SECONDS);
+        .set(key, count.toString(), timeoutConfig.getSellCouponGrant(), TimeUnit.SECONDS);
     return new GrantCode(sellCouponGrant.getId());
   }
 }

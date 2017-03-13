@@ -28,6 +28,11 @@ spring:
       min-idle: 0
     timeout: 1000
 
+coupons:
+  timeout:
+    coupon-grant: 86400
+    sell-coupon-grant: 86400
+    user-coupon-share: 86400
 
 endpoints:
   health:
@@ -58,12 +63,24 @@ logging:
 #    org.hibernate: INFO
 #    org.hibernate.type: trace
 
+coupons:
+  timeout:
+    coupon-grant: 600
+    sell-coupon-grant: 600
+    user-coupon-share: 600
+
 ---
 spring:
   profiles: ci
 logging:
   level:
     com.chainz.coupon: INFO
+
+coupons:
+  timeout:
+    coupon-grant: 600
+    sell-coupon-grant: 600
+    user-coupon-share: 600
 
 ---
 spring:

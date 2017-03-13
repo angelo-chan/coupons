@@ -1,6 +1,5 @@
 package com.chainz.coupon.core.model;
 
-import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.UserCouponShareStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,9 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * user coupon shares.
- */
+/** user coupon shares. */
 @Getter
 @Setter
 @ToString
@@ -97,8 +94,7 @@ public class UserCouponShare implements Serializable {
   @Column(name = "expired_at")
   private ZonedDateTime expiredAt;
 
-  @Version
-  private Integer rev;
+  @Version private Integer rev;
 
   /**
    * Add user coupon share entry.
@@ -112,23 +108,24 @@ public class UserCouponShare implements Serializable {
   /**
    * new user coupon share instance.
    *
-   * @param coupon           coupon.
+   * @param coupon coupon.
    * @param userCouponIdList user coupon id list.
+   * @param userCouponShareTimeout user coupon share timeout.
    * @return a new user coupon share instance.
    */
-  public static UserCouponShare newInstance(Coupon coupon, List<Long> userCouponIdList) {
+  public static UserCouponShare newInstance(
+      Coupon coupon, List<Long> userCouponIdList, int userCouponShareTimeout) {
     final UserCouponShare userCouponShare = new UserCouponShare();
     String uuid = UUID.randomUUID().toString();
     userCouponShare.setId(uuid);
     Integer size = userCouponIdList.size();
     userCouponShare.setCount(size);
-    userCouponShare.setExpiredAt(
-      ZonedDateTime.now().plusSeconds(Constants.USER_COUPON_SHARE_TIMEOUT));
+    userCouponShare.setExpiredAt(ZonedDateTime.now().plusSeconds(userCouponShareTimeout));
     userCouponShare.setCoupon(coupon);
     userCouponIdList
-      .stream()
-      .map(UserCouponShareEntry::new)
-      .forEach(userCouponShare::addUserCouponShareEntry);
+        .stream()
+        .map(UserCouponShareEntry::new)
+        .forEach(userCouponShare::addUserCouponShareEntry);
     return userCouponShare;
   }
 }
