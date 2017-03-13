@@ -81,13 +81,17 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
       throw new SellCouponGrantNotFoundException(grantCode);
     }
     log.debug("begin to abort sell coupon grant: {}", grantCode);
-    sellCouponGrant.setStatus(SellCouponGrantStatus.ABORTED);
     QSellCouponGrantEntry qSellCouponGrantEntry = QSellCouponGrantEntry.sellCouponGrantEntry;
     Long grantedCount =
         sellCouponGrantEntryRepository.count(
             qSellCouponGrantEntry.sellCouponGrant.eq(sellCouponGrant));
 
-    log.debug("found granted count: {} for sell coupon grant: {}", grantedCount, grantCode);
+    log.debug(
+        "found granted count: {} of {} for sell coupon grant: {}",
+        grantedCount,
+        sellCouponGrant.getCount(),
+        grantCode);
+    sellCouponGrant.setStatus(SellCouponGrantStatus.ABORTED);
     Integer returnCount = sellCouponGrant.getCount() - grantedCount.intValue();
     SellCoupon sellCoupon = sellCouponGrant.getSellCoupon();
     sellCoupon.setSku(sellCoupon.getSku() + returnCount);

@@ -14,4 +14,11 @@ public interface UserCouponShareService {
    * @throws UserCouponShareNotFoundException user coupon share not found.
    */
   UserCouponShareInfo getUserCouponShare(String shareCode) throws UserCouponShareNotFoundException;
+
+  /**
+   * abort user coupon share.
+   *
+   * @param shareCode grant code.
+   */
+  void abortUserCouponShare(String shareCode) throws UserCouponShareNotFoundException;
 }

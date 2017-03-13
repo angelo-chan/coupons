@@ -4,10 +4,12 @@ import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
 import com.chainz.coupon.core.service.UserCouponShareService;
 import com.chainz.coupon.shared.objects.UserCouponShareInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /** user coupon share controller. */
@@ -29,5 +31,22 @@ public class UserCouponShareController {
   public UserCouponShareInfo getSellCouponGrant(@PathVariable String shareCode)
       throws UserCouponShareNotFoundException {
     return userCouponShareService.getUserCouponShare(shareCode);
+  }
+
+  /**
+   * Abort user coupon share.
+   *
+   * @param shareCode share code.
+   * @throws UserCouponShareNotFoundException user coupon share not found.
+   */
+  @RequestMapping(
+    value = "/{shareCode}/aborted",
+    method = RequestMethod.POST,
+    produces = "application/json"
+  )
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void abortUserCouponShare(@PathVariable String shareCode)
+      throws UserCouponShareNotFoundException {
+    userCouponShareService.abortUserCouponShare(shareCode);
   }
 }

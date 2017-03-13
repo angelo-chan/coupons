@@ -4,5 +4,6 @@ package com.chainz.coupon.shared.objects;
 public enum UserCouponShareStatus {
   INPROGRESS,
   COMPLETED,
-  EXPIRED
+  EXPIRED,
+  ABORTED
 }
