@@ -2,8 +2,10 @@ package com.chainz.coupon.core.service.impl;
 
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
+import com.chainz.coupon.core.model.QUserCouponShare;
 import com.chainz.coupon.core.model.UserCouponShare;
 import com.chainz.coupon.core.repository.UserCouponShareRepository;
+import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.UserCouponShareService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.UserCouponShareInfo;
@@ -27,7 +29,11 @@ public class UserCouponShareServiceImpl implements UserCouponShareService {
   @Transactional(readOnly = true)
   public UserCouponShareInfo getUserCouponShare(String shareCode)
       throws UserCouponShareNotFoundException {
-    UserCouponShare userCouponShare = userCouponShareRepository.findOne(shareCode);
+    // use predicate and join to avoid lazy load
+    QUserCouponShare qUserCouponShare = QUserCouponShare.userCouponShare;
+    UserCouponShare userCouponShare =
+        userCouponShareRepository.findOne(
+            qUserCouponShare.id.eq(shareCode), JoinDescriptor.join(qUserCouponShare.coupon));
     if (userCouponShare == null) {
       throw new UserCouponShareNotFoundException(shareCode);
     }

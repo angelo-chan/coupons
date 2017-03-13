@@ -2,10 +2,12 @@ package com.chainz.coupon.core.model;
 
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OptimisticLock;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,21 +18,24 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-/** Coupon model defines a coupon template which could be used to generate coupon instance. */
-@Data
+/**
+ * Coupon model defines a coupon template which could be used to generate coupon instance.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(
   name = "sell_coupon_grants",
@@ -47,7 +52,7 @@ public class SellCouponGrant implements Serializable {
   @Column(name = "id", nullable = false)
   private String id;
 
-  @ManyToOne(cascade = CascadeType.REFRESH)
+  @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
   @JoinColumn(name = "sell_coupon_id")
   private SellCoupon sellCoupon;
 
@@ -72,13 +77,14 @@ public class SellCouponGrant implements Serializable {
   @Column(name = "expired_at")
   private ZonedDateTime expiredAt;
 
-  @Version private Integer rev;
+  @Version
+  private Integer rev;
 
   /**
    * new a sell coupon grant instance.
    *
-   * @param openId open id.
-   * @param count count.
+   * @param openId     open id.
+   * @param count      count.
    * @param sellCoupon sell coupon.
    * @return sell coupon grant.
    */
@@ -89,7 +95,7 @@ public class SellCouponGrant implements Serializable {
     sellCouponGrant.setOpenId(openId);
     sellCouponGrant.setCount(count);
     sellCouponGrant.setExpiredAt(
-        ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
+      ZonedDateTime.now().plusSeconds(Constants.SELL_COUPON_GRANT_TIMEOUT));
     sellCouponGrant.setSellCoupon(sellCoupon);
     return sellCouponGrant;
   }

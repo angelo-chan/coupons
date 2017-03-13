@@ -1,6 +1,9 @@
 package com.chainz.coupon.core.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,8 +21,13 @@ import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-/** User coupon share entry. */
-@Data
+/**
+ * User coupon share entry.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "user_coupon_share_entries")
 @DynamicInsert
@@ -60,8 +68,11 @@ public class UserCouponShareEntry implements Serializable {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
-  /** Default constructor. */
-  public UserCouponShareEntry() {}
+  /**
+   * Default constructor.
+   */
+  public UserCouponShareEntry() {
+  }
 
   /**
    * Constructor.
@@ -72,5 +83,6 @@ public class UserCouponShareEntry implements Serializable {
     this.userCouponId = userCouponId;
   }
 
-  @Version private Integer rev;
+  @Version
+  private Integer rev;
 }

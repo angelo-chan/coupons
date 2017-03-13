@@ -4,5 +4,6 @@ package com.chainz.coupon.shared.objects;
 public enum SellCouponGrantStatus {
   INPROGRESS,
   COMPLETED,
-  EXPIRED
+  EXPIRED,
+  ABORTED
 }

@@ -14,4 +14,11 @@ public interface SellCouponGrantService {
    * @throws SellCouponGrantNotFoundException sell coupon grant not found.
    */
   SellCouponGrantInfo getSellCouponGrant(String grantCode) throws SellCouponGrantNotFoundException;
+
+  /**
+   * abort sell coupon grant.
+   *
+   * @param grantCode grant code.
+   */
+  void abortSellCouponGrant(String grantCode) throws SellCouponGrantNotFoundException;
 }

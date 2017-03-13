@@ -1,6 +1,9 @@
 package com.chainz.coupon.core.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,8 +26,13 @@ import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-/** Sell coupon grant entry. */
-@Data
+/**
+ * Sell coupon grant entry.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(
   name = "sell_coupon_grant_entries",
@@ -47,6 +55,7 @@ public class SellCouponGrantEntry implements Serializable {
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
+  // indicate the seller's openId
   @Column(name = "sell_open_id")
   private String sellOpenId;
 
@@ -74,21 +83,25 @@ public class SellCouponGrantEntry implements Serializable {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
-  @Version private Integer rev;
+  @Version
+  private Integer rev;
 
-  /** Default constructor. */
-  public SellCouponGrantEntry() {}
+  /**
+   * Default constructor.
+   */
+  public SellCouponGrantEntry() {
+  }
 
   /**
    * Constructor.
    *
    * @param sellCouponGrant sell coupon grant.
-   * @param sellOpenId sell open id.
-   * @param openId open id.
-   * @param couponCode coupon code.
+   * @param sellOpenId      sell open id.
+   * @param openId          open id.
+   * @param couponCode      coupon code.
    */
   public SellCouponGrantEntry(
-      SellCouponGrant sellCouponGrant, String sellOpenId, String openId, String couponCode) {
+    SellCouponGrant sellCouponGrant, String sellOpenId, String openId, String couponCode) {
     this.sellCouponGrant = sellCouponGrant;
     this.sellOpenId = sellOpenId;
     this.openId = openId;

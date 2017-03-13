@@ -3,7 +3,10 @@ package com.chainz.coupon.core.model;
 import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.OutId;
 import com.chainz.coupon.shared.objects.UserCouponStatus;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,8 +32,13 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
-/** User coupon represent a coupon instance. */
-@Data
+/**
+ * User coupon represent a coupon instance.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(
   name = "user_coupons",
@@ -54,14 +63,16 @@ public class UserCoupon implements Serializable {
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.REFRESH)
+  @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
   @JoinColumn(name = "coupon_id")
   private Coupon coupon;
 
   @Column(name = "open_id")
   private String openId;
 
-  /** will be used in future. */
+  /**
+   * will be used in future.
+   */
   @Column(name = "user_id")
   private String userId;
 
@@ -82,7 +93,9 @@ public class UserCoupon implements Serializable {
   @Column(name = "status")
   private UserCouponStatus status = UserCouponStatus.UNUSED;
 
-  /** Indicate which store consumes the coupon. */
+  /**
+   * Indicate which store consumes the coupon.
+   */
   @Column(name = "store_id")
   private String storeId;
 
@@ -108,7 +121,8 @@ public class UserCoupon implements Serializable {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
-  @Version private Integer rev;
+  @Version
+  private Integer rev;
 
   /**
    * New a user coupon from coupon.

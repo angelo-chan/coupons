@@ -8,6 +8,7 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.model.Coupon;
+import com.chainz.coupon.core.model.QSellCouponGrant;
 import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.model.SellCouponGrantEntry;
@@ -84,7 +85,11 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     try {
-      SellCouponGrant sellCouponGrant = sellCouponGrantRepository.findOne(grantCode);
+      // use predicate to query since we want to do join avoid lazy load
+      QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
+      SellCouponGrant sellCouponGrant =
+          sellCouponGrantRepository.findOne(
+              qSellCouponGrant.id.eq(grantCode), JoinDescriptor.join(qSellCouponGrant.sellCoupon));
       Coupon coupon = sellCouponGrant.getSellCoupon().getCoupon();
       if (coupon.getStatus() == CouponStatus.INVALID) {
         throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
@@ -177,7 +182,11 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Transactional(readOnly = true)
   public UserCouponInfo getUserCoupon(Long userCouponId) throws UserCouponNotFoundException {
-    UserCoupon userCoupon = userCouponRepository.findOne(userCouponId);
+    // use predicate and join to avoid lazy load coupon
+    QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
+    UserCoupon userCoupon =
+        userCouponRepository.findOne(
+            qUserCoupon.id.eq(userCouponId), JoinDescriptor.join(qUserCoupon.coupon));
     Operator operator = OperatorManager.getOperator();
     if (userCoupon == null || !operator.getOpenId().equals(userCoupon.getOpenId())) {
       throw new UserCouponNotFoundException(userCouponId);

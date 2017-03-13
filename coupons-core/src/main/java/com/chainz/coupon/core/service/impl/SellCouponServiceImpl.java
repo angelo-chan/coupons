@@ -113,7 +113,11 @@ public class SellCouponServiceImpl implements SellCouponService {
       throws SellCouponNotFoundException, SellCouponInsufficientException {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
-    SellCoupon sellCoupon = sellCouponRepository.findOne(id);
+    QSellCoupon qSellCoupon = QSellCoupon.sellCoupon;
+    // use predicate to join coupon to avoid coupon lazy load
+    SellCoupon sellCoupon =
+        sellCouponRepository.findOne(
+            qSellCoupon.id.eq(id), JoinDescriptor.join(qSellCoupon.coupon));
     if (!openId.equals(sellCoupon.getOpenId())) {
       throw new SellCouponNotFoundException(id);
     }

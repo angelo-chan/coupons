@@ -4,7 +4,10 @@ import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.CouponType;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLock;
@@ -34,14 +37,14 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 
 /** Coupon model defines a coupon template which could be used to generate coupon instance. */
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(
   name = "coupons",
-  indexes = {
-    @Index(columnList = "issuer_id"),
-    @Index(columnList = "created_at")
-  }
+  indexes = {@Index(columnList = "issuer_id"), @Index(columnList = "created_at")}
 )
 @DynamicInsert
 @DynamicUpdate

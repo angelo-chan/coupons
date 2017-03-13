@@ -1,6 +1,9 @@
 package com.chainz.coupon.core.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,6 +14,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,8 +26,13 @@ import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-/** Coupon model defines a coupon template which could be used to generate coupon instance. */
-@Data
+/**
+ * Coupon model defines a coupon template which could be used to generate coupon instance.
+ */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(
   name = "sell_coupons",
@@ -46,14 +55,16 @@ public class SellCoupon implements Serializable {
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.REFRESH)
+  @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
   @JoinColumn(name = "coupon_id")
   private Coupon coupon;
 
   @Column(name = "open_id")
   private String openId;
 
-  /** will be used in future. */
+  /**
+   * will be used in future.
+   */
   @Column(name = "user_id")
   private String userId;
 
@@ -68,5 +79,6 @@ public class SellCoupon implements Serializable {
   @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
-  @Version private Integer rev;
+  @Version
+  private Integer rev;
 }
