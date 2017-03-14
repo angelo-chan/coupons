@@ -25,7 +25,18 @@ import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.core.utils.CouponCodes;
-import com.chainz.coupon.shared.objects.*;
+import com.chainz.coupon.shared.objects.CouponStatus;
+import com.chainz.coupon.shared.objects.OutId;
+import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
+import com.chainz.coupon.shared.objects.ShareCode;
+import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
+import com.chainz.coupon.shared.objects.UserCouponInfo;
+import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
+import com.chainz.coupon.shared.objects.UserCouponShareRequest;
+import com.chainz.coupon.shared.objects.UserCouponShareStatus;
+import com.chainz.coupon.shared.objects.UserCouponStatus;
+import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -250,9 +261,7 @@ public class UserCouponServiceImpl implements UserCouponService {
             .and(userCoupon.openId.eq(openId))
             .and(userCoupon.beginDate.loe(now))
             .and(userCoupon.endDate.goe(now))
-            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-            .orAllOf(userCoupon.coupon.target.eq(CouponTarget.PLATFORM),
-              userCoupon.coupon.target.eq(CouponTarget.STORE).and(userCoupon.coupon.stores.contains(storeId)));
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
     long count = query.from(userCoupon).where(predicate).fetchCount();
     if (count != userCouponIdList.size()) {

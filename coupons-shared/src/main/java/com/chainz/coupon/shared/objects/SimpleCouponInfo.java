@@ -19,7 +19,9 @@ public class SimpleCouponInfo {
 
   protected String brandName;
 
-  private Boolean canShare;
+  protected Boolean canShare;
+
+  protected String servicePhone;
 
   protected String color;
 
