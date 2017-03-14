@@ -25,31 +25,33 @@ public class OperatorFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    String accountType = request.getHeader(ACCOUNT_TYPE);
-    if (StringUtils.isEmpty(accountType)) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
-    accountType = accountType.toUpperCase();
-    String vendorId = request.getHeader(VENDOR_ID);
-    if ((Constants.VENDOR.equals(accountType) || Constants.STORE.equals(accountType))
-        && StringUtils.isEmpty(vendorId)) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
-    String storeId = request.getHeader(STORE_ID);
-    if (Constants.STORE.equals(accountType) && StringUtils.isEmpty(storeId)) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
+    if (request.getRequestURI().startsWith("/api")) {
+      String accountType = request.getHeader(ACCOUNT_TYPE);
+      if (StringUtils.isEmpty(accountType)) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+      }
+      accountType = accountType.toUpperCase();
+      String vendorId = request.getHeader(VENDOR_ID);
+      if ((Constants.VENDOR.equals(accountType) || Constants.STORE.equals(accountType))
+          && StringUtils.isEmpty(vendorId)) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+      }
+      String storeId = request.getHeader(STORE_ID);
+      if (Constants.STORE.equals(accountType) && StringUtils.isEmpty(storeId)) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+      }
 
-    String openId = request.getHeader(OPEN_ID);
-    if (Constants.CLIENT.equals(accountType) && StringUtils.isEmpty(openId)) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
+      String openId = request.getHeader(OPEN_ID);
+      if (Constants.CLIENT.equals(accountType) && StringUtils.isEmpty(openId)) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+      }
+      Operator operator = new Operator(accountType, vendorId, storeId, openId);
+      OperatorManager.setOperator(operator);
     }
-    Operator operator = new Operator(accountType, vendorId, storeId, openId);
-    OperatorManager.setOperator(operator);
     filterChain.doFilter(request, response);
   }
 }

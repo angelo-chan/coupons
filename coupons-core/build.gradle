@@ -17,6 +17,7 @@ configurations {
 
 dependencies {
   compile project(":coupons-shared")
+  compile 'org.postgresql:postgresql'
   compile("net.sf.ehcache:ehcache")
   compile("ma.glasnost.orika:orika-core")
   compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")

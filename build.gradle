@@ -6,6 +6,7 @@ buildscript {
   ext {
     springBootVersion = "1.5.1.RELEASE"
     dependencyManagementVersion = "1.0.0.RELEASE"
+    gradleGitPropertiesVersion = "1.4.7"
     repos = [
       release  : "http://10.16.100.79:8081/repository/maven-releases/",
       snapshots: "http://10.16.100.79:8081/repository/maven-snapshots/"
@@ -20,6 +21,7 @@ buildscript {
   dependencies {
     classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}"
+    classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gradleGitPropertiesVersion}"
   }
 }
 
@@ -32,11 +34,12 @@ ext {
   isSnapshot = version.endsWith("-SNAPSHOT")
 
   versions = [
-    springfox : "2.5.0",
-    raven     : "7.8.1",
-    querydsl  : "4.1.4",
-    orika     : "1.5.0",
-    hibernate : "5.2.8.Final"
+    springfox: "2.5.0",
+    raven    : "7.8.1",
+    querydsl : "4.1.4",
+    orika    : "1.5.0",
+    hibernate: "5.2.8.Final",
+    quartz   : "2.2.3"
   ]
 }
 
@@ -79,7 +82,7 @@ subprojects {
 
       eachDependency { details ->
         switch (details.requested.name) {
-          // use hibernate 5.2.x to persistent java8 date & time
+        // use hibernate 5.2.x to persistent java8 date & time
           case 'hibernate-core':
           case 'hibernate-entitymanager':
             details.useVersion versions.hibernate
@@ -103,6 +106,7 @@ subprojects {
       dependency "com.mysema.querydsl:querydsl-collections:${versions.querydsl}"
       dependency "com.mysema.querydsl:querydsl-jpa:${versions.querydsl}"
       dependency "com.mysema.querydsl:querydsl-apt:${versions.querydsl}"
+      dependency "org.quartz-scheduler:quartz:${versions.quartz}"
     }
   }
 
