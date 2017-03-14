@@ -4,6 +4,7 @@ import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.SellCouponGrantNotFoundException;
+import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.model.QSellCouponGrant;
 import com.chainz.coupon.core.model.QSellCouponGrantEntry;
 import com.chainz.coupon.core.model.SellCoupon;
@@ -64,7 +65,8 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
   @Override
   @ClientPermission
   @Transactional
-  public void abortSellCouponGrant(String grantCode) throws SellCouponGrantNotFoundException {
+  public void abortSellCouponGrant(String grantCode)
+      throws SellCouponGrantNotFoundException, SellCouponGrantStatusConflictException {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
@@ -79,6 +81,10 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
             predicate, JoinDescriptor.join(qSellCouponGrant.sellCoupon));
     if (sellCouponGrant == null) {
       throw new SellCouponGrantNotFoundException(grantCode);
+    }
+    if (sellCouponGrant.getStatus() != SellCouponGrantStatus.INPROGRESS) {
+      throw new SellCouponGrantStatusConflictException(
+          sellCouponGrant.getId(), sellCouponGrant.getStatus());
     }
     log.debug("begin to abort sell coupon grant: {}", grantCode);
     QSellCouponGrantEntry qSellCouponGrantEntry = QSellCouponGrantEntry.sellCouponGrantEntry;

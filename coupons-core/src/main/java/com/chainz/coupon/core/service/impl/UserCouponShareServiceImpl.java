@@ -4,6 +4,7 @@ import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
 import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.QUserCouponShare;
 import com.chainz.coupon.core.model.UserCouponShare;
@@ -64,7 +65,8 @@ public class UserCouponShareServiceImpl implements UserCouponShareService {
   @Override
   @ClientPermission
   @Transactional
-  public void abortUserCouponShare(String shareCode) throws UserCouponShareNotFoundException {
+  public void abortUserCouponShare(String shareCode)
+      throws UserCouponShareNotFoundException, UserCouponShareStatusConflictException {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QUserCouponShare qUserCouponShare = QUserCouponShare.userCouponShare;
@@ -77,6 +79,10 @@ public class UserCouponShareServiceImpl implements UserCouponShareService {
     UserCouponShare userCouponShare = userCouponShareRepository.findOne(predicate);
     if (userCouponShare == null) {
       throw new UserCouponShareNotFoundException(shareCode);
+    }
+    if (userCouponShare.getStatus() != UserCouponShareStatus.INPROGRESS) {
+      throw new UserCouponShareStatusConflictException(
+          userCouponShare.getId(), userCouponShare.getStatus());
     }
     log.debug("begin to abort user coupon share: {}", shareCode);
 

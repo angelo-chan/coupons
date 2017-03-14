@@ -1,6 +1,7 @@
 package com.chainz.coupon.admin.controller;
 
 import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.service.UserCouponShareService;
 import com.chainz.coupon.shared.objects.UserCouponShareInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class UserCouponShareController {
    *
    * @param shareCode share code.
    * @throws UserCouponShareNotFoundException user coupon share not found.
+   * @throws UserCouponShareStatusConflictException user coupon share status conflict.
    */
   @RequestMapping(
     value = "/{shareCode}/aborted",
@@ -46,7 +48,7 @@ public class UserCouponShareController {
   )
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void abortUserCouponShare(@PathVariable String shareCode)
-      throws UserCouponShareNotFoundException {
+      throws UserCouponShareNotFoundException, UserCouponShareStatusConflictException {
     userCouponShareService.abortUserCouponShare(shareCode);
   }
 }

@@ -1,6 +1,7 @@
 package com.chainz.coupon.core.service;
 
 import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
+import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.shared.objects.UserCouponShareInfo;
 
 /** user coupon share interface provide functionality to work with user coupon share. */
@@ -20,5 +21,6 @@ public interface UserCouponShareService {
    *
    * @param shareCode grant code.
    */
-  void abortUserCouponShare(String shareCode) throws UserCouponShareNotFoundException;
+  void abortUserCouponShare(String shareCode)
+      throws UserCouponShareNotFoundException, UserCouponShareStatusConflictException;
 }

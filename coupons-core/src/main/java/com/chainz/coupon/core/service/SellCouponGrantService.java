@@ -1,6 +1,7 @@
 package com.chainz.coupon.core.service;
 
 import com.chainz.coupon.core.exception.SellCouponGrantNotFoundException;
+import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
 
 /** Sell coupon grant interface provide functionality to work with sell coupon grant. */
@@ -20,5 +21,6 @@ public interface SellCouponGrantService {
    *
    * @param grantCode grant code.
    */
-  void abortSellCouponGrant(String grantCode) throws SellCouponGrantNotFoundException;
+  void abortSellCouponGrant(String grantCode)
+      throws SellCouponGrantNotFoundException, SellCouponGrantStatusConflictException;
 }
