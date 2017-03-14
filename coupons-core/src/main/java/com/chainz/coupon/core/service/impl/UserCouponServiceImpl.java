@@ -258,7 +258,8 @@ public class UserCouponServiceImpl implements UserCouponService {
             .id
             .in(userCouponIdList)
             .and(userCoupon.openId.eq(openId))
-            .and(userCoupon.beginDate.loe(now))
+          .and(userCoupon.storeId.eq(storeId))
+          .and(userCoupon.beginDate.loe(now))
             .and(userCoupon.endDate.goe(now))
             .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
@@ -270,7 +271,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     new JPAUpdateClause(entityManager, userCoupon)
         .where(predicate)
         .set(userCoupon.status, UserCouponStatus.USED)
-        .set(userCoupon.storeId, storeId)
         .set(userCoupon.consumedAt, ZonedDateTime.now())
         .execute();
   }
