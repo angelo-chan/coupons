@@ -86,28 +86,38 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
       throw new SellCouponGrantStatusConflictException(
           sellCouponGrant.getId(), sellCouponGrant.getStatus());
     }
-    log.debug("begin to abort sell coupon grant: {}", grantCode);
+    cancelSellCouponGrant(sellCouponGrant, SellCouponGrantStatus.ABORTED);
+    String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
+    stringRedisTemplate.delete(key);
+  }
+
+  /**
+   * Cancel sell coupon grant.
+   *
+   * @param sellCouponGrant sell coupon grant.
+   * @param destStatus destination status.
+   */
+  private void cancelSellCouponGrant(
+      SellCouponGrant sellCouponGrant, SellCouponGrantStatus destStatus) {
+    log.debug("begin to reset sell coupon grant: {}", sellCouponGrant.getId());
     QSellCouponGrantEntry qSellCouponGrantEntry = QSellCouponGrantEntry.sellCouponGrantEntry;
     Long grantedCount =
         sellCouponGrantEntryRepository.count(
             qSellCouponGrantEntry.sellCouponGrant.eq(sellCouponGrant));
-
     log.debug(
         "found granted count: {} of {} for sell coupon grant: {}",
         grantedCount,
         sellCouponGrant.getCount(),
-        grantCode);
-    sellCouponGrant.setStatus(SellCouponGrantStatus.ABORTED);
+        sellCouponGrant.getId());
+    sellCouponGrant.setStatus(destStatus);
     Integer returnCount = sellCouponGrant.getCount() - grantedCount.intValue();
     SellCoupon sellCoupon = sellCouponGrant.getSellCoupon();
     sellCoupon.setSku(sellCoupon.getSku() + returnCount);
     sellCouponGrantRepository.save(sellCouponGrant);
     sellCouponRepository.save(sellCoupon);
-    String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
-    stringRedisTemplate.delete(key);
     log.debug(
-        "success to abort sell coupon grant: {}, and return {} sell coupon",
-        grantCode,
+        "success to reset sell coupon grant: {}, and return {} sell coupon",
+        sellCouponGrant.getId(),
         returnCount);
   }
 }

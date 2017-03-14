@@ -8,6 +8,7 @@ import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.model.QUserCoupon;
 import com.chainz.coupon.core.model.QUserCouponShare;
 import com.chainz.coupon.core.model.UserCouponShare;
+import com.chainz.coupon.core.model.UserCouponShareEntry;
 import com.chainz.coupon.core.repository.UserCouponShareRepository;
 import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.UserCouponShareService;
@@ -84,21 +85,33 @@ public class UserCouponShareServiceImpl implements UserCouponShareService {
       throw new UserCouponShareStatusConflictException(
           userCouponShare.getId(), userCouponShare.getStatus());
     }
-    log.debug("begin to abort user coupon share: {}", shareCode);
+    cancelUserCouponShare(userCouponShare, UserCouponShareStatus.ABORTED);
+    String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
+    stringRedisTemplate.delete(key);
+  }
 
+  /**
+   * cancel user coupon share.
+   *
+   * @param userCouponShare user coupon share.
+   * @param destStatus destination status.
+   */
+  private void cancelUserCouponShare(
+      UserCouponShare userCouponShare, UserCouponShareStatus destStatus) {
+    log.debug("begin to reset user coupon share: {}", userCouponShare.getId());
     List<Long> returnedUserCoupons =
         userCouponShare
             .getUserCouponShareEntries()
             .values()
             .stream()
             .filter(entry -> entry.isGot() == false)
-            .map(entry -> entry.getUserCouponId())
+            .map(UserCouponShareEntry::getUserCouponId)
             .collect(Collectors.toList());
     log.debug(
         "found remain count: {} of {} for user coupon share: {}",
         returnedUserCoupons.size(),
         userCouponShare.getCount(),
-        shareCode);
+        userCouponShare.getId());
     if (returnedUserCoupons.size() > 0) {
       QUserCoupon userCoupon = QUserCoupon.userCoupon;
       new JPAUpdateClause(entityManager, userCoupon)
@@ -106,13 +119,11 @@ public class UserCouponShareServiceImpl implements UserCouponShareService {
           .set(userCoupon.status, UserCouponStatus.UNUSED)
           .execute();
     }
-    userCouponShare.setStatus(UserCouponShareStatus.ABORTED);
+    userCouponShare.setStatus(destStatus);
     userCouponShareRepository.save(userCouponShare);
-    String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
-    stringRedisTemplate.delete(key);
     log.debug(
-        "success to abort user coupon share: {}, and return {} user coupon",
-        shareCode,
+        "success to reset user coupon share: {}, and return {} user coupon",
+        userCouponShare.getId(),
         returnedUserCoupons.size());
   }
 }
