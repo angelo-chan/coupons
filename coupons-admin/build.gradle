@@ -1,4 +1,9 @@
 apply plugin: 'org.springframework.boot'
+apply plugin: "com.gorylenko.gradle-git-properties"
+
+springBoot {
+  buildInfo()
+}
 
 bootRun {
   systemProperties = System.properties
@@ -8,7 +13,8 @@ bootRun {
 
 dependencies {
   compile project(':coupons-core')
-  compile 'org.postgresql:postgresql'
+  compile project(':coupons-migration')
+  compile 'org.quartz-scheduler:quartz'
   compile("io.springfox:springfox-swagger2:${versions.springfox}")
   compile("io.springfox:springfox-swagger-ui:${versions.springfox}")
   compile('org.springframework.boot:spring-boot-starter-actuator')

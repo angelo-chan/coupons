@@ -8,6 +8,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/coupon
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate:
+      ddl-auto: validate
   jackson:
     time-zone: Asia/Shanghai
     default-property-inclusion: non_null
@@ -45,6 +47,10 @@ management:
       enabled: true
     redis:
       enabled: true
+    diskspace:
+      enabled: true
+  security:
+    enabled: false
 
 ---
 spring:
