@@ -15,10 +15,6 @@ public class CouponInfo extends SimpleCouponInfo {
 
   private String notice;
 
-  private String servicePhone;
-
-  private Boolean canShare;
-
   private Long circulation;
 
   private Long sku;
