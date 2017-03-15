@@ -23,4 +23,9 @@ public interface SellCouponGrantService {
    */
   void abortSellCouponGrant(String grantCode)
       throws SellCouponGrantNotFoundException, SellCouponGrantStatusConflictException;
+
+  /**
+   * check sell coupon grant.
+   */
+  void checkSellCouponGrants();
 }

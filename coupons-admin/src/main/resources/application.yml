@@ -36,6 +36,19 @@ coupons:
     sell-coupon-grant: 86400
     user-coupon-share: 86400
 
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 600
+      user-coupon-share: 600
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 36000
+      user-coupon-share: 36000
+
 endpoints:
   health:
     sensitive: false
@@ -63,17 +76,30 @@ spring:
     hibernate:
       ddl-auto: update
 
-logging:
-  level:
-    com.chainz.coupon: DEBUG
-#    org.hibernate: INFO
-#    org.hibernate.type: trace
-
 coupons:
   timeout:
     coupon-grant: 600
     sell-coupon-grant: 600
     user-coupon-share: 600
+
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 300
+      user-coupon-share: 300
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 86400
+      user-coupon-share: 86400
+
+logging:
+  level:
+    com.chainz.coupon: DEBUG
+#    org.hibernate: INFO
+#    org.hibernate.type: trace
 
 ---
 spring:
@@ -87,6 +113,19 @@ coupons:
     coupon-grant: 600
     sell-coupon-grant: 600
     user-coupon-share: 600
+
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 600
+      user-coupon-share: 600
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 86400
+      user-coupon-share: 86400
 
 ---
 spring:

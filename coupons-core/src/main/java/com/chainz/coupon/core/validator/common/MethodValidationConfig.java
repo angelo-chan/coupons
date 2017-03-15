@@ -1,4 +1,4 @@
-package com.chainz.coupon.core.validator;
+package com.chainz.coupon.core.validator.common;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

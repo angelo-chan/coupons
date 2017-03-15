@@ -15,10 +15,11 @@
 - integrate findbugs to quantity check
 - integrate jacoco for test coverage
 - integrate flyway to do migration
-- integrate Orika to while object mapping
+- integrate Orika to do object mapping
 - use git properties to provide service info
 - use spring boot builtin build info to provide service info
 - integrate querydsl to enhance db query and custom repository factory bean to provide join fetch
+- schedule with quartz
 - jsr303 support
 - lombok integrate
 - Java SE8 Date & Time
@@ -32,7 +33,7 @@ Run `gradle` for clean build
 ## Debug
 
 1. Run `gradle bootRun` to start application
-2. Attach to **remote** to fire a debug
+2. Attach **5005** to **remote** to fire a debug
 
 ## Note
 
