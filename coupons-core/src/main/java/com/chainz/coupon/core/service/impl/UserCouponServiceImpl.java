@@ -4,6 +4,7 @@ import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
+import com.chainz.coupon.core.exception.CouponGetLimitException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
@@ -11,6 +12,7 @@ import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.model.Coupon;
 import com.chainz.coupon.core.model.QSellCouponGrant;
 import com.chainz.coupon.core.model.QUserCoupon;
+import com.chainz.coupon.core.model.QUserCouponShare;
 import com.chainz.coupon.core.model.SellCouponGrant;
 import com.chainz.coupon.core.model.SellCouponGrantEntry;
 import com.chainz.coupon.core.model.UserCoupon;
@@ -75,7 +77,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Transactional
   public void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
     String valueString = stringRedisTemplate.opsForValue().get(key);
     if (valueString == null) {
@@ -88,6 +90,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     try {
+      Operator operator = OperatorManager.getOperator();
       // use predicate to query since we want to do join avoid lazy load
       QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
       SellCouponGrant sellCouponGrant =
@@ -98,8 +101,20 @@ public class UserCouponServiceImpl implements UserCouponService {
         throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
       }
 
+      QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
+      long getLimit = coupon.getGetLimit().longValue();
+      long currentCount =
+          userCouponRepository.count(
+              qUserCoupon
+                  .openId
+                  .eq(operator.getOpenId())
+                  .and(qUserCoupon.coupon.eq(coupon))
+                  .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
+      if (currentCount == getLimit) {
+        throw new CouponGetLimitException(coupon.getId(), getLimit);
+      }
+
       // new user coupon
-      Operator operator = OperatorManager.getOperator();
       UserCoupon userCoupon = UserCoupon.newFromCoupon(coupon);
       userCoupon.setOpenId(operator.getOpenId());
       userCoupon.setOutId(OutId.SELL);
@@ -128,7 +143,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void shared(String shareCode) throws InvalidShareCodeException {
+  public void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
     if (count == 0) {
@@ -141,11 +156,27 @@ public class UserCouponServiceImpl implements UserCouponService {
     Long userCouponId = Long.parseLong(value);
     ZonedDateTime now = ZonedDateTime.now();
     UserCouponShare userCouponShare = null;
+    Operator operator = OperatorManager.getOperator();
 
     try {
-      userCouponShare = userCouponShareRepository.findOne(shareCode);
+      QUserCouponShare qUserCouponShare = QUserCouponShare.userCouponShare;
+      userCouponShare =
+          userCouponShareRepository.findOne(
+              qUserCouponShare.id.eq(shareCode), JoinDescriptor.join(qUserCouponShare.coupon));
+      Coupon coupon = userCouponShare.getCoupon();
+      QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
+      long getLimit = coupon.getGetLimit().longValue();
+      long currentCount =
+          userCouponRepository.count(
+              qUserCoupon
+                  .openId
+                  .eq(operator.getOpenId())
+                  .and(qUserCoupon.coupon.eq(coupon))
+                  .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
+      if (currentCount == getLimit) {
+        throw new CouponGetLimitException(coupon.getId(), getLimit);
+      }
 
-      Operator operator = OperatorManager.getOperator();
       // set user coupon
       UserCoupon userCoupon = userCouponRepository.findOne(userCouponId);
       userCoupon.setFromOpenId(userCoupon.getOpenId());

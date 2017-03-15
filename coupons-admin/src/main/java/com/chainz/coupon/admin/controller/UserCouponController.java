@@ -1,5 +1,6 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponGetLimitException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
@@ -43,6 +44,7 @@ public class UserCouponController {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
+   * @throws CouponGetLimitException coupon get limit.
    */
   @RequestMapping(
     value = "/granted/{grantCode}",
@@ -51,7 +53,7 @@ public class UserCouponController {
   )
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException {
     userCouponService.granted(grantCode);
   }
 
@@ -60,6 +62,7 @@ public class UserCouponController {
    *
    * @param shareCode grant code.
    * @throws InvalidShareCodeException invalid share code.
+   * @throws CouponGetLimitException coupon get limit.
    */
   @RequestMapping(
     value = "/shared/{shareCode}",
@@ -67,7 +70,8 @@ public class UserCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void shared(@PathVariable String shareCode) throws InvalidShareCodeException {
+  public void shared(@PathVariable String shareCode)
+      throws InvalidShareCodeException, CouponGetLimitException {
     userCouponService.shared(shareCode);
   }
 

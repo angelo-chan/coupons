@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service;
 
+import com.chainz.coupon.core.exception.CouponGetLimitException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
@@ -21,16 +22,19 @@ public interface UserCouponService {
    * @param grantCode grant code.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
+   * @throws CouponGetLimitException coupon get limit.
    */
-  void granted(String grantCode) throws InvalidGrantCodeException, CouponStatusConflictException;
+  void granted(String grantCode)
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException;
 
   /**
    * get user coupon from other user by share code.
    *
    * @param shareCode share code.
    * @throws InvalidShareCodeException invalid share code.
+   * @throws CouponGetLimitException coupon get limit exception.
    */
-  void shared(String shareCode) throws InvalidShareCodeException;
+  void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException;
 
   /**
    * Get user coupon by id.
