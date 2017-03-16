@@ -9,6 +9,11 @@ import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,6 +31,7 @@ import javax.validation.constraints.Pattern;
 
 /** Sell coupon controller. */
 @RestController
+@Api(tags = "Sell-Coupon", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/sell-coupons")
 public class SellCouponController {
@@ -45,6 +51,10 @@ public class SellCouponController {
     method = RequestMethod.POST,
     consumes = "application/json"
   )
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "invalid grant code"),
+    @ApiResponse(code = 409, message = "coupon status conflict or coupon insufficient")
+  })
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
@@ -60,6 +70,24 @@ public class SellCouponController {
    * @param order coupon pagination order.
    * @return paginate sell coupon information.
    */
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+      name = "sort",
+      value = "sort",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "id,createdAt",
+      defaultValue = "id"
+    ),
+    @ApiImplicitParam(
+      name = "order",
+      value = "order",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "asc,desc",
+      defaultValue = "desc"
+    )
+  })
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<SellCouponInfo> listSellCoupon(
       @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
@@ -89,6 +117,10 @@ public class SellCouponController {
     method = RequestMethod.POST,
     produces = "application/json"
   )
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "sell coupon not found"),
+    @ApiResponse(code = 409, message = "sell coupon insufficient or coupon status conflict")
+  })
   public GrantCode generateSellCouponGrantCode(
       @PathVariable Long id, @Min(1) @PathVariable Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException,

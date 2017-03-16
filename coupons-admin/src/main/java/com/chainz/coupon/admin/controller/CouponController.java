@@ -1,5 +1,6 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.service.CouponService;
@@ -10,6 +11,11 @@ import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponUpdateRequest;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,6 +35,7 @@ import javax.validation.constraints.Pattern;
 
 /** Coupon controller. */
 @RestController
+@Api(tags = "Coupon", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/coupons")
 public class CouponController {
@@ -47,6 +54,38 @@ public class CouponController {
    * @param order coupon pagination order.
    * @return paginated coupon info.
    */
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+      name = "issuerType",
+      value = "issuer type",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "SYSTEM,VENDOR"
+    ),
+    @ApiImplicitParam(
+      name = "status",
+      value = "status",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "UNVERIFIED,VERIFIED,INVALID"
+    ),
+    @ApiImplicitParam(
+      name = "sort",
+      value = "sort",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "id,createdAt",
+      defaultValue = "id"
+    ),
+    @ApiImplicitParam(
+      name = "order",
+      value = "order",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "asc,desc",
+      defaultValue = "desc"
+    )
+  })
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<CouponInfo> listCoupon(
       @Pattern(regexp = "SYSTEM|VENDOR") @RequestParam(value = "issuerType", required = false)
@@ -95,6 +134,7 @@ public class CouponController {
    * @return coupon information.
    * @throws CouponNotFoundException coupon not found.
    */
+  @ApiResponses(@ApiResponse(code = 404, message = "coupon not found"))
   @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
   public CouponInfo getCoupon(@PathVariable Long id) throws CouponNotFoundException {
     return couponService.getCoupon(id);
@@ -109,6 +149,10 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "coupon not found"),
+    @ApiResponse(code = 409, message = "coupon status conflict")
+  })
   @RequestMapping(
     value = "/{id}",
     method = RequestMethod.PUT,
@@ -128,6 +172,10 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "coupon not found"),
+    @ApiResponse(code = 409, message = "coupon status conflict")
+  })
   @RequestMapping(
     value = "/{id}/verified",
     method = RequestMethod.PUT,
@@ -146,6 +194,10 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "coupon not found"),
+    @ApiResponse(code = 409, message = "coupon status conflict")
+  })
   @RequestMapping(
     value = "/{id}/invalid",
     method = RequestMethod.PUT,
@@ -165,6 +217,10 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "coupon not found"),
+    @ApiResponse(code = 409, message = "coupon status conflict")
+  })
   @RequestMapping(
     value = "/{id}/increment/{increment}",
     method = RequestMethod.PUT,
@@ -182,14 +238,22 @@ public class CouponController {
    * @param id coupon id.
    * @param count coupon grant count.
    * @return grant code.
+   * @throws CouponNotFoundException coupon not found.
+   * @throws CouponStatusConflictException coupon status conflict.
+   * @throws CouponInsufficientException coupon insufficient.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "coupon not found"),
+    @ApiResponse(code = 409, message = "coupon status conflict or coupon insufficient")
+  })
   @RequestMapping(
     value = "/{id}/grant/{count}",
     method = RequestMethod.POST,
     produces = "application/json"
   )
   public GrantCode generateCouponGrantCode(
-      @PathVariable @Min(1) Long id, @PathVariable Integer count) {
+      @PathVariable @Min(1) Long id, @PathVariable Integer count)
+      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException {
     return couponService.generateCouponGrantCode(id, count);
   }
 }

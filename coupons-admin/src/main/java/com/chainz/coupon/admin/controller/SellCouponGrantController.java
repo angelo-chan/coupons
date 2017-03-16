@@ -4,6 +4,9 @@ import com.chainz.coupon.core.exception.SellCouponGrantNotFoundException;
 import com.chainz.coupon.core.exception.SellCouponGrantStatusConflictException;
 import com.chainz.coupon.core.service.SellCouponGrantService;
 import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** sell coupon grant controller. */
 @RestController
+@Api(tags = "Sell-Coupon-Grant", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/sell-coupon-grants")
 public class SellCouponGrantController {
@@ -28,6 +32,7 @@ public class SellCouponGrantController {
    * @return sell coupon grant information.
    * @throws SellCouponGrantNotFoundException sell coupon grant not found.
    */
+  @ApiResponses({@ApiResponse(code = 404, message = "sell coupon grant not found")})
   @RequestMapping(value = "/{grantCode}", method = RequestMethod.GET, produces = "application/json")
   public SellCouponGrantInfo getSellCouponGrant(@PathVariable String grantCode)
       throws SellCouponGrantNotFoundException {
@@ -41,6 +46,10 @@ public class SellCouponGrantController {
    * @throws SellCouponGrantNotFoundException sell coupon grant not found.
    * @throws SellCouponGrantStatusConflictException sell coupon grant status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "sell coupon grant not found"),
+    @ApiResponse(code = 409, message = "sell coupon grant status conflict")
+  })
   @RequestMapping(
     value = "/{grantCode}/aborted",
     method = RequestMethod.POST,

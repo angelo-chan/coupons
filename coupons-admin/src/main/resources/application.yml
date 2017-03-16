@@ -65,6 +65,9 @@ management:
   security:
     enabled: false
 
+swagger:
+  enable: true
+
 ---
 spring:
   profiles: dev
@@ -133,3 +136,6 @@ spring:
 logging:
   level:
     com.chainz.coupon: WARN
+
+swagger:
+  enable: false

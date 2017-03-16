@@ -34,12 +34,12 @@ ext {
   isSnapshot = version.endsWith("-SNAPSHOT")
 
   versions = [
-    springfox: "2.5.0",
     raven    : "7.8.1",
     querydsl : "4.1.4",
     orika    : "1.5.0",
     hibernate: "5.2.8.Final",
-    quartz   : "2.2.3"
+    quartz   : "2.2.3",
+    springfox: "2.6.1"
   ]
 }
 
@@ -107,6 +107,9 @@ subprojects {
       dependency "com.mysema.querydsl:querydsl-jpa:${versions.querydsl}"
       dependency "com.mysema.querydsl:querydsl-apt:${versions.querydsl}"
       dependency "org.quartz-scheduler:quartz:${versions.quartz}"
+      dependency "io.springfox:springfox-swagger2:${versions.springfox}"
+      dependency "io.springfox:springfox-bean-validators:${versions.springfox}"
+      dependency "io.springfox:springfox-swagger-ui:${versions.springfox}"
     }
   }
 

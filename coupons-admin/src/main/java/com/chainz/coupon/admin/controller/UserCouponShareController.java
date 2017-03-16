@@ -4,6 +4,9 @@ import com.chainz.coupon.core.exception.UserCouponShareNotFoundException;
 import com.chainz.coupon.core.exception.UserCouponShareStatusConflictException;
 import com.chainz.coupon.core.service.UserCouponShareService;
 import com.chainz.coupon.shared.objects.UserCouponShareInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** user coupon share controller. */
 @RestController
+@Api(tags = "User-Coupon-Share", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/user-coupon-shares")
 public class UserCouponShareController {
@@ -28,6 +32,7 @@ public class UserCouponShareController {
    * @return user coupon share information.
    * @throws UserCouponShareNotFoundException user coupon share not found.
    */
+  @ApiResponses({@ApiResponse(code = 404, message = "user coupon share not found")})
   @RequestMapping(value = "/{shareCode}", method = RequestMethod.GET, produces = "application/json")
   public UserCouponShareInfo getSellCouponGrant(@PathVariable String shareCode)
       throws UserCouponShareNotFoundException {
@@ -41,6 +46,10 @@ public class UserCouponShareController {
    * @throws UserCouponShareNotFoundException user coupon share not found.
    * @throws UserCouponShareStatusConflictException user coupon share status conflict.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "user coupon share not found"),
+    @ApiResponse(code = 409, message = "user coupon share status conflict")
+  })
   @RequestMapping(
     value = "/{shareCode}/aborted",
     method = RequestMethod.POST,

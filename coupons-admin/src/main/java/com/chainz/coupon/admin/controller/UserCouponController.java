@@ -13,6 +13,11 @@ import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +37,7 @@ import javax.validation.constraints.Pattern;
 
 /** user coupon controller. */
 @RestController
+@Api(tags = "User-Coupon", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/user-coupons")
 public class UserCouponController {
@@ -46,6 +52,10 @@ public class UserCouponController {
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponGetLimitException coupon get limit.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "invalid grant code"),
+    @ApiResponse(code = 409, message = "coupon status conflict or coupon get limit")
+  })
   @RequestMapping(
     value = "/granted/{grantCode}",
     method = RequestMethod.POST,
@@ -64,6 +74,10 @@ public class UserCouponController {
    * @throws InvalidShareCodeException invalid share code.
    * @throws CouponGetLimitException coupon get limit.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "invalid share code"),
+    @ApiResponse(code = 409, message = "coupon get limit")
+  })
   @RequestMapping(
     value = "/shared/{shareCode}",
     method = RequestMethod.POST,
@@ -84,6 +98,24 @@ public class UserCouponController {
    * @param order coupon pagination order, desc for default.
    * @return active user coupon list.
    */
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+      name = "sort",
+      value = "sort",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "gotAt,endDate",
+      defaultValue = "gotAt"
+    ),
+    @ApiImplicitParam(
+      name = "order",
+      value = "order",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "asc,desc",
+      defaultValue = "desc"
+    )
+  })
   @RequestMapping(value = "/active", method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<SimpleUserCouponInfo> listActiveUserCoupon(
       @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
@@ -105,6 +137,24 @@ public class UserCouponController {
    * @param size coupon pagination size.
    * @return expired user coupon list.
    */
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+      name = "sort",
+      value = "sort",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "gotAt,endDate",
+      defaultValue = "gotAt"
+    ),
+    @ApiImplicitParam(
+      name = "order",
+      value = "order",
+      dataType = "string",
+      paramType = "query",
+      allowableValues = "asc,desc",
+      defaultValue = "desc"
+    )
+  })
   @RequestMapping(value = "/expired", method = RequestMethod.GET, produces = "application/json")
   public PaginatedApiResult<SimpleUserCouponInfo> listExpiredUserCoupon(
       @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
@@ -125,6 +175,7 @@ public class UserCouponController {
    * @param userCouponConsumeRequest user coupons consume request.
    * @throws UserCouponNotFoundException user coupon not found.
    */
+  @ApiResponses({@ApiResponse(code = 404, message = "user coupon not found")})
   @RequestMapping(
     value = "/consume",
     method = RequestMethod.POST,
@@ -144,6 +195,9 @@ public class UserCouponController {
    * @param userCouponReturnRequest user coupons return request.
    * @throws UserCouponNotFoundException user coupon not found.
    */
+  @ApiResponses({
+    @ApiResponse(code = 404, message = "user coupon not found"),
+  })
   @RequestMapping(
     value = "/return",
     method = RequestMethod.POST,
@@ -169,6 +223,7 @@ public class UserCouponController {
     consumes = "application/json",
     produces = "application/json"
   )
+  @ApiResponses({@ApiResponse(code = 404, message = "user coupon not found")})
   public ShareCode shareUserCoupon(
       @RequestBody @Valid UserCouponShareRequest userCouponShareRequest)
       throws UserCouponNotFoundException {
@@ -182,6 +237,7 @@ public class UserCouponController {
    * @return user coupon information.
    * @throws UserCouponNotFoundException user coupon not found.
    */
+  @ApiResponses({@ApiResponse(code = 404, message = "user coupon not found")})
   @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
   public UserCouponInfo getUserCoupon(@PathVariable Long id) throws UserCouponNotFoundException {
     return userCouponService.getUserCoupon(id);

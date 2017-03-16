@@ -24,6 +24,11 @@
 - lombok integrate
 - Java SE8 Date & Time
 - support query/path params validator
+- integrate springfox api documentation
+
+## Doc
+
+Visit http://localhost:8080/swagger-ui.html
 
 
 ## Build
