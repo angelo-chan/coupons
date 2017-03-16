@@ -57,6 +57,7 @@ Run `gradle` for clean build
 
 ## Note
 
-1. Any class located in **base** or **common** will be move to **chainz-core** in future
-2. Should cover unit tests
-3. Should integrate authorization strategy in future
+1. Please change to public repository before build
+2. Any class located in **base** or **common** will be move to **chainz-core** in future
+3. Should cover unit tests
+4. Should integrate authorization strategy in future
