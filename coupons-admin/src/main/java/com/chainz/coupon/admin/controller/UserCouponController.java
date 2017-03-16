@@ -139,9 +139,8 @@ public class UserCouponController {
    * @return usable user coupon list.
    */
   @RequestMapping(value = "/usable", method = RequestMethod.GET, produces = "application/json")
-  public List<SimpleUserCouponInfo> listActiveUserCoupon(
-    @Size(min = 1)
-    @RequestParam(value = "store")String store) {
+  public List<SimpleUserCouponInfo> listUsableUserCoupon(
+      @Size(min = 1) @RequestParam(value = "store") String store) {
     return userCouponService.listUsableUserCoupon(store);
   }
 

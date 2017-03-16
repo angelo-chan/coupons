@@ -392,25 +392,26 @@ public class UserCouponServiceImpl implements UserCouponService {
 
   @ClientPermission
   @Override
-  @Transactional  public List<SimpleUserCouponInfo> listUsableUserCoupon(String store) {
+  @Transactional
+  public List<SimpleUserCouponInfo> listUsableUserCoupon(String store) {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QUserCoupon userCoupon = QUserCoupon.userCoupon;
     BooleanExpression predicate =
-      userCoupon
-        .openId
-        .eq(openId)
-        .and(userCoupon.endDate.goe(LocalDate.now()))
-        .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
-        .andAnyOf(
-          userCoupon.coupon.target.eq(CouponTarget.PLATFORM),
-          userCoupon
-            .coupon
-            .target
-            .eq(CouponTarget.STORE)
-            .and(userCoupon.coupon.stores.contains(store)));
+        userCoupon
+            .openId
+            .eq(openId)
+            .and(userCoupon.endDate.goe(LocalDate.now()))
+            .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
+            .andAnyOf(
+                userCoupon.coupon.target.eq(CouponTarget.PLATFORM),
+                userCoupon
+                    .coupon
+                    .target
+                    .eq(CouponTarget.STORE)
+                    .and(userCoupon.coupon.stores.contains(store)));
     List<UserCoupon> userCoupons =
-      userCouponRepository.findAll(predicate, JoinDescriptor.join(userCoupon.coupon));
-    return  mapperFacade.mapAsList(userCoupons, SimpleUserCouponInfo.class);
+        userCouponRepository.findAll(predicate, JoinDescriptor.join(userCoupon.coupon));
+    return mapperFacade.mapAsList(userCoupons, SimpleUserCouponInfo.class);
   }
 }
