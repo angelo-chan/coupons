@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /** user coupon controller. */
 @RestController
@@ -128,6 +130,19 @@ public class UserCouponController {
           String order) {
     return userCouponService.listActiveUserCoupon(
         new PageRequest(page, size, Sort.Direction.fromString(order), sort));
+  }
+
+  /**
+   * List usable user coupon.
+   *
+   * @param store order store id.
+   * @return usable user coupon list.
+   */
+  @RequestMapping(value = "/usable", method = RequestMethod.GET, produces = "application/json")
+  public List<SimpleUserCouponInfo> listActiveUserCoupon(
+    @Size(min = 1)
+    @RequestParam(value = "store")String store) {
+    return userCouponService.listUsableUserCoupon(store);
   }
 
   /**

@@ -14,6 +14,8 @@ import com.chainz.coupon.shared.objects.UserCouponShareRequest;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /** user coupon interface provide functionality to work with user coupon. */
 public interface UserCouponService {
   /**
@@ -88,4 +90,12 @@ public interface UserCouponService {
    */
   ShareCode shareUserCoupon(UserCouponShareRequest userCouponShareRequest)
       throws UserCouponNotFoundException;
+
+  /**
+   * List usable user coupon.
+   *
+   * @param store order store id.
+   * @return simple user coupon info list.
+   */
+  List<SimpleUserCouponInfo> listUsableUserCoupon(String store);
 }
