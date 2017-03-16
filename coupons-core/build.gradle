@@ -20,6 +20,7 @@ dependencies {
   compile 'org.postgresql:postgresql'
   compile("net.sf.ehcache:ehcache")
   compile("ma.glasnost.orika:orika-core")
+  compile 'org.quartz-scheduler:quartz'
   compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   compile("javax.servlet:javax.servlet-api")
   compile("org.apache.httpcomponents:httpclient")

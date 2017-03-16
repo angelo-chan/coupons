@@ -23,4 +23,9 @@ public interface UserCouponShareService {
    */
   void abortUserCouponShare(String shareCode)
       throws UserCouponShareNotFoundException, UserCouponShareStatusConflictException;
+
+  /**
+   * check user coupon shares.
+   */
+  void checkUserCouponShares();
 }

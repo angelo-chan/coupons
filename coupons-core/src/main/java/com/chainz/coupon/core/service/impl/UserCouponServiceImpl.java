@@ -110,7 +110,7 @@ public class UserCouponServiceImpl implements UserCouponService {
                   .eq(operator.getOpenId())
                   .and(qUserCoupon.coupon.eq(coupon))
                   .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
-      if (currentCount == getLimit) {
+      if (currentCount >= getLimit) {
         throw new CouponGetLimitException(coupon.getId(), getLimit);
       }
 
@@ -173,7 +173,7 @@ public class UserCouponServiceImpl implements UserCouponService {
                   .eq(operator.getOpenId())
                   .and(qUserCoupon.coupon.eq(coupon))
                   .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
-      if (currentCount == getLimit) {
+      if (currentCount >= getLimit) {
         throw new CouponGetLimitException(coupon.getId(), getLimit);
       }
 

@@ -1,5 +1,7 @@
 package com.chainz.coupon.core.service.impl;
 
+import com.chainz.coupon.core.config.SchedulerConfig;
+import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
@@ -18,12 +20,20 @@ import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /** Sell coupon grant service implementation. */
 @Slf4j
@@ -35,6 +45,9 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
   @Autowired private SellCouponGrantEntryRepository sellCouponGrantEntryRepository;
   @Autowired private MapperFacade mapperFacade;
   @Autowired private StringRedisTemplate stringRedisTemplate;
+  @Autowired private TimeoutConfig timeoutConfig;
+  @Autowired private SchedulerConfig schedulerConfig;
+  @PersistenceContext private EntityManager entityManager;
 
   @Override
   @ClientPermission
@@ -70,12 +83,7 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
-    Predicate predicate =
-        qSellCouponGrant
-            .id
-            .eq(grantCode)
-            .and(qSellCouponGrant.openId.eq(openId))
-            .and(qSellCouponGrant.status.eq(SellCouponGrantStatus.INPROGRESS));
+    Predicate predicate = qSellCouponGrant.id.eq(grantCode).and(qSellCouponGrant.openId.eq(openId));
     SellCouponGrant sellCouponGrant =
         sellCouponGrantRepository.findOne(
             predicate, JoinDescriptor.join(qSellCouponGrant.sellCoupon));
@@ -89,6 +97,59 @@ public class SellCouponGrantServiceImpl implements SellCouponGrantService {
     cancelSellCouponGrant(sellCouponGrant, SellCouponGrantStatus.ABORTED);
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
     stringRedisTemplate.delete(key);
+  }
+
+  @Override
+  @Transactional
+  public void checkSellCouponGrants() {
+    QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
+    ZonedDateTime now = ZonedDateTime.now();
+    int sellCouponGrantTimeout = timeoutConfig.getSellCouponGrant();
+    long threshold = schedulerConfig.getThreshold().getSellCouponGrant();
+    ZonedDateTime end = now.minus(sellCouponGrantTimeout, ChronoUnit.SECONDS);
+    ZonedDateTime start = end.minus(threshold, ChronoUnit.SECONDS);
+
+    Predicate predicate =
+        qSellCouponGrant
+            .createdAt
+            .after(start)
+            .and(qSellCouponGrant.createdAt.before(end))
+            .and(qSellCouponGrant.status.eq(SellCouponGrantStatus.INPROGRESS));
+    JPAQuery<Void> query = new JPAQuery<>(entityManager);
+    List<String> ids =
+        query.from(qSellCouponGrant).select(qSellCouponGrant.id).where(predicate).fetch();
+    log.info("found [{}] expired sell coupon grants.", ids.size());
+    for (String id : ids) {
+      try {
+        expireSellCouponGrant(id);
+      } catch (RuntimeException e) {
+        log.error(e.getMessage(), e);
+      }
+    }
+  }
+
+  /**
+   * Expire sell coupon grant.
+   *
+   * @param id sell coupon id.
+   */
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void expireSellCouponGrant(String id) {
+    log.info("begin to expire sell coupon grant [{}]", id);
+    QSellCouponGrant qSellCouponGrant = QSellCouponGrant.sellCouponGrant;
+    Predicate predicate =
+        qSellCouponGrant
+            .id
+            .eq(id)
+            .and(qSellCouponGrant.status.eq(SellCouponGrantStatus.INPROGRESS));
+    SellCouponGrant sellCouponGrant =
+        sellCouponGrantRepository.findOne(
+            predicate, JoinDescriptor.join(qSellCouponGrant.sellCoupon));
+    if (sellCouponGrant == null) {
+      return;
+    }
+    cancelSellCouponGrant(sellCouponGrant, SellCouponGrantStatus.EXPIRED);
+    log.info("success to expire sell coupon grant [{}]", id);
   }
 
   /**
