@@ -26,6 +26,20 @@
 - support query/path params validator
 - integrate springfox api documentation
 
+## Credential
+
+1. coupons service not integrate any account system or authorization strategy like OAuth, it can be extended simply by defining some filter.
+2. at current, it simply extract operator information from specific headers
+
+  * account type definitions: SYSTEM, VENDOR, STORE, CLIENT
+  
+  * | Account_Type | Vendor_Id | Store_Id | Open_Id |
+    |    SYSTEM    |   N/A     |    N/A   |    N/A  |
+    |    VENDOR    | REQUIRED  |    N/A   |    N/A  |
+    |    STORE     | REQUIRED  | REQUIRED |    N/A  |
+    |    CLIENT    |   N/A     |    N/A   | REQUIRED|
+
+
 ## Doc
 
 Visit http://localhost:8080/swagger-ui.html
