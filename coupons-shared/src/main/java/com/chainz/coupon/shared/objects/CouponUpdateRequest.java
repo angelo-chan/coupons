@@ -38,7 +38,9 @@ public class CouponUpdateRequest {
   @Size(max = 2048)
   private String notice;
 
-  @Pattern(regexp = "^1(3[0-9]|4[579]|5[0-35-9]|8[0-9]|7[0-9])\\d{8}$")
+  @Pattern(
+    regexp = "(^((0\\d{2,3})-)(\\d{7,8})?$)|(^1(3[0-9]|4[579]|5[0-35-9]|8[0-9]|7[0-9])\\d{8}$)"
+  )
   private String servicePhone;
 
   private Boolean canShare;
