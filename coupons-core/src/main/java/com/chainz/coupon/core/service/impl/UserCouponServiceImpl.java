@@ -405,11 +405,13 @@ public class UserCouponServiceImpl implements UserCouponService {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QUserCoupon userCoupon = QUserCoupon.userCoupon;
+    LocalDate now = LocalDate.now();
     BooleanExpression predicate =
         userCoupon
             .openId
             .eq(openId)
-            .and(userCoupon.endDate.goe(LocalDate.now()))
+            .and(userCoupon.beginDate.loe(now))
+            .and(userCoupon.endDate.goe(now))
             .and(userCoupon.status.eq(UserCouponStatus.UNUSED))
             .andAnyOf(
                 userCoupon.coupon.target.eq(CouponTarget.PLATFORM),
