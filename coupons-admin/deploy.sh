@@ -26,7 +26,7 @@ msgBuffer="Buffering: "
 msgAppStarted="Application Started... exiting buffer!"
 
 ################ PROPERTIES ##########################
-properties=--spring.config.active=$env
+properties=--spring.profiles.active=$env
 export JAVA_OPTS="-Xms512m -Xmx2048m -Xss1m"
 ######################################################
 
