@@ -143,10 +143,10 @@ spring:
     database: 0
     host: 10.16.15.179
     pool:
-    max-active: 8
-    max-idle: 8
-    max-wait: 5000
-    min-idle: 0
+     max-active: 8
+     max-idle: 8
+     max-wait: 5000
+     min-idle: 0
     timeout: 1000
 
 logging:
