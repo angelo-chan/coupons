@@ -14,7 +14,7 @@ projectName=coupons-admin
 destPath=/home/ubuntu/run
 destFile=$destPath/$projectName.jar
 
-sourceFile=/home/ubuntu/jars/$projectName*.jar
+sourceFile=/home/ubuntu/build/libs/$projectName*.jar
 
 ################ APPLICATION MONITOR ################
 logFile=init.log
