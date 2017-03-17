@@ -365,6 +365,7 @@ public class UserCouponServiceImpl implements UserCouponService {
             .in(userCouponIdList)
             .and(userCoupon.openId.eq(openId))
             .and(userCoupon.coupon.id.eq(couponId))
+            .and(userCoupon.coupon.canShare.eq(true))
             .and(userCoupon.endDate.goe(now))
             .and(userCoupon.status.eq(UserCouponStatus.UNUSED));
     JPAQuery<Void> query = new JPAQuery<>(entityManager);
