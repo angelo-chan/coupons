@@ -103,12 +103,14 @@ public class UserCouponServiceImpl implements UserCouponService {
 
       QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
       long getLimit = coupon.getGetLimit().longValue();
+      // not count the expired user coupon since we could get the FIXED_TERM coupon yet.
       long currentCount =
           userCouponRepository.count(
               qUserCoupon
                   .openId
                   .eq(operator.getOpenId())
                   .and(qUserCoupon.coupon.eq(coupon))
+                  .and(qUserCoupon.endDate.goe(LocalDate.now()))
                   .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
       if (currentCount >= getLimit) {
         throw new CouponGetLimitException(coupon.getId(), getLimit);
@@ -166,12 +168,14 @@ public class UserCouponServiceImpl implements UserCouponService {
       Coupon coupon = userCouponShare.getCoupon();
       QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
       long getLimit = coupon.getGetLimit().longValue();
+      // not count the expired user coupon since we could get the FIXED_TERM coupon yet.
       long currentCount =
           userCouponRepository.count(
               qUserCoupon
                   .openId
                   .eq(operator.getOpenId())
                   .and(qUserCoupon.coupon.eq(coupon))
+                  .and(qUserCoupon.endDate.goe(LocalDate.now()))
                   .and(qUserCoupon.status.eq(UserCouponStatus.UNUSED)));
       if (currentCount >= getLimit) {
         throw new CouponGetLimitException(coupon.getId(), getLimit);
