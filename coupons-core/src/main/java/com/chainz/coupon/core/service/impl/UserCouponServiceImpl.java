@@ -4,6 +4,7 @@ import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponGetLimitException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
@@ -25,6 +26,7 @@ import com.chainz.coupon.core.repository.UserCouponRepository;
 import com.chainz.coupon.core.repository.UserCouponShareRepository;
 import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.UserCouponService;
+import com.chainz.coupon.core.utils.CommonUtils;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.core.utils.CouponCodes;
 import com.chainz.coupon.shared.objects.CouponStatus;
@@ -77,7 +79,8 @@ public class UserCouponServiceImpl implements UserCouponService {
   @ClientPermission
   @Transactional
   public void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
+          CouponExpiredException {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
     String valueString = stringRedisTemplate.opsForValue().get(key);
     if (valueString == null) {
@@ -100,7 +103,7 @@ public class UserCouponServiceImpl implements UserCouponService {
       if (coupon.getStatus() == CouponStatus.INVALID) {
         throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
       }
-
+      CommonUtils.checkCouponExpired(coupon);
       QUserCoupon qUserCoupon = QUserCoupon.userCoupon;
       long getLimit = coupon.getGetLimit().longValue();
       // not count the expired user coupon since we could get the FIXED_TERM coupon yet.

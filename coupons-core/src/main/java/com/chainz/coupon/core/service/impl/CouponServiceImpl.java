@@ -3,6 +3,7 @@ package com.chainz.coupon.core.service.impl;
 import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
@@ -13,6 +14,7 @@ import com.chainz.coupon.core.model.QCoupon;
 import com.chainz.coupon.core.redis.CouponGrant;
 import com.chainz.coupon.core.repository.CouponRepository;
 import com.chainz.coupon.core.service.CouponService;
+import com.chainz.coupon.core.utils.CommonUtils;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponCreateRequest;
 import com.chainz.coupon.shared.objects.CouponInfo;
@@ -186,12 +188,14 @@ public class CouponServiceImpl implements CouponService {
   @Override
   @Transactional
   public GrantCode generateCouponGrantCode(Long id, Integer count)
-      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException {
+      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException {
     Coupon coupon = couponRepository.findOne(id);
     checkPermission(coupon);
     if (CouponStatus.VERIFIED != coupon.getStatus()) {
       throw new CouponStatusConflictException(id, coupon.getStatus());
     }
+    CommonUtils.checkCouponExpired(coupon);
     if (coupon.getSku() < count) {
       throw new CouponInsufficientException(id);
     } else {

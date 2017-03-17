@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service;
 
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
@@ -84,7 +85,11 @@ public interface CouponService {
    * @return paginated coupon info.
    */
   PaginatedApiResult<CouponInfo> listCoupon(
-      CouponIssuerType issuerType, String issuerId, CouponStatus status, String q, Pageable pageable);
+      CouponIssuerType issuerType,
+      String issuerId,
+      CouponStatus status,
+      String q,
+      Pageable pageable);
 
   /**
    * generate coupon grant code.
@@ -95,7 +100,9 @@ public interface CouponService {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon insufficient.
+   * @throws CouponExpiredException coupon expired.
    */
   GrantCode generateCouponGrantCode(Long id, Integer count)
-      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException;
+      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException;
 }
