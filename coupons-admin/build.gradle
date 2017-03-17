@@ -20,7 +20,8 @@ dependencies {
   compile('org.springframework.boot:spring-boot-starter-actuator')
   compile('org.springframework.boot:spring-boot-starter-jetty')
   testCompile('org.springframework.boot:spring-boot-starter-test')
-  compile("com.getsentry.raven:raven-logback:${versions.raven}")
+  compile("com.getsentry.raven:raven-logback")
+  compile("org.codehaus.janino:janino")
   compile('org.hibernate:hibernate-validator')
   compile("org.springframework.boot:spring-boot-devtools")
 }

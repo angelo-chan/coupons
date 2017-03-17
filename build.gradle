@@ -39,7 +39,8 @@ ext {
     orika    : "1.5.0",
     hibernate: "5.2.8.Final",
     quartz   : "2.2.3",
-    springfox: "2.6.1"
+    springfox: "2.6.1",
+    janino   : "2.7.8"
   ]
 }
 
@@ -102,6 +103,7 @@ subprojects {
     dependencies {
       dependency "ma.glasnost.orika:orika-core:${versions.orika}"
       dependency "com.getsentry.raven:raven-logback:${versions.raven}"
+      dependency "org.codehaus.janino:janino:${versions.janino}"
       dependency "com.mysema.querydsl:querydsl-core:${versions.querydsl}"
       dependency "com.mysema.querydsl:querydsl-collections:${versions.querydsl}"
       dependency "com.mysema.querydsl:querydsl-jpa:${versions.querydsl}"
