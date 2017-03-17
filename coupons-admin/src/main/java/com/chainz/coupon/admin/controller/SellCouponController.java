@@ -1,5 +1,6 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
@@ -45,6 +46,7 @@ public class SellCouponController {
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon sku insufficient.
+   * @throws CouponExpiredException coupon expired.
    */
   @RequestMapping(
     value = "/granted/{grantCode}",
@@ -53,11 +55,15 @@ public class SellCouponController {
   )
   @ApiResponses({
     @ApiResponse(code = 404, message = "invalid grant code"),
-    @ApiResponse(code = 409, message = "coupon status conflict or coupon insufficient")
+    @ApiResponse(
+      code = 409,
+      message = "coupon status conflict or coupon insufficient or coupon expired"
+    )
   })
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException {
     sellCouponService.granted(grantCode);
   }
 
@@ -111,6 +117,7 @@ public class SellCouponController {
    * @throws SellCouponNotFoundException sell coupon not found.
    * @throws SellCouponInsufficientException sell coupon insufficient.
    * @throws CouponStatusConflictException coupon status conflict.
+   * @throws CouponExpiredException coupon expired.
    */
   @RequestMapping(
     value = "/{id}/grant/{count}",
@@ -119,12 +126,15 @@ public class SellCouponController {
   )
   @ApiResponses({
     @ApiResponse(code = 404, message = "sell coupon not found"),
-    @ApiResponse(code = 409, message = "sell coupon insufficient or coupon status conflict")
+    @ApiResponse(
+      code = 409,
+      message = "sell coupon insufficient or coupon status conflict or coupon expired"
+    )
   })
   public GrantCode generateSellCouponGrantCode(
       @PathVariable Long id, @Min(1) @PathVariable Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException,
-          CouponStatusConflictException {
+          CouponStatusConflictException, CouponExpiredException {
     return sellCouponService.generateSellCouponGrantCode(id, count);
   }
 }

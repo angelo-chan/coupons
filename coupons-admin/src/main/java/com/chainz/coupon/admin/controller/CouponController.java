@@ -1,5 +1,6 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponNotFoundException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
@@ -241,10 +242,14 @@ public class CouponController {
    * @throws CouponNotFoundException coupon not found.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon insufficient.
+   * @throws CouponExpiredException coupon expired.
    */
   @ApiResponses({
     @ApiResponse(code = 404, message = "coupon not found"),
-    @ApiResponse(code = 409, message = "coupon status conflict or coupon insufficient")
+    @ApiResponse(
+      code = 409,
+      message = "coupon status conflict or coupon insufficient or coupon expired"
+    )
   })
   @RequestMapping(
     value = "/{id}/grant/{count}",
@@ -253,7 +258,8 @@ public class CouponController {
   )
   public GrantCode generateCouponGrantCode(
       @PathVariable @Min(1) Long id, @PathVariable Integer count)
-      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException {
+      throws CouponNotFoundException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException {
     return couponService.generateCouponGrantCode(id, count);
   }
 }

@@ -4,12 +4,14 @@ import com.chainz.coupon.core.config.TimeoutConfig;
 import com.chainz.coupon.core.credentials.ClientPermission;
 import com.chainz.coupon.core.credentials.Operator;
 import com.chainz.coupon.core.credentials.OperatorManager;
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
 import com.chainz.coupon.core.model.Coupon;
+import com.chainz.coupon.core.model.QCouponDateInfo;
 import com.chainz.coupon.core.model.QSellCoupon;
 import com.chainz.coupon.core.model.SellCoupon;
 import com.chainz.coupon.core.model.SellCouponGrant;
@@ -19,7 +21,9 @@ import com.chainz.coupon.core.repository.SellCouponGrantRepository;
 import com.chainz.coupon.core.repository.SellCouponRepository;
 import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.SellCouponService;
+import com.chainz.coupon.core.utils.CommonUtils;
 import com.chainz.coupon.core.utils.Constants;
+import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SellCouponInfo;
@@ -34,6 +38,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 /** Sell coupon service implementation. */
@@ -53,7 +58,8 @@ public class SellCouponServiceImpl implements SellCouponService {
   @ClientPermission
   @Transactional
   public void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException {
     String key = Constants.COUPON_GRANT_PREFIX + grantCode;
     CouponGrant couponGrant = couponGrantRedisTemplate.opsForValue().get(key);
     if (couponGrant == null) {
@@ -63,6 +69,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     if (coupon.getStatus() != CouponStatus.VERIFIED) {
       throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
     }
+    CommonUtils.checkCouponExpired(coupon);
     if (coupon.getSku() < couponGrant.getCount()) {
       throw new CouponInsufficientException(coupon.getId());
     }
@@ -91,12 +98,19 @@ public class SellCouponServiceImpl implements SellCouponService {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCoupon sellCoupon = QSellCoupon.sellCoupon;
+    QCouponDateInfo dateInfo = sellCoupon.coupon.dateInfo;
     BooleanExpression predicate =
         sellCoupon
             .openId
             .eq(openId)
             .and(sellCoupon.sku.gt(0))
-            .and(sellCoupon.coupon.status.ne(CouponStatus.INVALID));
+            .and(sellCoupon.coupon.status.ne(CouponStatus.INVALID))
+            .andAnyOf(
+                dateInfo.dateType.eq(CouponDateType.DATE_TYPE_FIXED_TERM),
+                dateInfo
+                    .dateType
+                    .eq(CouponDateType.DATE_TYPE_FIXED_TIME_RANGE)
+                    .and(dateInfo.timeRangeEnd.goe(LocalDate.now())));
     Page<SellCoupon> coupons =
         sellCouponRepository.findAll(
             predicate, pageable, JoinDescriptor.innerJoin(sellCoupon.coupon));
@@ -112,7 +126,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @ClientPermission
   @Transactional
   public GrantCode generateSellCouponGrantCode(Long id, Integer count)
-      throws SellCouponNotFoundException, SellCouponInsufficientException {
+      throws SellCouponNotFoundException, SellCouponInsufficientException, CouponExpiredException {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCoupon qSellCoupon = QSellCoupon.sellCoupon;
@@ -130,6 +144,7 @@ public class SellCouponServiceImpl implements SellCouponService {
     if (coupon.getStatus() == CouponStatus.INVALID) {
       throw new CouponStatusConflictException(coupon.getId(), coupon.getStatus());
     }
+    CommonUtils.checkCouponExpired(coupon);
     sellCoupon.setSku(sellCoupon.getSku() - count);
     SellCouponGrant sellCouponGrant =
         SellCouponGrant.newInstance(openId, count, sellCoupon, timeoutConfig.getSellCouponGrant());

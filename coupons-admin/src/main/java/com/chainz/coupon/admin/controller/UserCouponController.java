@@ -1,5 +1,6 @@
 package com.chainz.coupon.admin.controller;
 
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponGetLimitException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
@@ -53,10 +54,14 @@ public class UserCouponController {
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponGetLimitException coupon get limit.
+   * @throws CouponExpiredException coupon expired.
    */
   @ApiResponses({
     @ApiResponse(code = 404, message = "invalid grant code"),
-    @ApiResponse(code = 409, message = "coupon status conflict or coupon get limit")
+    @ApiResponse(
+      code = 409,
+      message = "coupon status conflict or coupon get limit or coupon expired"
+    )
   })
   @RequestMapping(
     value = "/granted/{grantCode}",
@@ -65,7 +70,8 @@ public class UserCouponController {
   )
   @ResponseStatus(HttpStatus.CREATED)
   public void granted(@PathVariable String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException {
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
+          CouponExpiredException {
     userCouponService.granted(grantCode);
   }
 

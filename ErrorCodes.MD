@@ -16,3 +16,4 @@
 * 10904 SellCouponGrantStatusConflictException
 * 10905 UserCouponShareStatusConflictException
 * 10906 CouponGetLimitException
+* 10907 CouponExpiredException

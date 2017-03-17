@@ -1,5 +1,6 @@
 package com.chainz.coupon.core.service;
 
+import com.chainz.coupon.core.exception.CouponExpiredException;
 import com.chainz.coupon.core.exception.CouponInsufficientException;
 import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
@@ -20,9 +21,11 @@ public interface SellCouponService {
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponInsufficientException coupon insufficient.
+   * @throws CouponExpiredException coupon expired.
    */
   void granted(String grantCode)
-      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException;
+      throws InvalidGrantCodeException, CouponStatusConflictException, CouponInsufficientException,
+          CouponExpiredException;
 
   /**
    * List sell coupon.
@@ -40,8 +43,9 @@ public interface SellCouponService {
    * @return grant code.
    * @throws SellCouponNotFoundException sell coupon not found.
    * @throws SellCouponInsufficientException sell coupon insufficient.
+   * @throws CouponExpiredException coupon expired exception.
    */
   GrantCode generateSellCouponGrantCode(Long id, Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException,
-          CouponStatusConflictException;
+          CouponStatusConflictException, CouponExpiredException;
 }
