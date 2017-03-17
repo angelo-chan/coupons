@@ -27,6 +27,7 @@ msgAppStarted="Application Started... exiting buffer!"
 
 ################ PROPERTIES ##########################
 properties=--spring.config.active=$env
+export JAVA_OPTS="-Xms512m -Xmx2048m -Xss1m"
 ######################################################
 
 function stopServer(){
