@@ -34,7 +34,7 @@ public class UserCouponShareController {
    */
   @ApiResponses({@ApiResponse(code = 404, message = "user coupon share not found")})
   @RequestMapping(value = "/{shareCode}", method = RequestMethod.GET, produces = "application/json")
-  public UserCouponShareInfo getSellCouponGrant(@PathVariable String shareCode)
+  public UserCouponShareInfo getUserCouponShare(@PathVariable String shareCode)
       throws UserCouponShareNotFoundException {
     return userCouponShareService.getUserCouponShare(shareCode);
   }
