@@ -32,6 +32,8 @@ import com.chainz.coupon.core.utils.CouponCodes;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.OutId;
+import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
+import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
@@ -78,7 +80,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void granted(String grantCode)
+  public UserCouponGrantResult granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
           CouponExpiredException {
     String key = Constants.SELL_COUPON_GRANT_PREFIX + grantCode;
@@ -139,6 +141,13 @@ public class UserCouponServiceImpl implements UserCouponService {
       }
       sellCouponGrantEntryRepository.save(sellCouponGrantEntry);
       userCouponRepository.save(userCoupon);
+      UserCouponGrantResult userCouponGrantResult =
+          mapperFacade.map(sellCouponGrant, UserCouponGrantResult.class);
+      userCouponGrantResult.setRemain(value.intValue());
+      SimpleUserCouponInfo simpleUserCouponInfo =
+          mapperFacade.map(userCoupon, SimpleUserCouponInfo.class);
+      userCouponGrantResult.setUserCoupon(simpleUserCouponInfo);
+      return userCouponGrantResult;
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForValue().increment(key, 1);
       throw e;
