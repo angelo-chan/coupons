@@ -10,6 +10,7 @@ import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
+import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
@@ -69,10 +70,10 @@ public class UserCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void granted(@PathVariable String grantCode)
+  public UserCouponGrantResult granted(@PathVariable String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
           CouponExpiredException {
-    userCouponService.granted(grantCode);
+   return userCouponService.granted(grantCode);
   }
 
   /**

@@ -6,6 +6,7 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
@@ -28,7 +29,7 @@ public interface UserCouponService {
    * @throws CouponGetLimitException coupon get limit.
    * @throws CouponExpiredException coupon expired.
    */
-  void granted(String grantCode)
+  UserCouponGrantResult granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
           CouponExpiredException;
 
