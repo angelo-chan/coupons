@@ -157,7 +157,8 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException {
+  public void shared(String shareCode)
+      throws InvalidShareCodeException, CouponGetLimitException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
     if (count == 0) {

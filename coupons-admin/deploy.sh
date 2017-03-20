@@ -14,7 +14,7 @@ projectName=coupons-admin
 destPath=/home/ubuntu/run
 destFile=$destPath/$projectName.jar
 
-sourceFile=/home/ubuntu/jars/$projectName*.jar
+sourceFile=/home/ubuntu/build/libs/$projectName*.jar
 
 ################ APPLICATION MONITOR ################
 logFile=init.log
@@ -26,7 +26,8 @@ msgBuffer="Buffering: "
 msgAppStarted="Application Started... exiting buffer!"
 
 ################ PROPERTIES ##########################
-properties=--spring.config.active=$env
+properties=--spring.profiles.active=$env
+export JAVA_OPTS="-Xms512m -Xmx2048m -Xss1m"
 ######################################################
 
 function stopServer(){
