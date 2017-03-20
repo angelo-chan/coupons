@@ -117,8 +117,6 @@ subprojects {
 
   dependencies {
     compile("org.projectlombok:lombok")
-    testCompile("org.hamcrest:hamcrest-all")
-    testCompile("org.mockito:mockito-all")
   }
 
   task sourceJar(type: Jar) {
