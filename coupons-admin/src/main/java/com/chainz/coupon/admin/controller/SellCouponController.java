@@ -8,7 +8,7 @@ import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
 import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.shared.objects.GrantCode;
-import com.chainz.coupon.shared.objects.SellCouponInfo;
+import com.chainz.coupon.shared.objects.SimpleSellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -95,7 +95,7 @@ public class SellCouponController {
     )
   })
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-  public PaginatedApiResult<SellCouponInfo> listSellCoupon(
+  public PaginatedApiResult<SimpleSellCouponInfo> listSellCoupon(
       @Min(0) @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
       @Min(1) @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
       @Pattern(regexp = "id|createdAt")

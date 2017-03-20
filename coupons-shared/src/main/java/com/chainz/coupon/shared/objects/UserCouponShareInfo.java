@@ -13,7 +13,7 @@ public class UserCouponShareInfo {
 
   private String id;
 
-  private SimpleCouponInfo coupon;
+  private BulkCouponInfo coupon;
 
   private String openId;
 

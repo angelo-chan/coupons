@@ -13,7 +13,7 @@ public class SellCouponGrantInfo {
 
   private String id;
 
-  private SimpleSellCouponInfo sellCoupon;
+  private BulkSellCouponInfo sellCoupon;
 
   private String openId;
 

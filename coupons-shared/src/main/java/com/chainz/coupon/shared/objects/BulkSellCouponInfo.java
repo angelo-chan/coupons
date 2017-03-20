@@ -3,13 +3,14 @@ package com.chainz.coupon.shared.objects;
 import lombok.Getter;
 import lombok.Setter;
 
-/** Simple sell coupon info. */
-@Getter
+/** Bulk sell coupon info. */
 @Setter
-public class SimpleSellCouponInfo {
+@Getter
+public class BulkSellCouponInfo {
+
   protected Long id;
 
   protected Integer sku;
 
-  protected SimpleCouponInfo coupon;
+  protected BulkCouponInfo coupon;
 }

@@ -7,7 +7,7 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
 import com.chainz.coupon.shared.objects.GrantCode;
-import com.chainz.coupon.shared.objects.SellCouponInfo;
+import com.chainz.coupon.shared.objects.SimpleSellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
@@ -33,7 +33,7 @@ public interface SellCouponService {
    * @param pageable pagination information.
    * @return paginated sell coupon.
    */
-  PaginatedApiResult<SellCouponInfo> listSellCoupon(Pageable pageable);
+  PaginatedApiResult<SimpleSellCouponInfo> listSellCoupon(Pageable pageable);
 
   /**
    * Generate sell coupon grant code.

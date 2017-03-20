@@ -9,19 +9,13 @@ import java.time.ZonedDateTime;
 /** Coupon info. */
 @Getter
 @Setter
-public class CouponInfo extends SimpleCouponInfo {
-
-  private String description;
-
-  private String notice;
+public final class CouponInfo extends BulkCouponInfo {
 
   private Long circulation;
 
   private Long sku;
 
   private CouponStatus status;
-
-  private CouponExtension extension;
 
   private CouponIssuer issuer;
 

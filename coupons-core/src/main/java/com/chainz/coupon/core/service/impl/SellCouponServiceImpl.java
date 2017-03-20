@@ -26,7 +26,7 @@ import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.GrantCode;
-import com.chainz.coupon.shared.objects.SellCouponInfo;
+import com.chainz.coupon.shared.objects.SimpleSellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import ma.glasnost.orika.MapperFacade;
@@ -94,7 +94,7 @@ public class SellCouponServiceImpl implements SellCouponService {
   @Override
   @ClientPermission
   @Transactional(readOnly = true)
-  public PaginatedApiResult<SellCouponInfo> listSellCoupon(Pageable pageable) {
+  public PaginatedApiResult<SimpleSellCouponInfo> listSellCoupon(Pageable pageable) {
     Operator operator = OperatorManager.getOperator();
     String openId = operator.getOpenId();
     QSellCoupon sellCoupon = QSellCoupon.sellCoupon;
@@ -119,7 +119,7 @@ public class SellCouponServiceImpl implements SellCouponService {
         pageable.getPageSize(),
         coupons.getNumberOfElements(),
         coupons.getTotalElements(),
-        mapperFacade.mapAsList(coupons.getContent(), SellCouponInfo.class));
+        mapperFacade.mapAsList(coupons.getContent(), SimpleSellCouponInfo.class));
   }
 
   @Override
