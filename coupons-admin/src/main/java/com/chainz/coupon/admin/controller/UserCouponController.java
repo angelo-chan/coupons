@@ -52,6 +52,7 @@ public class UserCouponController {
    * Enable user to get coupon via grant code from seller.
    *
    * @param grantCode grant code.
+   * @return user coupon grant result.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponGetLimitException coupon get limit.

@@ -32,12 +32,11 @@ import com.chainz.coupon.core.utils.CouponCodes;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.CouponTarget;
 import com.chainz.coupon.shared.objects.OutId;
-import com.chainz.coupon.shared.objects.SellCouponGrantInfo;
-import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
+import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.UserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
 import com.chainz.coupon.shared.objects.UserCouponShareRequest;
@@ -141,8 +140,8 @@ public class UserCouponServiceImpl implements UserCouponService {
       }
       sellCouponGrantEntryRepository.save(sellCouponGrantEntry);
       userCouponRepository.save(userCoupon);
-      UserCouponGrantResult userCouponGrantResult =
-          mapperFacade.map(sellCouponGrant, UserCouponGrantResult.class);
+      UserCouponGrantResult userCouponGrantResult = new UserCouponGrantResult();
+      userCouponGrantResult.setCount(sellCouponGrant.getCount());
       userCouponGrantResult.setRemain(value.intValue());
       SimpleUserCouponInfo simpleUserCouponInfo =
           mapperFacade.map(userCoupon, SimpleUserCouponInfo.class);
@@ -157,8 +156,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void shared(String shareCode)
-      throws InvalidShareCodeException, CouponGetLimitException {
+  public void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
     if (count == 0) {
