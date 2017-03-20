@@ -23,6 +23,8 @@ import com.chainz.coupon.core.repository.common.JoinDescriptor;
 import com.chainz.coupon.core.service.SellCouponService;
 import com.chainz.coupon.core.utils.CommonUtils;
 import com.chainz.coupon.core.utils.Constants;
+import com.chainz.coupon.shared.objects.BulkCouponInfo;
+import com.chainz.coupon.shared.objects.BulkSellCouponInfo;
 import com.chainz.coupon.shared.objects.CouponDateType;
 import com.chainz.coupon.shared.objects.CouponStatus;
 import com.chainz.coupon.shared.objects.GrantCode;
@@ -155,5 +157,26 @@ public class SellCouponServiceImpl implements SellCouponService {
         .opsForValue()
         .set(key, count.toString(), timeoutConfig.getSellCouponGrant(), TimeUnit.SECONDS);
     return new GrantCode(sellCouponGrant.getId());
+  }
+
+  @Override
+  @ClientPermission
+  @Transactional
+  public BulkSellCouponInfo getSellCoupon(Long sellCouponId) throws SellCouponNotFoundException {
+    // use predicate and join to avoid lazy load coupon
+    QSellCoupon qSellCoupon = QSellCoupon.sellCoupon;
+    SellCoupon sellCoupon =
+        sellCouponRepository.findOne(
+            qSellCoupon.id.eq(sellCouponId), JoinDescriptor.join(qSellCoupon.coupon));
+    Operator operator = OperatorManager.getOperator();
+    if (sellCoupon == null || !operator.getOpenId().equals(sellCoupon.getOpenId())) {
+      throw new SellCouponNotFoundException(sellCouponId);
+    }
+    BulkSellCouponInfo bulkSellCouponInfo = new BulkSellCouponInfo();
+    bulkSellCouponInfo.setId(sellCouponId);
+    bulkSellCouponInfo.setSku(sellCoupon.getSku());
+    BulkCouponInfo bulkCouponInfo = mapperFacade.map(sellCoupon.getCoupon(), BulkCouponInfo.class);
+    bulkSellCouponInfo.setCoupon(bulkCouponInfo);
+    return bulkSellCouponInfo;
   }
 }

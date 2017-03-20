@@ -6,6 +6,7 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
+import com.chainz.coupon.shared.objects.BulkSellCouponInfo;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SimpleSellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
@@ -48,4 +49,13 @@ public interface SellCouponService {
   GrantCode generateSellCouponGrantCode(Long id, Integer count)
       throws SellCouponNotFoundException, SellCouponInsufficientException,
           CouponStatusConflictException, CouponExpiredException;
+
+  /**
+   * Get sell couponsell by id.
+   *
+   * @param sellCouponId sell coupon id.
+   * @return sellCoupon info.
+   * @throws SellCouponNotFoundException user coupon not found.
+   */
+  BulkSellCouponInfo getSellCoupon(Long sellCouponId) throws SellCouponNotFoundException;
 }

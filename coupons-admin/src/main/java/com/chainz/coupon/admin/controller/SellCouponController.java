@@ -7,6 +7,7 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.SellCouponInsufficientException;
 import com.chainz.coupon.core.exception.SellCouponNotFoundException;
 import com.chainz.coupon.core.service.SellCouponService;
+import com.chainz.coupon.shared.objects.BulkSellCouponInfo;
 import com.chainz.coupon.shared.objects.GrantCode;
 import com.chainz.coupon.shared.objects.SimpleSellCouponInfo;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
@@ -136,5 +137,19 @@ public class SellCouponController {
       throws SellCouponNotFoundException, SellCouponInsufficientException,
           CouponStatusConflictException, CouponExpiredException {
     return sellCouponService.generateSellCouponGrantCode(id, count);
+  }
+
+  /**
+   * Get sell coupon.
+   *
+   * @param id sell coupon id.
+   * @return sell coupon information.
+   * @throws SellCouponNotFoundException sell coupon not found.
+   */
+  @ApiResponses({@ApiResponse(code = 404, message = "sell coupon not found")})
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+  public BulkSellCouponInfo getUserCoupon(@PathVariable Long id)
+      throws SellCouponNotFoundException {
+    return sellCouponService.getSellCoupon(id);
   }
 }
