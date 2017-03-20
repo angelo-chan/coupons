@@ -1,0 +1,157 @@
+##default config
+spring:
+  profiles:
+    active: dev
+  datasource:
+    username: coupon
+    password: coupon
+    url: jdbc:postgresql://localhost:5432/coupon
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate:
+      ddl-auto: validate
+  jackson:
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+  redis:
+    database: 0
+    host: localhost
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: 5000
+      min-idle: 0
+    timeout: 1000
+
+coupons:
+  timeout:
+    coupon-grant: 86400
+    sell-coupon-grant: 86400
+    user-coupon-share: 86400
+
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 600
+      user-coupon-share: 600
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 36000
+      user-coupon-share: 36000
+
+endpoints:
+  health:
+    sensitive: false
+server:
+  port: 8080
+management:
+  health:
+    db:
+      enabled: true
+    redis:
+      enabled: true
+    diskspace:
+      enabled: true
+  security:
+    enabled: false
+
+swagger:
+  enable: true
+
+---
+spring:
+  profiles: dev
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+coupons:
+  timeout:
+    coupon-grant: 600
+    sell-coupon-grant: 600
+    user-coupon-share: 600
+
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 300
+      user-coupon-share: 300
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 86400
+      user-coupon-share: 86400
+
+logging:
+  level:
+    com.chainz.coupon: DEBUG
+#    org.hibernate: INFO
+#    org.hibernate.type: trace
+
+---
+spring:
+  profiles: ci
+logging:
+  level:
+    com.chainz.coupon: INFO
+
+coupons:
+  timeout:
+    coupon-grant: 600
+    sell-coupon-grant: 600
+    user-coupon-share: 600
+
+quartz:
+  enabled: true
+  scheduler:
+    interval:
+      sell-coupon-grant: 600
+      user-coupon-share: 600
+    delay:
+      sell-coupon-grant: 0
+      user-coupon-share: 60
+    threshold:
+      sell-coupon-grant: 86400
+      user-coupon-share: 86400
+
+---
+spring:
+  profiles: prod
+
+  datasource:
+    username: coupon
+    password: coupon
+    url: jdbc:postgresql://10.16.15.179:5432/coupon
+
+  redis:
+    database: 0
+    host: 10.16.15.179
+    pool:
+     max-active: 8
+     max-idle: 8
+     max-wait: 5000
+     min-idle: 0
+    timeout: 1000
+
+logging:
+  level:
+    com.chainz.coupon: WARN
+
+swagger:
+  enable: false

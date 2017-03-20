@@ -29,18 +29,7 @@ import com.chainz.coupon.core.service.UserCouponService;
 import com.chainz.coupon.core.utils.CommonUtils;
 import com.chainz.coupon.core.utils.Constants;
 import com.chainz.coupon.core.utils.CouponCodes;
-import com.chainz.coupon.shared.objects.CouponStatus;
-import com.chainz.coupon.shared.objects.CouponTarget;
-import com.chainz.coupon.shared.objects.OutId;
-import com.chainz.coupon.shared.objects.SellCouponGrantStatus;
-import com.chainz.coupon.shared.objects.ShareCode;
-import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
-import com.chainz.coupon.shared.objects.UserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
-import com.chainz.coupon.shared.objects.UserCouponShareRequest;
-import com.chainz.coupon.shared.objects.UserCouponShareStatus;
-import com.chainz.coupon.shared.objects.UserCouponStatus;
+import com.chainz.coupon.shared.objects.*;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -148,7 +137,8 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException {
+  public UserCouponShareInfo shared(String shareCode)
+      throws InvalidShareCodeException, CouponGetLimitException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
     if (count == 0) {
@@ -206,6 +196,7 @@ public class UserCouponServiceImpl implements UserCouponService {
       }
       userCouponRepository.save(userCoupon);
       userCouponShareRepository.save(userCouponShare);
+      return mapperFacade.map(userCouponShare, UserCouponShareInfo.class);
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForList().rightPush(key, value);
       if (count == 1 && userCouponShare != null) {

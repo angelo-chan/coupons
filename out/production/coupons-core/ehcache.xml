@@ -1,0 +1,16 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd">
+  <cache
+    name="coupons"
+    maxElementsInMemory="200"
+    eternal="false"
+    overflowToDisk="false"
+    diskExpiryThreadIntervalSeconds="400"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="300"
+    diskPersistent="false"
+    memoryStoreEvictionPolicy="LRU"
+    clearOnFlush="true"
+    statistics="true">
+  </cache>
+</ehcache>

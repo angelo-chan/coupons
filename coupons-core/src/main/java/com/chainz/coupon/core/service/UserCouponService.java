@@ -6,12 +6,7 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
-import com.chainz.coupon.shared.objects.ShareCode;
-import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
-import com.chainz.coupon.shared.objects.UserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
-import com.chainz.coupon.shared.objects.UserCouponShareRequest;
+import com.chainz.coupon.shared.objects.*;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import org.springframework.data.domain.Pageable;
 
@@ -39,7 +34,7 @@ public interface UserCouponService {
    * @throws InvalidShareCodeException invalid share code.
    * @throws CouponGetLimitException coupon get limit exception.
    */
-  void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException;
+  UserCouponShareInfo shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException;
 
   /**
    * Get user coupon by id.

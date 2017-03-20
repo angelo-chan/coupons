@@ -7,12 +7,7 @@ import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
 import com.chainz.coupon.core.service.UserCouponService;
-import com.chainz.coupon.shared.objects.ShareCode;
-import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
-import com.chainz.coupon.shared.objects.UserCouponInfo;
-import com.chainz.coupon.shared.objects.UserCouponReturnRequest;
-import com.chainz.coupon.shared.objects.UserCouponShareRequest;
+import com.chainz.coupon.shared.objects.*;
 import com.chainz.coupon.shared.objects.common.PaginatedApiResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -92,9 +87,9 @@ public class UserCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public void shared(@PathVariable String shareCode)
+  public UserCouponShareInfo shared(@PathVariable String shareCode)
       throws InvalidShareCodeException, CouponGetLimitException {
-    userCouponService.shared(shareCode);
+   return userCouponService.shared(shareCode);
   }
 
   /**
