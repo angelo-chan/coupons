@@ -55,6 +55,11 @@ Run `gradle` for clean build
 1. Run `gradle bootRun` to start application
 2. Attach **5005** to **remote** to fire a debug
 
+## Live-Reload
+
+1. Run `gradle bootRun` to start application also it will trigger spring boot devTools
+2. Code in idea and press CMD+Shift+F9 to compile current class
+
 ## Note
 
 1. Please change to public repository before build
