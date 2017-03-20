@@ -137,7 +137,7 @@ public class UserCouponServiceImpl implements UserCouponService {
   @Override
   @ClientPermission
   @Transactional
-  public UserCouponShareInfo shared(String shareCode)
+  public void shared(String shareCode)
       throws InvalidShareCodeException, CouponGetLimitException {
     String key = Constants.USER_COUPON_SHARE_PREFIX + shareCode;
     long count = stringRedisTemplate.opsForList().size(key);
@@ -196,7 +196,6 @@ public class UserCouponServiceImpl implements UserCouponService {
       }
       userCouponRepository.save(userCoupon);
       userCouponShareRepository.save(userCouponShare);
-      return mapperFacade.map(userCouponShare, UserCouponShareInfo.class);
     } catch (RuntimeException e) {
       stringRedisTemplate.opsForList().rightPush(key, value);
       if (count == 1 && userCouponShare != null) {

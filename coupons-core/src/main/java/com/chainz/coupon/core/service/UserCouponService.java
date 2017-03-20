@@ -34,7 +34,7 @@ public interface UserCouponService {
    * @throws InvalidShareCodeException invalid share code.
    * @throws CouponGetLimitException coupon get limit exception.
    */
-  UserCouponShareInfo shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException;
+  void shared(String shareCode) throws InvalidShareCodeException, CouponGetLimitException;
 
   /**
    * Get user coupon by id.

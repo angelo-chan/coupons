@@ -87,9 +87,9 @@ public class UserCouponController {
     consumes = "application/json"
   )
   @ResponseStatus(HttpStatus.CREATED)
-  public UserCouponShareInfo shared(@PathVariable String shareCode)
+  public void shared(@PathVariable String shareCode)
       throws InvalidShareCodeException, CouponGetLimitException {
-   return userCouponService.shared(shareCode);
+    userCouponService.shared(shareCode);
   }
 
   /**
