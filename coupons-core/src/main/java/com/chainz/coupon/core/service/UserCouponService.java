@@ -6,6 +6,7 @@ import com.chainz.coupon.core.exception.CouponStatusConflictException;
 import com.chainz.coupon.core.exception.InvalidGrantCodeException;
 import com.chainz.coupon.core.exception.InvalidShareCodeException;
 import com.chainz.coupon.core.exception.UserCouponNotFoundException;
+import com.chainz.coupon.shared.objects.UserCouponGrantResult;
 import com.chainz.coupon.shared.objects.ShareCode;
 import com.chainz.coupon.shared.objects.SimpleUserCouponInfo;
 import com.chainz.coupon.shared.objects.UserCouponConsumeRequest;
@@ -23,12 +24,13 @@ public interface UserCouponService {
    * get user coupon from sell coupon grant by grant code.
    *
    * @param grantCode grant code.
+   * @return user coupon grant result.
    * @throws InvalidGrantCodeException invalid grant code.
    * @throws CouponStatusConflictException coupon status conflict.
    * @throws CouponGetLimitException coupon get limit.
    * @throws CouponExpiredException coupon expired.
    */
-  void granted(String grantCode)
+  UserCouponGrantResult granted(String grantCode)
       throws InvalidGrantCodeException, CouponStatusConflictException, CouponGetLimitException,
           CouponExpiredException;
 
