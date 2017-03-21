@@ -148,7 +148,7 @@ public class SellCouponController {
    */
   @ApiResponses({@ApiResponse(code = 404, message = "sell coupon not found")})
   @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-  public BulkSellCouponInfo getUserCoupon(@PathVariable Long id)
+  public BulkSellCouponInfo getSellCoupon(@PathVariable Long id)
       throws SellCouponNotFoundException {
     return sellCouponService.getSellCoupon(id);
   }

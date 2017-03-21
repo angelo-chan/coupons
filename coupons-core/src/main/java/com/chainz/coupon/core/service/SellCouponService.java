@@ -51,7 +51,7 @@ public interface SellCouponService {
           CouponStatusConflictException, CouponExpiredException;
 
   /**
-   * Get sell couponsell by id.
+   * Get sell coupon by id.
    *
    * @param sellCouponId sell coupon id.
    * @return sellCoupon info.
