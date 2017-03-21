@@ -7,6 +7,7 @@
 * 10405 SellCouponGrantNotFoundException
 * 10406 UserCouponShareNotFoundException
 * 10407 InvalidShareCodeException
+* 10408 CouponGrantNotFoundException
 
 # Conflict
 

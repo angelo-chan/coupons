@@ -13,27 +13,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/** sell coupon grant controller. */
+/** coupon grant controller. */
 @RestController
 @Api(tags = "Coupon-Grant", produces = "application/json", consumes = "application/json")
 @Validated
 @RequestMapping("/api/coupon-grants")
 public class CouponGrantController {
 
-  @Autowired
-  private CouponGrantService couponGrantService;
+  @Autowired private CouponGrantService couponGrantService;
 
   /**
-   * Get sell coupon grant.
+   * Get coupon grant.
    *
    * @param grantCode grant code.
-   * @return sell coupon grant information.
+   * @return coupon grant information.
    * @throws CouponGrantNotFoundException coupon grant not found.
    */
   @ApiResponses({@ApiResponse(code = 404, message = "coupon grant not found")})
   @RequestMapping(value = "/{grantCode}", method = RequestMethod.GET, produces = "application/json")
   public CouponGrantInfo getCouponGrant(@PathVariable String grantCode)
-    throws CouponGrantNotFoundException {
+      throws CouponGrantNotFoundException {
     return couponGrantService.getCouponGrant(grantCode);
   }
 }
